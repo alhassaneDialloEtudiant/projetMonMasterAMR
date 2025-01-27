@@ -1,0 +1,116 @@
+.footer-container {
+    background-color: #1e3a8a; /* Couleur de fond */
+    color: white; /* Couleur du texte */
+    display: flex;
+    justify-content: space-between; /* Distribution égale des sections */
+    align-items: flex-start;
+    flex-wrap: wrap; /* Permet aux éléments de passer à la ligne si nécessaire */
+    padding: 20px 40px;
+    width: 100%; /* Occuper toute la largeur */
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+    box-sizing: border-box;
+    gap: 20px; /* Espacement entre les sections */
+}
+
+
+.footer-section {
+    flex: 1; /* Toutes les sections occupent un espace égal */
+    min-width: 200px; /* Largeur minimale pour éviter le chevauchement */
+    margin: 0 10px;
+    text-align: left; /* Alignement à gauche */
+}
+
+.footer-section h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #f59e0b; /* Couleur orange pour les titres */
+    display: flex;
+    align-items: center; /* Centrer les icônes verticalement */
+    gap: 10px;
+    border-bottom: 2px solid #f59e0b; /* Ligne décorative sous le titre */
+    padding-bottom: 5px;
+}
+
+.footer-section p,
+.footer-section a {
+    font-size: 14px;
+    color: white;
+    text-decoration: none;
+    margin: 5px 0;
+    line-height: 1.6; /* Améliore la lisibilité */
+}
+
+.footer-section a:hover {
+    color: #ffcc00;
+    text-decoration: underline;
+}
+
+/* Icônes avec animation */
+.footer-icon {
+    margin-right: 8px;
+    color: #f59e0b;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.footer-icon:hover {
+    transform: scale(1.2); /* Animation au survol */
+    color: #ffcc00;
+}
+
+/* Formulaire Newsletter */
+.newsletter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%; /* S'adapte à la largeur de la section */
+}
+
+.newsletter-input {
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100%; /* Occupe toute la largeur */
+    box-sizing: border-box;
+}
+
+.newsletter-button {
+    padding: 12px 15px;
+    font-size: 14px;
+    color: white;
+    background-color: #f59e0b;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.newsletter-button:hover {
+    background-color: #d97706;
+    transform: scale(1.05); /* Animation subtile */
+}
+
+/* Responsivité */
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column; /* Empile les sections verticalement */
+        text-align: center; /* Centrer le texte */
+        gap: 30px;
+    }
+
+    .footer-section {
+        text-align: center;
+    }
+
+    .newsletter-form {
+        align-items: center; /* Centre le formulaire */
+    }
+
+    .newsletter-input {
+        width: 90%; /* Réduction de la largeur sur petits écrans */
+    }
+
+    .newsletter-button {
+        width: auto; /* Ajuste la taille du bouton au texte */
+    }
+}
