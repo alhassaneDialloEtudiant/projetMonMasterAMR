@@ -1,9 +1,10 @@
-import React from 'react';
+import React from 'react'; 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Menu from '../src/components/menu';
 import PiedDePage from '../src/components/PiedDePage';
 import Accueil from './pages/Accueil'; // Page d'accueil
-import Construction from '../src/pages/PageEnConstruction' // Page en construction;
+import Construction from '../src/pages/PageEnConstruction'; // Page en construction
+import AdminsUniversitaires from './components/AdminsUniversitaires'; // Import de AdminsUniversitaires
 
 function App() {
     return (
@@ -20,6 +21,8 @@ function App() {
                         <Route path="/connexion" element={<Construction />} />
                         <Route path="/tableau-de-bord" element={<Construction />} />
                         <Route path="/programmes" element={<Construction />} />
+                        {/* Nouvelle route pour la gestion des Admins Universitaires */}
+                        <Route path="/admins-universitaires" element={<AdminsUniversitaires />} />
                     </Routes>
                 </main>
 

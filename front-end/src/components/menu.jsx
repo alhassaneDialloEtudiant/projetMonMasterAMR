@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; 
 import '../styles/Menu.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom'; // Importer Link de react-router-dom
 
 function Menu() {
     const [isOpen, setIsOpen] = useState(false);
@@ -26,16 +27,20 @@ function Menu() {
             {/* Liens du menu */}
             <ul className={`menu-list ${isOpen ? 'menu-open' : ''}`}>
                 <li>
-                    <a href="/" onClick={closeMenu}>Accueil</a>
+                    <Link to="/" onClick={closeMenu}>Accueil</Link>
                 </li>
                 <li>
-                    <a href="/connexion" onClick={closeMenu}>Connexion</a>
+                    <Link to="/connexion" onClick={closeMenu}>Connexion</Link>
                 </li>
                 <li>
-                    <a href="/tableau-de-bord" onClick={closeMenu}>Tableau de bord</a>
+                    <Link to="/tableau-de-bord" onClick={closeMenu}>Tableau de bord</Link>
                 </li>
                 <li>
-                    <a href="/programmes" onClick={closeMenu}>Programmes</a>
+                    <Link to="/programmes" onClick={closeMenu}>Programmes</Link>
+                </li>
+                {/* Ajout du lien vers Admins Universitaires */}
+                <li>
+                    <Link to="/admins-universitaires" onClick={closeMenu}>Admins Universitaires</Link>
                 </li>
             </ul>
         </nav>
@@ -43,3 +48,4 @@ function Menu() {
 }
 
 export default Menu;
+
