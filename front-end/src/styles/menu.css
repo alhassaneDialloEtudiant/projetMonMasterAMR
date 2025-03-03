@@ -1,16 +1,93 @@
 /* Conteneur principal */
 .menu-container {
-    background-color: #1e3a8a; /* Couleur bleu */
+    background-color: #1e3a8a;
     padding: 10px 20px;
-    position: sticky; /* Fixe en haut */
+    position: sticky;
     top: 0;
     z-index: 1000;
-    width: 100%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Légère ombre */
     display: flex;
-    justify-content: center; /* Centre tous les éléments horizontalement */
+    justify-content: space-between;
     align-items: center;
-    transition: all 0.3s ease-in-out; /* Animation pour transitions douces */
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo et titre */
+.menu-left {
+    display: flex;
+    align-items: center;
+}
+
+.logo-link {
+    text-decoration: none;
+    margin-right: 15px;
+}
+
+.logo {
+    height: 50px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.1);
+}
+
+.menu-title h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+}
+
+.menu-title p {
+    margin: 0;
+    font-size: 12px;
+    color: #d1d5db;
+}
+
+/* Liste des liens */
+.menu-list {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-list li {
+    margin: 0;
+}
+
+.menu-list a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+}
+
+.menu-list a:hover {
+    color: #f59e0b;
+}
+
+/* Bouton "Voir mes favoris" */
+.menu-right .favorites-button {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #f59e0b;
+    text-decoration: none;
+    padding: 8px 15px;
+    border: 2px solid #f59e0b;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.menu-right .favorites-button:hover {
+    background-color: #f59e0b;
+    color: #1e3a8a;
 }
 
 /* Bouton hamburger */
@@ -20,113 +97,42 @@
     color: white;
     font-size: 24px;
     cursor: pointer;
-    display: none; /* Cacher par défaut sur les grands écrans */
-    transition: transform 0.3s ease-in-out;
+    display: none;
 }
 
 .menu-toggle:hover {
-    transform: rotate(90deg); /* Animation de rotation pour plus d'interactivité */
-}
-
-/* Liste des liens */
-.menu-list {
-    list-style: none;
-    display: flex;
-    gap: 30px; /* Espace entre les liens */
-    margin: 0;
-    padding: 0;
-    align-items: center;
-    transition: max-height 0.3s ease-in-out; /* Animation pour le menu mobile */
-}
-
-/* Liens individuels */
-.menu-list li a {
-    text-decoration: none;
-    color: white;
-    font-weight: bold;
-    font-size: 18px;
-    padding: 10px 15px;
-    border-radius: 5px;
-    text-transform: uppercase; /* Rend le texte tout en majuscules */
-    background: linear-gradient(to right, #1e3a8a, #1e3a8a); /* Gradient pour l'effet au survol */
-    background-size: 200% auto; /* Permet de cacher l'effet au départ */
-    transition: background-position 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Survol des liens */
-.menu-list li a:hover {
-    background-position: right center; /* Affiche le gradient complet */
-    color: #f59e0b; /* Couleur du texte au survol */
-    transform: scale(1.1); /* Agrandit légèrement le lien */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Ajout d'une ombre subtile */
-}
-
-/* Lien actif */
-.menu-list li a.active {
-    background-color: #f59e0b; /* Couleur pour le lien actif */
-    color: #1e3a8a;
-    transform: scale(1.1);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Ombre pour différencier le lien actif */
+    color: #f59e0b;
 }
 
 /* Menu responsive */
 @media (max-width: 768px) {
-    /* Bouton hamburger visible sur petits écrans */
     .menu-toggle {
         display: block;
     }
 
-    /* Menu caché par défaut sur mobile */
     .menu-list {
-        flex-direction: column; /* Empile les liens verticalement */
-        gap: 15px; /* Espacement vertical entre les liens */
-        display: none; /* Caché par défaut */
-        width: 100%;
-        text-align: center; /* Centre les liens */
-        max-height: 0; /* Hauteur initiale pour les animations */
-        overflow: hidden; /* Cache le menu hors de la vue */
+        flex-direction: column;
+        display: none;
+        position: absolute;
+        top: 60px;
+        right: 20px;
+        background: #1e3a8a;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 10px 20px;
+        border-radius: 5px;
+        width: 90%;
+        text-align: center;
     }
 
-    /* Afficher le menu lorsqu'il est ouvert */
     .menu-list.menu-open {
-        display: flex; /* Afficher les liens en flex */
-        max-height: 300px; /* Hauteur maximum pour affichage */
-        transition: max-height 0.5s ease-in-out; /* Animation d'ouverture douce */
+        display: flex;
     }
-}
 
-.about-section {
-    text-align: center;
-    padding: 20px 15px; /* Réduction de la taille de la section */
-    background-color: #f9f9f9; /* Couleur de fond légère */
-    color: #333; /* Couleur du texte */
-    border-radius: 10px; /* Coins arrondis */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Ombre subtile */
-    margin: 20px auto; /* Espace autour de la section */
-    max-width: 900px; /* Largeur maximale */
-    font-size: 14px; /* Taille de texte réduite */
-    line-height: 1.6; /* Espacement entre les lignes */
-}
+    .menu-list li {
+        margin: 10px 0;
+    }
 
-.about-section h2 {
-    font-size: 22px; /* Réduction de la taille du titre */
-    color: #1e3a8a; /* Couleur bleu principale */
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-
-.about-section p {
-    font-size: 14px; /* Texte plus petit */
-    margin: 10px 0;
-    color: #555; /* Couleur gris foncé */
-    font-style: italic; /* Ajout d'un style italique pour le texte */
-}
-
-.about-section blockquote {
-    font-size: 16px; /* Citation légèrement plus grande */
-    font-style: italic;
-    margin-top: 15px;
-    color: #1e3a8a; /* Couleur bleu principale */
-    border-left: 4px solid #f59e0b; /* Bordure orange à gauche */
-    padding-left: 10px; /* Espace intérieur */
+    .menu-right {
+        display: none;
+    }
 }

@@ -14,13 +14,13 @@ function PiedDePage() {
                 </h3>
                 <p>
                     <FontAwesomeIcon icon={faEnvelope} className="footer-icon" /> Email :{' '}
-                    <a href="mailto:contact@projetmaster.com">contact@projetmaster.com</a>
+                    <a href="mailto:contact@projetmaster.com">alhassane.diallo.etu@gmail.com</a>
                 </p>
                 <p>
                     <FontAwesomeIcon icon={faPhone} className="footer-icon" /> Téléphone : +33 6 12 34 56 78
                 </p>
                 <p>
-                    <FontAwesomeIcon icon={faMapMarkerAlt} className="footer-icon" /> Adresse : 12 rue des Écoles, 75005 Paris, France
+                    <FontAwesomeIcon icon={faMapMarkerAlt} className="footer-icon" /> Adresse : 15 résidence le bosquet , 91940 les Ulis, France
                 </p>
             </div>
 

@@ -1,0 +1,341 @@
+/* Styles généraux */
+.dossier-container {
+    display: flex;
+    height: 100vh;
+    font-family: 'Arial', sans-serif;
+    background-color: #f9fafb;
+  }
+  
+  /* Sidebar - Menu latéral */
+  .sidebar {
+    width: 280px;
+    background: linear-gradient(to bottom, #1e3a8a, #3b82f6);
+    color: white;
+    padding: 20px;
+    border-radius: 10px 0 0 10px;
+  }
+  
+  .sidebar h2 {
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar li {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    cursor: pointer;
+    font-size: 15px;
+    border-radius: 8px;
+    transition: background 0.3s, transform 0.2s;
+  }
+  
+  .sidebar li:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(5px);
+  }
+  
+  .sidebar .icon {
+    margin-right: 10px;
+    font-size: 18px;
+  }
+  
+  .valid {
+    color: #10b981; /* Vert pour les sections complètes */
+  }
+  
+  .warning {
+    color: #facc15; /* Jaune pour les sections incomplètes */
+  }
+  
+  /* Contenu principal */
+  .content {
+    flex: 1;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    margin: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .content h1 {
+    font-size: 24px;
+    color: #1e3a8a;
+    margin-bottom: 10px;
+  }
+  
+  .content p {
+    font-size: 16px;
+    color: #4b5563;
+  }
+  
+  /* Formulaire */
+  .form-group {
+    margin-top: 15px;
+  }
+  
+  input[type="file"] {
+    display: block;
+    padding: 10px;
+    border: 2px dashed #3b82f6;
+    background: #eef2ff;
+    border-radius: 5px;
+    width: 100%;
+    transition: border 0.3s;
+  }
+  
+  input[type="file"]:hover {
+    border: 2px dashed #1e3a8a;
+  }
+  
+  /* Bouton */
+  .btn-save {
+    margin-top: 20px;
+    background: #3b82f6;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+  }
+  
+  .btn-save:hover {
+    background: #1e3a8a;
+  }
+  .dossier-container {
+    display: flex;
+    height: 100vh;
+    background-color: #f9f9f9;
+}
+
+.sidebar {
+    width: 280px;
+    background: linear-gradient(to bottom, #002f6c, #00509e);
+    color: white;
+    padding: 20px;
+    border-radius: 10px 0 0 10px;
+}
+
+.sidebar h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.3s ease-in-out;
+    font-size: 14px;
+}
+
+.menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.valid {
+    color: #10b981;
+}
+
+.warning {
+    color: #fbbf24;
+}
+
+.icon {
+    margin-right: 10px;
+}
+
+.content {
+    flex: 1;
+    padding: 40px;
+    background: white;
+    border-radius: 0 10px 10px 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+    font-size: 1.8rem;
+    color: #1e3a8a;
+}
+
+.section-description {
+    color: #4b5563;
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+.file-input {
+    display: block;
+    margin-top: 10px;
+}
+
+.btn-save {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s ease-in-out;
+}
+
+.btn-save:hover {
+    background-color: #1e40af;
+}
+/* Conteneur principal */
+.dossier-container {
+    display: flex;
+    height: 100vh;
+    font-family: "Arial", sans-serif;
+    background-color: #f9f9f9;
+}
+
+/* Barre latérale */
+.sidebar {
+    width: 300px;
+    background: linear-gradient(135deg, #003366, #0055aa);
+    padding: 20px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.sidebar h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s ease-in-out;
+}
+
+.menu-item:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Icônes */
+.icon {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.valid-icon {
+    color: #10b981;
+}
+
+.warning-icon {
+    color: #ffcc00;
+}
+
+/* Contenu principal */
+.content {
+    flex: 1;
+    padding: 40px;
+    background: white;
+    border-radius: 10px;
+    margin: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #003366;
+}
+
+.section-description {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Formulaire */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-group input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #0055aa;
+    box-shadow: 0 0 5px rgba(0, 85, 170, 0.3);
+}
+
+/* Upload fichiers */
+.file-input {
+    padding: 10px;
+    border: 1px dashed #0055aa;
+    border-radius: 5px;
+    font-size: 14px;
+    background: #f1f5f9;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.file-input:hover {
+    background: #e2e8f0;
+}
+
+/* Bouton Enregistrer */
+.btn-save {
+    background: #0055aa;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease-in-out;
+}
+
+.btn-save:hover {
+    background: #003366;
+}

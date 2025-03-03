@@ -2,32 +2,27 @@
     background-color: #1e3a8a; /* Couleur de fond */
     color: white; /* Couleur du texte */
     display: flex;
-    justify-content: space-between; /* Distribution égale des sections */
+    justify-content: space-between; /* Distribution des sections */
     align-items: flex-start;
-    flex-wrap: wrap; /* Permet aux éléments de passer à la ligne si nécessaire */
     padding: 20px 40px;
-    width: 100%; /* Occuper toute la largeur */
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+    width: 100%; /* Occupe toute la largeur */
     box-sizing: border-box;
+    flex-wrap: nowrap; /* Empêche les éléments de passer à la ligne */
     gap: 20px; /* Espacement entre les sections */
 }
 
-
 .footer-section {
-    flex: 1; /* Toutes les sections occupent un espace égal */
-    min-width: 200px; /* Largeur minimale pour éviter le chevauchement */
-    margin: 0 10px;
-    text-align: left; /* Alignement à gauche */
+    flex: 1; /* Les sections prennent un espace égal */
+    text-align: left; /* Alignement du texte à gauche */
+    min-width: 150px; /* Largeur minimale */
+    padding: 0 10px; /* Espacement interne horizontal */
 }
 
 .footer-section h3 {
     font-size: 18px;
     margin-bottom: 10px;
-    color: #f59e0b; /* Couleur orange pour les titres */
-    display: flex;
-    align-items: center; /* Centrer les icônes verticalement */
-    gap: 10px;
-    border-bottom: 2px solid #f59e0b; /* Ligne décorative sous le titre */
+    color: #f59e0b; /* Couleur des titres */
+    border-bottom: 2px solid #f59e0b; /* Ligne décorative */
     padding-bottom: 5px;
 }
 
@@ -45,24 +40,12 @@
     text-decoration: underline;
 }
 
-/* Icônes avec animation */
-.footer-icon {
-    margin-right: 8px;
-    color: #f59e0b;
-    transition: transform 0.3s ease, color 0.3s ease;
-}
-
-.footer-icon:hover {
-    transform: scale(1.2); /* Animation au survol */
-    color: #ffcc00;
-}
-
 /* Formulaire Newsletter */
 .newsletter-form {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    width: 100%; /* S'adapte à la largeur de la section */
+    width: 100%;
 }
 
 .newsletter-input {
@@ -70,7 +53,6 @@
     font-size: 14px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    width: 100%; /* Occupe toute la largeur */
     box-sizing: border-box;
 }
 
@@ -87,23 +69,23 @@
 
 .newsletter-button:hover {
     background-color: #d97706;
-    transform: scale(1.05); /* Animation subtile */
+    transform: scale(1.05);
 }
 
 /* Responsivité */
 @media (max-width: 768px) {
     .footer-container {
-        flex-direction: column; /* Empile les sections verticalement */
-        text-align: center; /* Centrer le texte */
-        gap: 30px;
+        flex-wrap: wrap; /* Autorise le retour à la ligne */
+        text-align: center; /* Centre les éléments sur petit écran */
     }
 
     .footer-section {
+        flex: 1 1 100%; /* Chaque section prend toute la largeur */
         text-align: center;
     }
 
     .newsletter-form {
-        align-items: center; /* Centre le formulaire */
+        align-items: center;
     }
 
     .newsletter-input {
@@ -111,6 +93,6 @@
     }
 
     .newsletter-button {
-        width: auto; /* Ajuste la taille du bouton au texte */
+        width: auto;
     }
 }

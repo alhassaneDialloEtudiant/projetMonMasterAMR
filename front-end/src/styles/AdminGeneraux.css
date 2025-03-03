@@ -1,0 +1,225 @@
+/* Conteneur principal */
+.admin-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* Titre principal */
+.admin-container h1 {
+    color: #1e3a8a;
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Message d'information */
+.info-message {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* Barre de recherche */
+.search-bar {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.search-bar:focus {
+    border-color: #1e3a8a;
+    box-shadow: 0 0 5px rgba(30, 58, 138, 0.5);
+}
+
+/* Formulaire */
+.admin-form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.admin-form input {
+    flex: 1 1 200px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.admin-form input:focus {
+    border-color: #1e3a8a;
+    box-shadow: 0 0 5px rgba(30, 58, 138, 0.5);
+}
+
+.admin-form button {
+    padding: 10px 20px;
+    font-size: 14px;
+    background-color: #1e3a8a;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.admin-form button:hover {
+    background-color: #1651ab;
+}
+
+/* Tableau */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    text-align: left;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.admin-table th {
+    background-color: #1e3a8a;
+    color: white;
+    text-transform: uppercase;
+}
+
+.admin-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.admin-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Boutons dans le tableau */
+.admin-table button {
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 3px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.admin-table button:first-child {
+    background-color: #28a745; /* Vert */
+    color: white;
+    margin-right: 14px;
+}
+
+.admin-table button:first-child:hover {
+    background-color: #218838;
+}
+
+.admin-table button:last-child {
+    background-color: #dc3545; /* Rouge */
+    color: white;
+}
+
+.admin-table button:last-child:hover {
+    background-color: #c82333;
+}
+
+/* Modale de confirmation */
+.dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.dialog-box {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.dialog-actions {
+    margin-top: 20px;
+}
+
+.btn-confirm {
+    background: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-right: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.btn-cancel {
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .admin-form input,
+    .search-bar {
+        flex: 1 1 100%;
+        margin-bottom: 10px;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-container h1 {
+        font-size: 18px;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        font-size: 10px;
+        padding: 6px;
+    }
+
+    .admin-table button {
+        font-size: 10px;
+        padding: 4px;
+    }
+
+    .admin-form {
+        gap: 10px;
+    }
+}

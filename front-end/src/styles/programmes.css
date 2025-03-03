@@ -1,0 +1,233 @@
+/* Conteneur principal */
+.programmes-container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* Titre principal */
+.programmes-container h1 {
+  font-size: 28px;
+  color: #1e3a8a;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Message d'information */
+.info-message {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  font-size: 14px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+  }
+  to {
+      opacity: 1;
+  }
+}
+
+/* Formulaire */
+.programmes-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.programmes-form input,
+.programmes-form select,
+.programmes-form textarea,
+.programmes-form button {
+  flex: 1 1 300px;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.programmes-form input:focus,
+.programmes-form select:focus,
+.programmes-form textarea:focus {
+  border-color: #1e3a8a;
+  box-shadow: 0 0 5px rgba(30, 58, 138, 0.5);
+}
+
+.programmes-form textarea {
+  resize: none;
+  height: 100px;
+}
+
+.programmes-form button {
+  background-color: #1e3a8a;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.programmes-form button:hover {
+  background-color: #1551b5;
+}
+
+/* Tableau */
+.programmes-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.programmes-table th,
+.programmes-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 14px;
+  word-wrap: break-word;
+}
+
+.programmes-table th {
+  background-color: #1e3a8a;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.programmes-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.programmes-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Boutons d'action */
+.programmes-table button {
+  padding: 5px 10px;
+  font-size: 12px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.programmes-table button:first-child {
+  background-color: #4caf50; /* Vert */
+  color: white;
+}
+
+.programmes-table button:first-child:hover {
+  background-color: #3e8e41;
+}
+
+.programmes-table button:last-child {
+  background-color: #f44336; /* Rouge */
+  color: white;
+}
+
+.programmes-table button:last-child:hover {
+  background-color: #d32f2f;
+}
+
+/* Boîte de dialogue */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.dialog-box {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  width: 300px;
+  animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+      transform: translateY(-20%);
+  }
+  to {
+      transform: translateY(0);
+  }
+}
+
+.dialog-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.dialog-actions button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dialog-actions .btn-confirm {
+  background-color: #4caf50;
+  color: white;
+}
+
+.dialog-actions .btn-confirm:hover {
+  background-color: #218838;
+}
+
+.dialog-actions .btn-cancel {
+  background-color: #f44336;
+  color: white;
+}
+
+.dialog-actions .btn-cancel:hover {
+  background-color: #d32f2f;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .programmes-form input,
+  .programmes-form select,
+  .programmes-form textarea,
+  .programmes-form button {
+      flex: 1 1 100%;
+  }
+
+  .programmes-table th,
+  .programmes-table td {
+      font-size: 12px;
+      padding: 8px;
+  }
+}

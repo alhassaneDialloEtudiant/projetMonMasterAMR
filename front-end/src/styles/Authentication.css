@@ -1,0 +1,103 @@
+/* Conteneur principal */
+.authentication-container {
+    width: 90%;
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Titre principal */
+  .authentication-container h1 {
+    font-size: 28px;
+    color: #003366;
+    margin-bottom: 20px;
+  }
+  
+  /* Sélection du rôle */
+  .role-selection {
+    margin-bottom: 20px;
+  }
+  
+  .role-selection label {
+    font-weight: bold;
+    color: #003366;
+  }
+  
+  .role-selection select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  
+  .role-selection select:focus {
+    border-color: #00509e;
+    box-shadow: 0 0 8px rgba(0, 80, 158, 0.5);
+  }
+  
+  /* Formulaire d'inscription */
+  .registration-form {
+    text-align: left;
+    margin-top: 20px;
+  }
+  
+  .registration-form h2 {
+    font-size: 22px;
+    color: #00509e;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-weight: bold;
+    color: #003366;
+    margin-bottom: 5px;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  
+  .form-group input:focus {
+    border-color: #00509e;
+    box-shadow: 0 0 8px rgba(0, 80, 158, 0.5);
+  }
+  
+  /* Bouton de soumission */
+  .submit-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #00509e;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .submit-button:hover {
+    background-color: #003366;
+  }
+  

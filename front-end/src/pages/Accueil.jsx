@@ -5,9 +5,6 @@ import "slick-carousel/slick/slick-theme.css"; // Importer le thème de Slick
 import "../styles/Accueil.css"; // Vos styles supplémentaires
 
 // Importer les images correctement
-/*import image1 from "../assets/photos/c2ndjnve-removebg-preview.png";
-import image2 from "../assets/photos/ceb9o30y-removebg-preview.png";
-import image3 from "../assets/photos/cxhk53sh-removebg-preview.png";*/
 import image4 from "../assets/photos/1ylnlhgn.png";
 import image5 from "../assets/photos/or6an8ce.png";
 import image6 from "../assets/photos/qdmx2zms.png";
@@ -35,6 +32,10 @@ function Accueil() {
                             alt="Formation 1"
                             className="slider-image"
                         />
+                        <div className="slider-caption">
+                            <h2 className="animated-text">Découvrez nos formations uniques</h2>
+                            <button className="cta-button animated-button">Chercher une formation</button>
+                        </div>
                     </div>
                     <div className="slider-item">
                         <img
@@ -42,6 +43,10 @@ function Accueil() {
                             alt="Formation 2"
                             className="slider-image"
                         />
+                        <div className="slider-caption">
+                            <h2 className="animated-text">Formez-vous avec les meilleurs experts</h2>
+                            <button className="cta-button animated-button">Chercher une formation</button>
+                        </div>
                     </div>
                     <div className="slider-item">
                         <img
@@ -49,48 +54,81 @@ function Accueil() {
                             alt="Formation 3"
                             className="slider-image"
                         />
+                        <div className="slider-caption">
+                            <h2 className="animated-text">Votre avenir commence ici</h2>
+                            <button className="cta-button animated-button">Chercher une formation</button>
+                        </div>
                     </div>
                 </Slider>
-                <div className="hero-content">
-                    <h1>Trouvez Votre Formation Idéale</h1>
-                    <p>
-                        Explorez une large gamme de programmes académiques adaptés à vos besoins et commencez votre parcours vers le succès aujourd'hui.
-                    </p>
-                    <button className="cta-button">Découvrir les formations</button>
-                </div>
             </header>
+
+            {/* En-tête déplacée en bas et mise à jour des couleurs */}
+            <div className="header-info">
+                <p>
+                    📅 L'offre de formation pour la rentrée 2025 est désormais disponible. <a href="#" style={{ color: "#ffc107" }}>Consultez le calendrier 2025</a> de la procédure ici.
+                </p>
+            </div>
 
             {/* Section de recherche */}
             <section className="search-section">
-                <h2>Rechercher une formation</h2>
+                <h2>Rechercher un master</h2>
+                <p>Formations ouvertes à la rentrée 2025</p>
                 <form className="search-form">
                     <input
                         type="text"
-                        placeholder="Entrez un mot-clé ou une discipline"
+                        placeholder="Mention, établissement, mot-clé..."
                         className="search-input"
                     />
-                    <select className="search-select">
-                        <option>Choisir une catégorie</option>
-                        <option>Licence</option>
-                        <option>Master</option>
-                        <option>Doctorat</option>
-                    </select>
-                    <button type="submit" className="search-button">
-                        Rechercher
-                    </button>
+                    <div className="search-filters">
+                        <div className="filter">
+                            <label>Zone géographique</label>
+                            <input type="text" placeholder="Région, département, ville" className="filter-input" />
+                        </div>
+                        <div className="filter">
+                            <label>Mon dernier diplôme</label>
+                            <select className="filter-select">
+                                <option>Sélectionner</option>
+                                <option>Licence</option>
+                                <option>Master</option>
+                                <option>Doctorat</option>
+                            </select>
+                        </div>
+                        <div className="filter">
+                            <label>Mention</label>
+                            <select className="filter-select">
+                                <option>Sélectionner</option>
+                                <option>Informatique</option>
+                                <option>Économie</option>
+                                <option>Droit</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" className="search-button">Rechercher</button>
                 </form>
             </section>
 
-            {/* Section à propos */}
-            <section className="about-section">
-                <h2>À propos de notre plateforme</h2>
-                <p>
-                    Nous vous aidons à trouver les meilleures formations adaptées à vos besoins. Notre mission est de simplifier
-                    votre accès à l'éducation supérieure et de vous accompagner dans vos démarches académiques.
-                </p>
-                <blockquote>
-                    "L'éducation est l'arme la plus puissante pour changer le monde." - Nelson Mandela
-                </blockquote>
+            {/* Section d'information */}
+            <section className="info-section">
+                <div className="info-card">
+                    <h3>Bienvenue sur Mon Master</h3>
+                    <ul>
+                        <li>L'ensemble des formations conduisant au diplôme national de master (DNM).</li>
+                        <li>Un espace candidat pour candidater à ces formations.</li>
+                        <li>Toutes les informations sur la procédure et son déroulé.</li>
+                    </ul>
+                </div>
+                <div className="info-card">
+                    <h3>Rechercher un master</h3>
+                    <p>
+                        Utilisez les champs de recherche pour trouver les formations correspondant à votre projet.
+                    </p>
+                </div>
+                <div className="info-card">
+                    <h3>Période d’information</h3>
+                    <p>
+                        Du 3 février au 24 février, explorez les formations et préparez vos candidatures.
+                    </p>
+                </div>
             </section>
         </div>
     );

@@ -1,6 +1,7 @@
 import { Router } from 'express'; // Importer le module Router d'Express pour créer des routes
 import { baseDeDonnees } from '../db/baseDeDonnees.mjs'; // Importer la connexion à la base de données
 import bcrypt from 'bcrypt'; // Importer bcrypt pour hacher les mots de passe
+import jwt from 'jsonwebtoken'; // Importer jsonwebtoken pour gérer les tokens JWT
 
 const routeurUtilisateurs = Router(); // Routeur spécifique à la table `utilisateurs`
 
@@ -38,7 +39,7 @@ routeurUtilisateurs.post('/ajouter', async (req, res) => {
 });
 
 // Route pour récupérer tous les utilisateurs
-routeurUtilisateurs.get('/afficher', async (req, res) => {
+routeurUtilisateurs.get('/', async (req, res) => {
     try {
         const requeteRecupererTousUtilisateurs = 'SELECT * FROM utilisateurs'; // Requête SQL pour récupérer tous les utilisateurs
         const [resultats] = await baseDeDonnees.query(requeteRecupererTousUtilisateurs); // Exécuter la requête
@@ -117,6 +118,96 @@ routeurUtilisateurs.delete('/supprimer/:id', async (req, res) => {
     } catch (error) {
         console.error('Erreur lors de la suppression de l’utilisateur :', error); // Afficher l'erreur dans la console
         res.status(500).json({ erreur: 'Erreur lors de la suppression de l’utilisateur.', details: error.message }); // Retourner une erreur au client
+    }
+});
+
+// Route pour récupérer les rôles uniques
+routeurUtilisateurs.get('/roles', async (req, res) => {
+    try {
+        const query = `
+            SELECT DISTINCT roleUtilisateur AS nomRole
+            FROM utilisateurs
+            WHERE roleUtilisateur IS NOT NULL
+        `;
+        const [resultats] = await baseDeDonnees.query(query);
+        res.status(200).json(resultats);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des rôles :", error);
+        res.status(500).json({ erreur: "Erreur lors de la récupération des rôles." });
+    }
+});
+
+// Route pour inscrire un utilisateur
+routeurUtilisateurs.post("/inscrire", async (req, res) => {
+    const { nom, prenom, email, motDePasse, role } = req.body;
+  
+    try {
+      // Validation des champs obligatoires
+      if (!nom || !prenom || !email || !motDePasse || !role) {
+        return res.status(400).json({ erreur: "Tous les champs sont obligatoires." });
+      }
+  
+      // Hachage du mot de passe
+      const motDePasseHache = await bcrypt.hash(motDePasse, 10);
+  
+      // Insertion dans la base de données
+      const requeteAjoutUtilisateur = `
+        INSERT INTO utilisateurs (nomUtilisateur, prenomUtilisateur, emailUtilisateur, motDePasseUtilisateur, roleUtilisateur, status)
+        VALUES (?, ?, ?, ?, ?, 'actif')
+      `;
+      await baseDeDonnees.query(requeteAjoutUtilisateur, [
+        nom,
+        prenom,
+        email,
+        motDePasseHache,
+        role,
+      ]);
+  
+      res.status(201).json({ message: "Utilisateur inscrit avec succès." });
+    } catch (error) {
+      console.error("Erreur lors de l'inscription :", error);
+      res.status(500).json({ erreur: "Erreur interne lors de l'inscription." });
+    }
+});
+
+// Route pour la connexion des étudiants
+routeurUtilisateurs.post("/connexion", async (req, res) => {
+    const { email, motDePasse } = req.body;
+  
+    try {
+      // Rechercher l'étudiant dans la base de données
+      const [resultats] = await baseDeDonnees.query(
+        "SELECT * FROM utilisateurs WHERE emailUtilisateur = ? AND roleUtilisateur = 'Etudiant'",
+        [email]
+      );
+  
+      if (resultats.length === 0) {
+        return res.status(404).json({ message: "Utilisateur introuvable." });
+      }
+  
+      const utilisateur = resultats[0];
+  
+      // Vérification du mot de passe
+      const motDePasseValide = await bcrypt.compare(
+        motDePasse,
+        utilisateur.motDePasseUtilisateur
+      );
+  
+      if (!motDePasseValide) {
+        return res.status(401).json({ message: "Mot de passe incorrect." });
+      }
+  
+      // Générer un JWT
+      const token = jwt.sign(
+        { id: utilisateur.idUtilisateur, role: utilisateur.roleUtilisateur },
+        process.env.JWT_SECRET || "ddiallo", // Utilisez une clé secrète sécurisée
+        { expiresIn: "2h" }
+      );
+  
+      res.status(200).json({ message: "Connexion réussie.", token });
+    } catch (error) {
+      console.error("Erreur lors de la connexion :", error);
+      res.status(500).json({ message: "Erreur interne du serveur." });
     }
 });
 

@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors'; // Import du package CORS
 import { baseDeDonnees } from './db/baseDeDonnees.mjs';
 import utilisateursRoutes from './routes/utilisateursRoutes.mjs';
 import etudiantsRoutes from './routes/etudiantsRoutes.mjs';
@@ -12,13 +13,15 @@ import etablissementsRoutes from './routes/etablissementsRoutes.mjs';
 import notificationsRoutes from './routes/notificationsRoutes.mjs';
 import programmesRoutes from './routes/programmesRoutes.mjs';
 
-
 dotenv.config();
 
 const app = express();
 
 // Middleware pour analyser les requêtes JSON
 app.use(express.json());
+
+// **Ajout du middleware CORS**
+app.use(cors()); // Active CORS pour toutes les origines par défaut
 
 // Tester la connexion à la base de données
 (async () => {
@@ -57,7 +60,6 @@ app.use('/api/etablissements', etablissementsRoutes);
 app.use('/api/notifications', notificationsRoutes);
 
 app.use('/api/programmes', programmesRoutes);
-
 
 // Démarrer le serveur
 const port = process.env.port || 5001;

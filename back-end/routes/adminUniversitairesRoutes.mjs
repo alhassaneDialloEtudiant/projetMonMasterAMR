@@ -1,70 +1,69 @@
-import { Router } from 'express'; // Importer le module Router d'Express pour créer des routes
-import { baseDeDonnees } from '../db/baseDeDonnees.mjs'; // Importer la connexion à la base de données
+import { Router } from 'express';
+import { baseDeDonnees } from '../db/baseDeDonnees.mjs';
 
-const routeurAdminUniversitaires = Router(); // Créer un routeur spécifique à la table `adminuniversitaires`
+const routeurAdminUniversitaires = Router();
 
 // Route pour ajouter un administrateur universitaire
 routeurAdminUniversitaires.post('/ajouter', async (req, res) => {
-    const { idEtablissement, idUtilisateur, poste } = req.body; // Extraire les données du corps de la requête
+    const { idEtablissement, idUtilisateur, poste } = req.body;
+    console.log("Données reçues pour insertion :", { idEtablissement, idUtilisateur, poste });
 
     try {
-        // Validation des données reçues
+        // Vérifiez les champs obligatoires
         if (!idEtablissement || !idUtilisateur || !poste) {
-            return res.status(400).json({ erreur: 'Tous les champs sont requis.' }); // Retourner une erreur si des champs sont manquants
+            console.error("Validation échouée : champs manquants");
+            return res.status(400).json({ erreur: 'Tous les champs sont requis.' });
         }
 
         // Requête SQL pour ajouter un administrateur universitaire
-        const requeteAjoutAdminUniv = `
+        const requeteAjout = `
             INSERT INTO adminuniversitaires (idEtablissement, idUtilisateur, poste)
             VALUES (?, ?, ?)
         `;
-        await baseDeDonnees.query(requeteAjoutAdminUniv, [idEtablissement, idUtilisateur, poste]); // Exécuter la requête avec les données fournies
 
-        res.status(201).json({ message: 'Administrateur universitaire ajouté avec succès.' }); // Retourner un message de succès
+        const [resultat] = await baseDeDonnees.query(requeteAjout, [
+            idEtablissement,
+            idUtilisateur,
+            poste,
+        ]);
+
+        console.log("Résultat de la requête :", resultat);
+
+        res.status(201).json({ message: 'Administrateur universitaire ajouté avec succès.' });
     } catch (error) {
-        console.error('Erreur lors de l’ajout de l’administrateur universitaire :', error); // Afficher l'erreur dans la console
-        res.status(500).json({ erreur: 'Erreur lors de l’ajout de l’administrateur universitaire.', details: error.message }); // Retourner une erreur au client
+        console.error("Erreur lors de l'ajout :", error);
+        res.status(500).json({ erreur: 'Erreur interne.', details: error.message });
     }
 });
 
 // Route pour récupérer tous les administrateurs universitaires
 routeurAdminUniversitaires.get('/afficher', async (req, res) => {
     try {
-        const requeteRecupererAdminsUniv = 'SELECT * FROM adminuniversitaires'; // Requête SQL pour récupérer tous les administrateurs universitaires
-        const [resultats] = await baseDeDonnees.query(requeteRecupererAdminsUniv); // Exécuter la requête
-        res.status(200).json(resultats); // Retourner les résultats au client
+        const requeteRecupererAdminsUniv = `
+            SELECT a.*, e.nomEtablissement, e.adresseEtablissement, 
+                   e.contactEtablissement, e.localisationEtablissement, 
+                   u.nomUtilisateur, u.prenomUtilisateur, u.emailUtilisateur
+            FROM adminuniversitaires a
+            JOIN etablissements e ON a.idEtablissement = e.idEtablissement
+            JOIN utilisateurs u ON a.idUtilisateur = u.idUtilisateur
+        `;
+        const [resultats] = await baseDeDonnees.query(requeteRecupererAdminsUniv);
+        console.log("Données retournées :", resultats); // Ajoutez ce log
+        res.status(200).json(resultats);
     } catch (error) {
-        console.error('Erreur lors de la récupération des administrateurs universitaires :', error); // Afficher l'erreur dans la console
-        res.status(500).json({ erreur: 'Erreur lors de la récupération des administrateurs universitaires.', details: error.message }); // Retourner une erreur au client
-    }
-});
-
-// Route pour récupérer un administrateur universitaire par son ID
-routeurAdminUniversitaires.get('/afficher/:id', async (req, res) => {
-    const { id } = req.params; // Extraire l'ID des paramètres de la requête
-
-    try {
-        const requeteRecupererAdminUnivParId = 'SELECT * FROM adminuniversitaires WHERE idAdminUniversitaire = ?'; // Requête SQL pour récupérer un administrateur universitaire par ID
-        const [resultats] = await baseDeDonnees.query(requeteRecupererAdminUnivParId, [id]); // Exécuter la requête avec l'ID fourni
-        if (resultats.length === 0) {
-            return res.status(404).json({ erreur: 'Administrateur universitaire non trouvé.' }); // Retourner une erreur si l'administrateur n'est pas trouvé
-        }
-        res.status(200).json(resultats[0]); // Retourner les résultats au client
-    } catch (error) {
-        console.error('Erreur lors de la récupération de l’administrateur universitaire :', error); // Afficher l'erreur dans la console
-        res.status(500).json({ erreur: 'Erreur lors de la récupération de l’administrateur universitaire.', details: error.message }); // Retourner une erreur au client
+        console.error('Erreur lors de la récupération des administrateurs universitaires :', error);
+        res.status(500).json({ erreur: 'Erreur lors de la récupération des administrateurs universitaires.', details: error.message });
     }
 });
 
 // Route pour modifier un administrateur universitaire
 routeurAdminUniversitaires.put('/modifier/:id', async (req, res) => {
-    const { id } = req.params; // Extraire l'ID des paramètres de la requête
-    const { idEtablissement, idUtilisateur, poste } = req.body; // Extraire les données du corps de la requête
+    const { id } = req.params;
+    const { idEtablissement, idUtilisateur, poste } = req.body;
 
     try {
-        // Validation des données reçues
         if (!idEtablissement || !idUtilisateur || !poste) {
-            return res.status(400).json({ erreur: 'Tous les champs sont requis.' }); // Retourner une erreur si des champs sont manquants
+            return res.status(400).json({ erreur: 'Tous les champs sont requis.' });
         }
 
         const requeteModifierAdminUniv = `
@@ -72,36 +71,71 @@ routeurAdminUniversitaires.put('/modifier/:id', async (req, res) => {
             SET idEtablissement = ?, idUtilisateur = ?, poste = ?
             WHERE idAdminUniversitaire = ?
         `;
-        const [resultat] = await baseDeDonnees.query(requeteModifierAdminUniv, [idEtablissement, idUtilisateur, poste, id]); // Exécuter la requête avec les données fournies
+        const [resultat] = await baseDeDonnees.query(requeteModifierAdminUniv, [idEtablissement, idUtilisateur, poste, id]);
 
         if (resultat.affectedRows === 0) {
-            return res.status(404).json({ erreur: 'Administrateur universitaire non trouvé.' }); // Retourner une erreur si l'administrateur n'est pas trouvé
+            return res.status(404).json({ erreur: 'Administrateur universitaire non trouvé.' });
         }
 
-        res.status(200).json({ message: 'Administrateur universitaire mis à jour avec succès.' }); // Retourner un message de succès
+        res.status(200).json({ message: 'Administrateur universitaire mis à jour avec succès.' });
     } catch (error) {
-        console.error('Erreur lors de la mise à jour de l’administrateur universitaire :', error); // Afficher l'erreur dans la console
-        res.status(500).json({ erreur: 'Erreur lors de la mise à jour de l’administrateur universitaire.', details: error.message }); // Retourner une erreur au client
+        console.error('Erreur lors de la mise à jour de l’administrateur universitaire :', error);
+        res.status(500).json({ erreur: 'Erreur lors de la mise à jour de l’administrateur universitaire.', details: error.message });
     }
 });
 
 // Route pour supprimer un administrateur universitaire
 routeurAdminUniversitaires.delete('/supprimer/:id', async (req, res) => {
-    const { id } = req.params; // Extraire l'ID des paramètres de la requête
+    const { id } = req.params;
 
     try {
-        const requeteSupprimerAdminUniv = 'DELETE FROM adminuniversitaires WHERE idAdminUniversitaire = ?'; // Requête SQL pour supprimer un administrateur universitaire par ID
-        const [resultat] = await baseDeDonnees.query(requeteSupprimerAdminUniv, [id]); // Exécuter la requête avec l'ID fourni
+        const requeteSupprimerAdminUniv = 'DELETE FROM adminuniversitaires WHERE idAdminUniversitaire = ?';
+        const [resultat] = await baseDeDonnees.query(requeteSupprimerAdminUniv, [id]);
 
         if (resultat.affectedRows === 0) {
-            return res.status(404).json({ erreur: 'Administrateur universitaire non trouvé.' }); // Retourner une erreur si l'administrateur n'est pas trouvé
+            return res.status(404).json({ erreur: 'Administrateur universitaire non trouvé.' });
         }
 
-        res.status(200).json({ message: 'Administrateur universitaire supprimé avec succès.' }); // Retourner un message de succès
+        res.status(200).json({ message: 'Administrateur universitaire supprimé avec succès.' });
     } catch (error) {
-        console.error('Erreur lors de la suppression de l’administrateur universitaire :', error); // Afficher l'erreur dans la console
-        res.status(500).json({ erreur: 'Erreur lors de la suppression de l’administrateur universitaire.', details: error.message }); // Retourner une erreur au client
+        console.error('Erreur lors de la suppression de l’administrateur universitaire :', error);
+        res.status(500).json({ erreur: 'Erreur lors de la suppression de l’administrateur universitaire.', details: error.message });
     }
 });
 
-export default routeurAdminUniversitaires; // Exporter le routeur pour l'utiliser dans d'autres fichiers
+// Nouvelle route pour récupérer uniquement les utilisateurs ayant le rôle 'AdminUniversitaire'
+routeurAdminUniversitaires.get('/utilisateurs-admins', async (req, res) => {
+    try {
+        const requeteRecupererAdmins = `
+            SELECT idUtilisateur, nomUtilisateur, prenomUtilisateur, emailUtilisateur
+            FROM utilisateurs
+            WHERE roleUtilisateur = 'AdminUniversitaire'
+            AND idUtilisateur NOT IN (
+                SELECT idUtilisateur FROM adminuniversitaires
+            )
+        `;
+        const [resultats] = await baseDeDonnees.query(requeteRecupererAdmins);
+        res.status(200).json(resultats);
+    } catch (error) {
+        console.error('Erreur lors de la récupération des utilisateurs administrateurs universitaires :', error);
+        res.status(500).json({ erreur: 'Erreur lors de la récupération des utilisateurs.', details: error.message });
+    }
+});
+
+// Route pour récupérer tous les établissements
+routeurAdminUniversitaires.get('/etablissements', async (req, res) => {
+    try {
+      const requeteRecupererEtablissements = `
+        SELECT idEtablissement, nomEtablissement, adresseEtablissement, contactEtablissement, localisationEtablissement 
+        FROM etablissements
+      `;
+      const [resultats] = await baseDeDonnees.query(requeteRecupererEtablissements);
+      res.status(200).json(resultats);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des établissements :', error);
+      res.status(500).json({ erreur: 'Erreur lors de la récupération des établissements.', details: error.message });
+    }
+  });
+  
+
+export default routeurAdminUniversitaires;
