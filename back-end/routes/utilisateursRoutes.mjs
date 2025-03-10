@@ -173,41 +173,110 @@ routeurUtilisateurs.post("/inscrire", async (req, res) => {
 // Route pour la connexion des étudiants
 routeurUtilisateurs.post("/connexion", async (req, res) => {
     const { email, motDePasse } = req.body;
-  
+
     try {
-      // Rechercher l'étudiant dans la base de données
-      const [resultats] = await baseDeDonnees.query(
-        "SELECT * FROM utilisateurs WHERE emailUtilisateur = ? AND roleUtilisateur = 'Etudiant'",
-        [email]
-      );
-  
-      if (resultats.length === 0) {
-        return res.status(404).json({ message: "Utilisateur introuvable." });
-      }
-  
-      const utilisateur = resultats[0];
-  
-      // Vérification du mot de passe
-      const motDePasseValide = await bcrypt.compare(
-        motDePasse,
-        utilisateur.motDePasseUtilisateur
-      );
-  
-      if (!motDePasseValide) {
-        return res.status(401).json({ message: "Mot de passe incorrect." });
-      }
-  
-      // Générer un JWT
-      const token = jwt.sign(
-        { id: utilisateur.idUtilisateur, role: utilisateur.roleUtilisateur },
-        process.env.JWT_SECRET || "ddiallo", // Utilisez une clé secrète sécurisée
-        { expiresIn: "2h" }
-      );
-  
-      res.status(200).json({ message: "Connexion réussie.", token });
+        const [resultats] = await baseDeDonnees.query(
+            "SELECT * FROM utilisateurs WHERE emailUtilisateur = ? AND roleUtilisateur = 'Etudiant'",
+            [email]
+        );
+
+        if (resultats.length === 0) {
+            return res.status(404).json({ message: "Utilisateur introuvable." });
+        }
+
+        const utilisateur = resultats[0];
+
+        // Vérification du mot de passe
+        const motDePasseValide = await bcrypt.compare(motDePasse, utilisateur.motDePasseUtilisateur);
+
+        if (!motDePasseValide) {
+            return res.status(401).json({ message: "Mot de passe incorrect." });
+        }
+
+        // Générer un JWT
+        const token = jwt.sign(
+            { id: utilisateur.idUtilisateur, role: utilisateur.roleUtilisateur },
+            process.env.JWT_SECRET || "ddiallo",
+            { expiresIn: "2h" }
+        );
+
+        // 📌 On retourne aussi `idUtilisateur` pour le stocker dans `localStorage`
+        res.status(200).json({ 
+            message: "Connexion réussie.", 
+            token, 
+            idUtilisateur: utilisateur.idUtilisateur 
+        });
+
     } catch (error) {
-      console.error("Erreur lors de la connexion :", error);
-      res.status(500).json({ message: "Erreur interne du serveur." });
+        console.error("Erreur lors de la connexion :", error);
+        res.status(500).json({ message: "Erreur interne du serveur." });
+    }
+});
+
+routeurUtilisateurs.put('/enregistrer-informations/:id', async (req, res) => {
+    const { id } = req.params;
+    const {
+        civilite, prenom, deuxiemePrenom, nomUsage, nationalite,
+        dateNaissance, paysNaissance, adresse, complementAdresse,
+        codePostal, ville, ine
+    } = req.body;
+
+    try {
+        const requeteCheck = `SELECT idUtilisateur FROM utilisateurs WHERE idUtilisateur = ?`;
+        const [resultats] = await baseDeDonnees.query(requeteCheck, [id]);
+
+        if (resultats.length > 0) {
+            const requeteUpdate = `
+                UPDATE utilisateurs SET 
+                    civilite = ?, prenomUtilisateur = ?, 
+                    deuxiemePrenom = ?, nomUsage = ?, nationalite = ?, 
+                    dateNaissance = ?, paysNaissance = ?, adresse = ?, 
+                    complementAdresse = ?, codePostal = ?, ville = ?, ine = ? 
+                WHERE idUtilisateur = ?
+            `;
+            await baseDeDonnees.query(requeteUpdate, [
+                civilite, prenom, deuxiemePrenom, nomUsage, nationalite,
+                dateNaissance, paysNaissance, adresse, complementAdresse,
+                codePostal, ville, ine, id
+            ]);
+            return res.status(200).json({ message: "Informations mises à jour avec succès." });
+        } else {
+            return res.status(404).json({ erreur: "Utilisateur non trouvé." });
+        }
+    } catch (error) {
+        console.error("Erreur lors de l'enregistrement des informations :", error);
+        res.status(500).json({ erreur: "Erreur interne du serveur." });
+    }
+});
+
+// Route pour récupérer les informations personnelles d'un utilisateur par ID
+routeurUtilisateurs.get('/informations/:id', async (req, res) => {
+    const { id } = req.params; // Récupération de l'ID utilisateur
+
+    try {
+        // Vérifier si l'ID est valide
+        if (!id) {
+            return res.status(400).json({ erreur: "ID utilisateur manquant." });
+        }
+
+        const requete = `
+            SELECT civilite, nomUtilisateur, prenomUtilisateur, deuxiemePrenom, 
+                   nomUsage, nationalite, dateNaissance, paysNaissance, 
+                   adresse, complementAdresse, codePostal, ville, ine
+            FROM utilisateurs
+            WHERE idUtilisateur = ?
+        `;
+
+        const [resultats] = await baseDeDonnees.query(requete, [id]);
+
+        if (resultats.length === 0) {
+            return res.status(404).json({ erreur: "Utilisateur non trouvé." });
+        }
+
+        res.status(200).json(resultats[0]); // Retourne les données sous forme JSON
+    } catch (error) {
+        console.error("Erreur récupération des infos utilisateur :", error);
+        res.status(500).json({ erreur: "Erreur serveur." });
     }
 });
 

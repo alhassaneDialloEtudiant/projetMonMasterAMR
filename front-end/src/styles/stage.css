@@ -1,0 +1,119 @@
+/* Conteneur principal */
+.stage-container {
+    width: 100%;
+    max-width: 900px;
+    margin: auto;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Titres */
+.stage-container h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #003366;
+    margin-bottom: 15px;
+}
+
+.stage-description {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 20px;
+    text-align: justify;
+}
+
+/* Formulaire */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-weight: bold;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.form-group input[type="file"] {
+    padding: 10px;
+    border: 2px dashed #0055aa;
+    background: #f1f5f9;
+}
+
+.form-group input[type="file"]:hover {
+    border: 2px dashed #003366;
+}
+
+/* Checkbox */
+.form-group input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+/* Boutons */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btn-save,
+.btn-cancel {
+    width: 250px;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+}
+
+/* Bouton Enregistrer */
+.btn-save {
+    background: #0055aa;
+    color: white;
+    transition: background 0.3s ease-in-out;
+}
+
+.btn-save:hover {
+    background: #003366;
+}
+
+/* Bouton Annuler */
+.btn-cancel {
+    background-color: #f0f0f0;
+    color: black;
+    border: 1px solid #ccc;
+    transition: background 0.3s ease-in-out;
+}
+
+.btn-cancel:hover {
+    background-color: #e0e0e0;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 1024px) {
+    .stage-container {
+        padding: 20px;
+    }
+
+    .button-container {
+        flex-direction: column;
+    }
+
+    .btn-save,
+    .btn-cancel {
+        width: 100%;
+    }
+}

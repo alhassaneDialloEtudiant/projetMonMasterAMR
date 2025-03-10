@@ -1,0 +1,65 @@
+/* 🌟 Enlève l'effet de boîte blanche */
+.coord-container {
+  width: 100%;
+  max-width: 600px; /* Ajuste la largeur pour rester lisible */
+  margin: 50px auto;
+  padding: 20px;
+  text-align: center;
+}
+
+/* 🌟 Titre */
+.coord-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+/* 🌟 Labels */
+.coord-group label {
+  font-weight: bold;
+  font-size: 16px;
+  color: #34495e;
+  display: block;
+  text-align: left;
+  margin-bottom: 5px;
+}
+
+/* 🌟 Champs de saisie */
+.coord-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+/* 🌟 Désactive l'édition de l'email */
+.coord-input[readonly] {
+  background: #ecf0f1;
+  cursor: not-allowed;
+  color: #7f8c8d;
+}
+
+/* 🌟 Placeholder */
+.coord-input::placeholder {
+  color: #bbb;
+}
+
+/* 🌟 Bouton */
+.coord-button {
+  width: 100%;
+  padding: 12px;
+  background: #007bff;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+}
+
+.coord-button:hover {
+  background: #0056b3;
+}

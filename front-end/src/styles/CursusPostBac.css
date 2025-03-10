@@ -1,0 +1,179 @@
+/* 🌟 Style global */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+/* 🌟 Titre principal */
+h2, h3 {
+    text-align: center;
+    color: #003366;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* 🌟 Sous-titre et description */
+p {
+    text-align: center;
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+/* 🌟 Infos obligatoires */
+.info-obligatoire {
+    text-align: center;
+    color: #003366;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.obligatoire {
+    color: red;
+}
+
+/* 🌟 Conteneur du formulaire */
+.cursus-container {
+    max-width: 500px;
+    background: white;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 🌟 Champs du formulaire */
+.cursus-group {
+    margin-bottom: 15px;
+}
+
+.cursus-label {
+    display: block;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* 🌟 Champs texte et sélection */
+.cursus-input,
+.cursus-select {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: white;
+}
+
+/* 🌟 Radios boutons */
+.radio-group {
+    display: flex;
+    justify-content: flex-start;
+    gap: 15px;
+    margin-top: 5px;
+}
+
+.radio-group label {
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* 🌟 Boutons */
+.cursus-buttons {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.cursus-save-button, .delete-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.delete-button {
+    background-color: #dc3545;
+}
+
+.cursus-save-button:hover {
+    background-color: #0056b3;
+}
+
+.delete-button:hover {
+    background-color: #a71d2a;
+}
+
+/* 🌟 Liste des années enregistrées */
+.cursus-list {
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+.cursus-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.cursus-item span {
+    font-size: 14px;
+    color: #333;
+}
+h2 {
+    color: #003366;
+    text-align: center;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 50%;
+    margin: auto;
+  }
+  
+  input, select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+  }
+  
+  button {
+    background-color: #0056b3;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #003366;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  li {
+    background: #f8f8f8;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+  }
+  
