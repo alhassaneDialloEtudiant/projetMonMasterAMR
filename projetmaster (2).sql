@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : sam. 01 fév. 2025 à 00:28
+-- Généré le : dim. 09 mars 2025 à 02:09
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -38,7 +38,6 @@ CREATE TABLE `admingeneraux` (
 --
 
 INSERT INTO `admingeneraux` (`idAdminGeneral`, `idUtilisateur`, `pouvoirAdmin`) VALUES
-('ADMGEN1116', 'USER33851', 'general'),
 ('ADMGEN1157', 'USER16544', 'salaire 1'),
 ('ADMGEN9576', 'USER09289', 'general admin');
 
@@ -62,8 +61,15 @@ CREATE TABLE `adminuniversitaires` (
   `idAdminUniversitaire` varchar(10) NOT NULL,
   `idUtilisateur` varchar(10) NOT NULL,
   `idEtablissement` varchar(10) NOT NULL,
-  ` poste` varchar(100) NOT NULL
+  `poste` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `adminuniversitaires`
+--
+
+INSERT INTO `adminuniversitaires` (`idAdminUniversitaire`, `idUtilisateur`, `idEtablissement`, `poste`) VALUES
+('ADMUNIV944', 'USER33040', 'ETAB17524', 'rosane');
 
 --
 -- Déclencheurs `adminuniversitaires`
@@ -71,6 +77,30 @@ CREATE TABLE `adminuniversitaires` (
 DELIMITER $$
 CREATE TRIGGER `avantInsertionAdminUniversitaires` BEFORE INSERT ON `adminuniversitaires` FOR EACH ROW BEGIN
     SET NEW.idAdminUniversitaire = CONCAT('ADMUNIV', LPAD(FLOOR(RAND() * 99999), 5, '0')); -- Génère un ID aléatoire
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `baccalaureat`
+--
+
+CREATE TABLE `baccalaureat` (
+  `baccalaureatId` varchar(10) NOT NULL,
+  `etudiantId` varchar(10) NOT NULL,
+  `anneeObtention` year(4) NOT NULL,
+  `typeBac` varchar(100) NOT NULL,
+  `serie` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déclencheurs `baccalaureat`
+--
+DELIMITER $$
+CREATE TRIGGER `before_insert_baccalaureat` BEFORE INSERT ON `baccalaureat` FOR EACH ROW BEGIN
+    SET NEW.baccalaureatId = CONCAT('BAC', LPAD(FLOOR(RAND() * 9999), 4, '0'));
 END
 $$
 DELIMITER ;
@@ -102,6 +132,31 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `coordonnees`
+--
+
+CREATE TABLE `coordonnees` (
+  `coordonneesId` varchar(10) NOT NULL,
+  `etudiantId` varchar(10) NOT NULL,
+  `adresse` varchar(255) NOT NULL,
+  `ville` varchar(100) NOT NULL,
+  `codePostal` varchar(10) NOT NULL,
+  `pays` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déclencheurs `coordonnees`
+--
+DELIMITER $$
+CREATE TRIGGER `before_insert_coordonnees` BEFORE INSERT ON `coordonnees` FOR EACH ROW BEGIN
+    SET NEW.coordonneesId = CONCAT('COORD', LPAD(FLOOR(RAND() * 9999), 4, '0'));
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `criteresadmissions`
 --
 
@@ -117,6 +172,29 @@ CREATE TABLE `criteresadmissions` (
 DELIMITER $$
 CREATE TRIGGER `avantInsertionCriteres` BEFORE INSERT ON `criteresadmissions` FOR EACH ROW BEGIN
     SET NEW.idCritere = CONCAT('CRIT', LPAD(FLOOR(RAND() * 99999), 5, '0')); -- Génère un ID aléatoire
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `cv`
+--
+
+CREATE TABLE `cv` (
+  `cvId` varchar(10) NOT NULL,
+  `etudiantId` varchar(10) NOT NULL,
+  `fichierCV` varchar(255) NOT NULL,
+  `dateUpload` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déclencheurs `cv`
+--
+DELIMITER $$
+CREATE TRIGGER `before_insert_cv` BEFORE INSERT ON `cv` FOR EACH ROW BEGIN
+    SET NEW.cvId = CONCAT('CV', LPAD(FLOOR(RAND() * 9999), 4, '0'));
 END
 $$
 DELIMITER ;
@@ -159,6 +237,15 @@ CREATE TABLE `etablissements` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Déchargement des données de la table `etablissements`
+--
+
+INSERT INTO `etablissements` (`idEtablissement`, `nomEtablissement`, `adresseEtablissement`, `contactEtablissement`, `localisationEtablissement`) VALUES
+('ETAB17524', 'Université D\'Évry Val d\'essone', 'alascodiallo@gmail.com ', '075384617022', '15 rue le bosquet les Ulis,91940'),
+('ETAB92393', 'Université D\'Évry Paris-Saclay', 'alascodiallo@gmail.com ', '0753846170', '15 rue le bosquet les Ulis,91940'),
+('ETAB98409', 'Université D\'Évry Paris-Saclay', 'alascodiallo@gmail.com ', '0753846170', '15 rue le bosquet les Ulis,91940');
+
+--
 -- Déclencheurs `etablissements`
 --
 DELIMITER $$
@@ -187,8 +274,8 @@ CREATE TABLE `etudiants` (
 --
 
 INSERT INTO `etudiants` (`idEtudiant`, `idUtilisateur`, `numeroEtudiant`, `niveauEtudiant`, `dateInscription`) VALUES
-('ETUD11075', 'USER85117', '432123', 'L3 BIO', '2025-01-17'),
-('ETUD64192', 'USER42314', '123456', 'L3 info', '2025-01-16');
+('ETUD64192', 'USER42314', '1', 'L3 info', '2025-01-16'),
+('ETUD64926', 'USER85117', '12345632', 'L3 CHIMIE ⚗', '2025-02-15');
 
 --
 -- Déclencheurs `etudiants`
@@ -196,6 +283,32 @@ INSERT INTO `etudiants` (`idEtudiant`, `idUtilisateur`, `numeroEtudiant`, `nivea
 DELIMITER $$
 CREATE TRIGGER `avantInsertionEtudiants` BEFORE INSERT ON `etudiants` FOR EACH ROW BEGIN
     SET NEW.idEtudiant = CONCAT('ETUD', LPAD(FLOOR(RAND() * 99999), 5, '0')); -- Génère un ID aléatoire
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `experiencespro`
+--
+
+CREATE TABLE `experiencespro` (
+  `experienceId` varchar(10) NOT NULL,
+  `etudiantId` varchar(10) NOT NULL,
+  `entreprise` varchar(255) NOT NULL,
+  `poste` varchar(100) NOT NULL,
+  `dateDebut` date NOT NULL,
+  `dateFin` date DEFAULT NULL,
+  `description` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déclencheurs `experiencespro`
+--
+DELIMITER $$
+CREATE TRIGGER `before_insert_experiencesPro` BEFORE INSERT ON `experiencespro` FOR EACH ROW BEGIN
+    SET NEW.experienceId = CONCAT('EXP', LPAD(FLOOR(RAND() * 9999), 4, '0'));
 END
 $$
 DELIMITER ;
@@ -239,11 +352,72 @@ CREATE TABLE `programmes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Déchargement des données de la table `programmes`
+--
+
+INSERT INTO `programmes` (`idProgramme`, `idEtablissement`, `nomProgramme`, `descriptionProgramme`, `dureeProgramme`, `placesDisponibles`) VALUES
+('PROG35412', 'ETAB17524', 'Raissa ', 'rttrtr', '2 ans ', 14),
+('PROG37887', 'ETAB17524', 'Diallo Alhassane DIALLO', 'ff', '2 ans ', 233),
+('PROG40365', 'ETAB92393', 'Diallo Alhassane DIALLO', 'FF', '2 ans ', 233),
+('PROG42268', 'ETAB92393', 'ALHASSANE DIALLO', 'DYYYDAYAYY', '2 ans ', 2),
+('PROG58972', 'ETAB17524', 'Raissa ', 'ee', '2 ans ', 14),
+('PROG64484', 'ETAB92393', 'Diallo Alhassane DIALLO', 'GG', '2 ans ', 233),
+('PROG86374', 'ETAB17524', 'ALHASSANE DIALLO', 'rr', '3 ans', 2);
+
+--
 -- Déclencheurs `programmes`
 --
 DELIMITER $$
 CREATE TRIGGER `avantInsertionProgrammes` BEFORE INSERT ON `programmes` FOR EACH ROW BEGIN
     SET NEW.idProgramme = CONCAT('PROG', LPAD(FLOOR(RAND() * 99999), 5, '0')); -- Génère un ID aléatoire
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `relevesnotes`
+--
+
+CREATE TABLE `relevesnotes` (
+  `releveId` varchar(10) NOT NULL,
+  `etudiantId` varchar(10) NOT NULL,
+  `fichierReleve` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déclencheurs `relevesnotes`
+--
+DELIMITER $$
+CREATE TRIGGER `before_insert_relevesNotes` BEFORE INSERT ON `relevesnotes` FOR EACH ROW BEGIN
+    SET NEW.releveId = CONCAT('REL', LPAD(FLOOR(RAND() * 9999), 4, '0'));
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `stages`
+--
+
+CREATE TABLE `stages` (
+  `stageId` varchar(10) NOT NULL,
+  `etudiantId` varchar(10) NOT NULL,
+  `entreprise` varchar(255) NOT NULL,
+  `poste` varchar(100) NOT NULL,
+  `dateDebut` date NOT NULL,
+  `dateFin` date DEFAULT NULL,
+  `description` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déclencheurs `stages`
+--
+DELIMITER $$
+CREATE TRIGGER `before_insert_stages` BEFORE INSERT ON `stages` FOR EACH ROW BEGIN
+    SET NEW.stageId = CONCAT('STAGE', LPAD(FLOOR(RAND() * 9999), 4, '0'));
 END
 $$
 DELIMITER ;
@@ -260,20 +434,30 @@ CREATE TABLE `utilisateurs` (
   `prenomUtilisateur` varchar(100) NOT NULL,
   `emailUtilisateur` varchar(150) NOT NULL,
   `motDePasseUtilisateur` varchar(255) NOT NULL,
-  `roleUtilisateur` enum('Etudiant','AdminGeneral','AdminUniversitaire') DEFAULT 'Etudiant'
+  `roleUtilisateur` enum('Etudiant','AdminGeneral','AdminUniversitaire') DEFAULT 'Etudiant',
+  `status` enum('actif','inactif','suspendu') DEFAULT 'actif'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `utilisateurs`
 --
 
-INSERT INTO `utilisateurs` (`idUtilisateur`, `nomUtilisateur`, `prenomUtilisateur`, `emailUtilisateur`, `motDePasseUtilisateur`, `roleUtilisateur`) VALUES
-('USER05899', 'Diallo', 'Alhassane', 'alhassane.diallo.etu@gmail.com', '$2b$10$dXzby2IBmW.hYEDWrdQQLOF6flsehX0HwHv75JlHtzyXi6b5TDb4W', 'AdminUniversitaire'),
-('USER09289', 'CAMARA', 'Alhassane', 'alhassane.diallo41.etu@gmail.com', '$2b$10$V2ZZi3w0ghzaa7tf3srrqOMdLnY5utfCmJ7p9JHFpJ2Y36Doh2Iou', 'AdminGeneral'),
-('USER16544', 'BAH', 'soumah', 'alascodiallo1111@gmail.com', '$2b$10$2KT3K5dTfm8MoTNNCAL6XuQ9jzK6SNjZwIBszpiKExp5c1V3r/VN.', 'AdminGeneral'),
-('USER33851', 'Diallo  Alhassane', 'Président', 'alascodiallo@gmail.com', '$2b$10$zqwm4SN3MgkxzlP7PA4Zo.VzzbjNX/yUw8KRsQsOfOjK4VD/o3bbK', 'AdminGeneral'),
-('USER42314', 'Diallo', 'Alhassane', 'alhassane.diallo11.etu@gmail.com', '$2b$10$cpwufJLioqChPEbfvOm2G.aqy4PPInRtn0k13Cn5dT5/Utalpgc9q', 'Etudiant'),
-('USER85117', 'sow', 'oumar', 'alala@gmail.com', 'dill]@gm', 'Etudiant');
+INSERT INTO `utilisateurs` (`idUtilisateur`, `nomUtilisateur`, `prenomUtilisateur`, `emailUtilisateur`, `motDePasseUtilisateur`, `roleUtilisateur`, `status`) VALUES
+('USER03767', 'DIALLO', ' Alhassane evry', 'alhassane.diallo1.etu@gmail.com', '$2b$10$ebOitPJ162W7qX1la3jtOu0QYgQAtgawknE.1dFw7FNZ3NbP6bzey', 'Etudiant', 'actif'),
+('USER09289', 'CAMARA', 'Alhassane', 'alhassane.diallo41.etu@gmail.com', '$2b$10$V2ZZi3w0ghzaa7tf3srrqOMdLnY5utfCmJ7p9JHFpJ2Y36Doh2Iou', 'AdminGeneral', 'actif'),
+('USER10801', 'barry ', 'atigou', 'atigou@gmail.com', '123456789', 'Etudiant', 'actif'),
+('USER16544', 'BAH', 'soumah', 'alascodiallo1111@gmail.com', '$2b$10$2KT3K5dTfm8MoTNNCAL6XuQ9jzK6SNjZwIBszpiKExp5c1V3r/VN.', 'AdminGeneral', 'actif'),
+('USER28599', 'barry ', 'atigou1', 'a@gmail.com', '$2b$10$fg59QL5ib8vs2axfwRZcXO1daYMCJsCOipRZeqeNR9ropR9dawoie', 'Etudiant', 'actif'),
+('USER33040', 'SYLLA', 'Diallo Alhassane', 'alhassane.diallo.23etu@gmail.com', '$2b$10$E1UaHRwIlXD.vqTeko30D.q1vtT0tYxIypyJkyXOZM1pXzIe2VjB2', 'AdminUniversitaire', 'actif'),
+('USER33851', 'Diallo  Alhassane', 'Président', 'alascodiallo@gmail.com', '$2b$10$zqwm4SN3MgkxzlP7PA4Zo.VzzbjNX/yUw8KRsQsOfOjK4VD/o3bbK', 'AdminGeneral', 'actif'),
+('USER42314', 'Diallo', 'Alhassane', 'alhassane.diallo11.etu@gmail.com', '$2b$10$cpwufJLioqChPEbfvOm2G.aqy4PPInRtn0k13Cn5dT5/Utalpgc9q', 'Etudiant', 'actif'),
+('USER51878', 'Raissa', 'camara', 'raissa@gmail.com', '$2b$10$jA8mfTg0iUQU8kxMWlBN/.bLWBcqAVgEYMI/igzZ8WM6bNBrLcBlK', 'Etudiant', 'actif'),
+('USER53901', 'Diallo', 'Alseny', 'alascodiallo111@gmail.com', '$2b$10$bRMGnIJz5W/iYHE/sab21ejrcbPO4b3vHSShpeDLHTexttNT0Hc7a', 'Etudiant', 'actif'),
+('USER66749', 'Diallo', 'Alhassane', 'diallo@gmail.com', '$2b$10$ZX5sZeFTvgM/gv7cGrzuMeC3vW8Wd4dCA8cMi/GjcEyG66ZWw95Li', 'Etudiant', 'actif'),
+('USER69604', 'BAH', 'aplha', 'alpha@gmail.com', '&é\"\'(-', 'Etudiant', 'actif'),
+('USER70385', 'sow', 'fatima', 'fatima@gmail.com', '$2b$10$7/oCmf0mL.7AXe1L.QFuB.FVYrGeslDdOUldPS/kB8Hj3TRdjihhm', 'Etudiant', 'actif'),
+('USER85117', 'sow', 'oumar', 'alala@gmail.com', 'dill]@gm', 'Etudiant', 'actif'),
+('USER97142', 'DIALLO', 'Diallo Alhassane', 'alhassane.diallo.etu@gmail.com', '$2b$10$EtCtTU.PUqxyJn4JME0pZ.tAGL.RYrBXeH9.9TE8kVnO9zH5MhkBq', 'Etudiant', 'actif');
 
 --
 -- Déclencheurs `utilisateurs`
@@ -305,6 +489,13 @@ ALTER TABLE `adminuniversitaires`
   ADD KEY `idEtablissement` (`idEtablissement`);
 
 --
+-- Index pour la table `baccalaureat`
+--
+ALTER TABLE `baccalaureat`
+  ADD PRIMARY KEY (`baccalaureatId`),
+  ADD KEY `etudiantId` (`etudiantId`);
+
+--
 -- Index pour la table `candidatures`
 --
 ALTER TABLE `candidatures`
@@ -313,11 +504,25 @@ ALTER TABLE `candidatures`
   ADD KEY `idProgramme` (`idProgramme`);
 
 --
+-- Index pour la table `coordonnees`
+--
+ALTER TABLE `coordonnees`
+  ADD PRIMARY KEY (`coordonneesId`),
+  ADD KEY `etudiantId` (`etudiantId`);
+
+--
 -- Index pour la table `criteresadmissions`
 --
 ALTER TABLE `criteresadmissions`
   ADD PRIMARY KEY (`idCritere`),
   ADD KEY `idProgramme` (`idProgramme`);
+
+--
+-- Index pour la table `cv`
+--
+ALTER TABLE `cv`
+  ADD PRIMARY KEY (`cvId`),
+  ADD KEY `etudiantId` (`etudiantId`);
 
 --
 -- Index pour la table `documents`
@@ -341,6 +546,13 @@ ALTER TABLE `etudiants`
   ADD KEY `idUtilisateur` (`idUtilisateur`);
 
 --
+-- Index pour la table `experiencespro`
+--
+ALTER TABLE `experiencespro`
+  ADD PRIMARY KEY (`experienceId`),
+  ADD KEY `etudiantId` (`etudiantId`);
+
+--
 -- Index pour la table `notifications`
 --
 ALTER TABLE `notifications`
@@ -353,6 +565,20 @@ ALTER TABLE `notifications`
 ALTER TABLE `programmes`
   ADD PRIMARY KEY (`idProgramme`),
   ADD KEY `idEtablissement` (`idEtablissement`);
+
+--
+-- Index pour la table `relevesnotes`
+--
+ALTER TABLE `relevesnotes`
+  ADD PRIMARY KEY (`releveId`),
+  ADD KEY `etudiantId` (`etudiantId`);
+
+--
+-- Index pour la table `stages`
+--
+ALTER TABLE `stages`
+  ADD PRIMARY KEY (`stageId`),
+  ADD KEY `etudiantId` (`etudiantId`);
 
 --
 -- Index pour la table `utilisateurs`
@@ -379,17 +605,34 @@ ALTER TABLE `adminuniversitaires`
   ADD CONSTRAINT `adminuniversitaires_ibfk_2` FOREIGN KEY (`idEtablissement`) REFERENCES `etablissements` (`idEtablissement`) ON DELETE CASCADE;
 
 --
+-- Contraintes pour la table `baccalaureat`
+--
+ALTER TABLE `baccalaureat`
+  ADD CONSTRAINT `baccalaureat_ibfk_1` FOREIGN KEY (`etudiantId`) REFERENCES `etudiants` (`idEtudiant`) ON DELETE CASCADE;
+
+--
 -- Contraintes pour la table `candidatures`
 --
 ALTER TABLE `candidatures`
-  ADD CONSTRAINT `candidatures_ibfk_1` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateurs` (`idUtilisateur`) ON DELETE CASCADE,
-  ADD CONSTRAINT `candidatures_ibfk_2` FOREIGN KEY (`idProgramme`) REFERENCES `programmes` (`idProgramme`) ON DELETE CASCADE;
+  ADD CONSTRAINT `candidatures_ibfk_1` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateurs` (`idUtilisateur`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `coordonnees`
+--
+ALTER TABLE `coordonnees`
+  ADD CONSTRAINT `coordonnees_ibfk_1` FOREIGN KEY (`etudiantId`) REFERENCES `etudiants` (`idEtudiant`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `criteresadmissions`
 --
 ALTER TABLE `criteresadmissions`
   ADD CONSTRAINT `criteresadmissions_ibfk_1` FOREIGN KEY (`idProgramme`) REFERENCES `programmes` (`idProgramme`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `cv`
+--
+ALTER TABLE `cv`
+  ADD CONSTRAINT `cv_ibfk_1` FOREIGN KEY (`etudiantId`) REFERENCES `etudiants` (`idEtudiant`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `documents`
@@ -404,6 +647,12 @@ ALTER TABLE `etudiants`
   ADD CONSTRAINT `etudiants_ibfk_1` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateurs` (`idUtilisateur`) ON DELETE CASCADE;
 
 --
+-- Contraintes pour la table `experiencespro`
+--
+ALTER TABLE `experiencespro`
+  ADD CONSTRAINT `experiencespro_ibfk_1` FOREIGN KEY (`etudiantId`) REFERENCES `etudiants` (`idEtudiant`) ON DELETE CASCADE;
+
+--
 -- Contraintes pour la table `notifications`
 --
 ALTER TABLE `notifications`
@@ -414,6 +663,18 @@ ALTER TABLE `notifications`
 --
 ALTER TABLE `programmes`
   ADD CONSTRAINT `programmes_ibfk_1` FOREIGN KEY (`idEtablissement`) REFERENCES `etablissements` (`idEtablissement`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `relevesnotes`
+--
+ALTER TABLE `relevesnotes`
+  ADD CONSTRAINT `relevesnotes_ibfk_1` FOREIGN KEY (`etudiantId`) REFERENCES `etudiants` (`idEtudiant`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `stages`
+--
+ALTER TABLE `stages`
+  ADD CONSTRAINT `stages_ibfk_1` FOREIGN KEY (`etudiantId`) REFERENCES `etudiants` (`idEtudiant`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

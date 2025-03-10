@@ -1,0 +1,158 @@
+/* ✅ Style général */
+.bac-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: "Arial", sans-serif;
+}
+
+/* ✅ Titre principal */
+.bac-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #003366;
+}
+
+/* ✅ Description */
+.bac-description {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+/* ✅ Info obligatoire */
+.info-obligatoire {
+  font-size: 14px;
+  color: #003366;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.obligatoire {
+  color: #003366;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+/* ✅ Fieldset et légende */
+.bac-fieldset {
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.bac-legend {
+  font-size: 16px;
+  font-weight: bold;
+  color: #003366;
+}
+
+/* ✅ Texte informatif sous les champs */
+.bac-subtext {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 5px;
+}
+
+/* ✅ Inputs & Selects */
+.bac-group {
+  margin-bottom: 20px;
+}
+
+.bac-label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #003366;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.bac-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+/* ✅ Radio buttons */
+.bac-radio {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.bac-radio input {
+  margin-right: 10px;
+}
+
+/* ✅ Boutons */
+.bac-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.bac-save-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.bac-save-button:hover {
+  background-color: #0056b3;
+}
+
+.bac-delete-button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.bac-delete-button:hover {
+  background-color: #c82333;
+}
+
+.bac-cancel-button {
+  background-color: #ccc;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.bac-cancel-button:hover {
+  background-color: #bbb;
+}
+
+/* ✅ Responsive Design */
+@media (max-width: 600px) {
+  .bac-buttons {
+    flex-direction: column;
+  }
+
+  .bac-save-button,
+  .bac-delete-button,
+  .bac-cancel-button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}

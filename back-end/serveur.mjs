@@ -12,6 +12,11 @@ import documentsRoutes from './routes/documentsRoutes.mjs';
 import etablissementsRoutes from './routes/etablissementsRoutes.mjs';
 import notificationsRoutes from './routes/notificationsRoutes.mjs';
 import programmesRoutes from './routes/programmesRoutes.mjs';
+import coordonneesRoutes from "./routes/coordonneesRoutes.mjs"; // 💡 Assure-toi que le chemin est correct
+import cvRoutes from "./routes/cvRoutes.mjs";
+import baccalaureatRoutes from "./routes/baccalaureatRoutes.mjs"; // 📌 Importation des routes Baccalauréat
+import cursusRoutes from "./routes/cursusPostBac.mjs";
+
 
 dotenv.config();
 
@@ -60,6 +65,15 @@ app.use('/api/etablissements', etablissementsRoutes);
 app.use('/api/notifications', notificationsRoutes);
 
 app.use('/api/programmes', programmesRoutes);
+app.use("/api/coordonnees", coordonneesRoutes); // 👈 Ajout de la nouvelle route
+
+app.use("/api/cv", cvRoutes);
+app.use("/uploads", express.static("uploads"));  // Permet d'accéder aux fichiers téléchargés
+
+// 📌 Définition des routes API
+app.use("/api/baccalaureat", baccalaureatRoutes); // 📌 Intégration de la route Baccalauréat
+
+app.use("/api/cursuspostbac", cursusRoutes);
 
 // Démarrer le serveur
 const port = process.env.port || 5001;

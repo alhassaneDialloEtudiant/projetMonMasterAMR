@@ -134,6 +134,4 @@ etudiantsRoutes.get('/utilisateurs-etudiants', async (req, res) => {
     }
 });
 
-
-
 export default etudiantsRoutes;

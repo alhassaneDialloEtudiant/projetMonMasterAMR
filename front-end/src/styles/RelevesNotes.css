@@ -1,0 +1,130 @@
+/* Conteneur principal */
+.releves-container {
+  width: 100%;
+  max-width: 750px;
+  margin: 20px auto;
+  padding: 20px;
+  text-align: left;
+}
+
+/* Titre principal */
+.releves-main-title {
+  color: #0056b3;
+  font-size: 1.8em;
+  font-weight: bold;
+  text-align: center;
+}
+
+.releves-subtitle {
+  font-size: 1em;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Sous-titres */
+.releves-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Description */
+.releves-description {
+  font-size: 1em;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+/* Groupes de formulaire */
+.releves-group {
+  margin-bottom: 15px;
+}
+
+.releves-group label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.releves-input {
+  width: 100%;
+  padding: 10px;
+  border: 2px dashed #0056b3;
+  border-radius: 5px;
+  font-size: 1em;
+  text-align: center;
+}
+
+.releves-note {
+  font-size: 0.9em;
+  color: #666;
+}
+
+/* Boutons radio */
+.releves-radio-group {
+  margin-bottom: 20px;
+}
+
+.releves-radio-group p {
+  font-weight: bold;
+}
+
+.releves-radio-group label {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+  font-size: 1em;
+}
+
+.releves-radio-group input {
+  margin-right: 10px;
+}
+
+/* Zone de texte */
+.releves-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
+/* Boutons */
+.releves-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.releves-save-button, .releves-cancel-button {
+  width: 250px; /* Taille fixe pour éviter le débordement */
+  max-width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1em;
+  text-align: center;
+}
+
+/* Bouton Enregistrer */
+.releves-save-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.releves-save-button:hover {
+  background-color: #0056b3;
+}
+
+/* Bouton Annuler */
+.releves-cancel-button {
+  background-color: #f0f0f0;
+  color: black;
+  border: 1px solid #ccc;
+}
+
+.releves-cancel-button:hover {
+  background-color: #e0e0e0;
+}
