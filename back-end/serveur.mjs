@@ -16,7 +16,9 @@ import coordonneesRoutes from "./routes/coordonneesRoutes.mjs"; // 💡 Assure-t
 import cvRoutes from "./routes/cvRoutes.mjs";
 import baccalaureatRoutes from "./routes/baccalaureatRoutes.mjs"; // 📌 Importation des routes Baccalauréat
 import cursusRoutes from "./routes/cursusPostBac.mjs";
-
+import relevesNotesRoutes from "./routes/relevesNotesRoutes.mjs";
+import stagesRoutes from "./routes/stages.mjs";
+import experiencesRoutes from "./routes/experiencesRoutes.mjs"; // 📌 Importation des route s
 
 dotenv.config();
 
@@ -74,6 +76,14 @@ app.use("/uploads", express.static("uploads"));  // Permet d'accéder aux fichie
 app.use("/api/baccalaureat", baccalaureatRoutes); // 📌 Intégration de la route Baccalauréat
 
 app.use("/api/cursuspostbac", cursusRoutes);
+
+app.use("/api/relevesnotes", relevesNotesRoutes);
+
+app.use("/api/stages", stagesRoutes);
+
+// 📌 Intégration des routes
+app.use("/api/experiences", experiencesRoutes);
+
 
 // Démarrer le serveur
 const port = process.env.port || 5001;

@@ -1,119 +1,155 @@
-/* Conteneur principal */
-.stage-container {
-    width: 100%;
-    max-width: 900px;
-    margin: auto;
-    padding: 30px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+/* 🌟 Style global */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
 }
 
-/* Titres */
-.stage-container h2 {
-    font-size: 24px;
-    font-weight: bold;
+/* 🌟 Titre principal */
+h2, h3 {
+    text-align: center;
     color: #003366;
+    font-size: 22px;
+    font-weight: bold;
     margin-bottom: 15px;
 }
 
-.stage-description {
-    font-size: 16px;
-    color: #555;
-    margin-bottom: 20px;
-    text-align: justify;
+/* 🌟 Conteneur du formulaire */
+.stage-container {
+    max-width: 600px;
+    background: white;
+    margin: 30px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Formulaire */
-.form-group {
+/* 🌟 Description */
+.stage-description {
+    text-align: center;
+    color: #555;
+    font-size: 14px;
     margin-bottom: 20px;
+}
+
+/* 🌟 Formulaire */
+.form-group {
+    margin-bottom: 15px;
 }
 
 .form-group label {
     font-weight: bold;
-    font-size: 14px;
+    color: #333;
     display: block;
     margin-bottom: 5px;
 }
 
-.form-group input,
-.form-group textarea {
+/* 🌟 Champs de texte et zone de texte */
+input, textarea {
     width: 100%;
-    padding: 12px;
+    padding: 10px;
+    font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 14px;
+    background-color: white;
 }
 
-.form-group input[type="file"] {
-    padding: 10px;
-    border: 2px dashed #0055aa;
-    background: #f1f5f9;
+textarea {
+    resize: vertical;
+    height: 80px;
 }
 
-.form-group input[type="file"]:hover {
-    border: 2px dashed #003366;
-}
-
-/* Checkbox */
-.form-group input[type="checkbox"] {
-    margin-right: 8px;
-}
-
-/* Boutons */
+/* 🌟 Boutons */
 .button-container {
     display: flex;
     justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
+    gap: 10px;
+    margin-top: 15px;
 }
 
-.btn-save,
-.btn-cancel {
-    width: 250px;
-    padding: 12px;
+.btn-save, .btn-cancel {
+    background-color: #007bff;
+    color: white;
     border: none;
+    padding: 10px 15px;
+    font-size: 14px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
-    text-align: center;
+    transition: 0.3s;
 }
 
-/* Bouton Enregistrer */
-.btn-save {
-    background: #0055aa;
-    color: white;
-    transition: background 0.3s ease-in-out;
+.btn-cancel {
+    background-color: #dc3545;
 }
 
 .btn-save:hover {
-    background: #003366;
-}
-
-/* Bouton Annuler */
-.btn-cancel {
-    background-color: #f0f0f0;
-    color: black;
-    border: 1px solid #ccc;
-    transition: background 0.3s ease-in-out;
+    background-color: #0056b3;
 }
 
 .btn-cancel:hover {
-    background-color: #e0e0e0;
+    background-color: #a71d2a;
 }
 
-/* RESPONSIVE DESIGN */
-@media (max-width: 1024px) {
+/* 🌟 Liste des stages */
+.stages-list {
+    max-width: 600px;
+    margin: 30px auto;
+}
+
+.stages-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.stages-item span {
+    font-size: 14px;
+    color: #333;
+}
+
+/* 🌟 Bouton de suppression */
+.stages-delete-button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.stages-delete-button:hover {
+    background-color: #cc0000;
+}
+
+/* 🌟 Checkbox */
+input[type="checkbox"] {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+/* 🌟 Responsive Design */
+@media (max-width: 768px) {
     .stage-container {
-        padding: 20px;
+        width: 90%;
+    }
+
+    .stages-list {
+        width: 90%;
     }
 
     .button-container {
         flex-direction: column;
     }
 
-    .btn-save,
-    .btn-cancel {
+    .btn-save, .btn-cancel {
         width: 100%;
     }
 }

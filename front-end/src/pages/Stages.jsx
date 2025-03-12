@@ -1,158 +1,108 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "../styles/stage.css"; // Assurez-vous d'inclure ce fichier CSS
 
-function Stages({ utilisateurId }) {
+const Stages = () => {
+  const idUtilisateur = localStorage.getItem("idUtilisateur");
+
+  const [stages, setStages] = useState([]);
   const [stageData, setStageData] = useState({
-    anneeDebut: "",
-    dureeSemaines: "",
-    heuresParSemaine: "",
+    duree: "",
     entreprise: "",
-    intitule: "",
     description: "",
-    attestation: null,
   });
 
   const [aucunStage, setAucunStage] = useState(false);
 
+  useEffect(() => {
+    fetchStages();
+  }, []);
+
+  /* 📌 Récupérer les stages */
+  const fetchStages = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5001/api/stages/${idUtilisateur}`);
+      setStages(response.data);
+    } catch (error) {
+      console.error("Erreur récupération stages :", error);
+    }
+  };
+
+  /* 📌 Gérer les changements de champs */
   const handleInputChange = (e) => {
     setStageData({ ...stageData, [e.target.name]: e.target.value });
   };
 
-  const handleFileUpload = (e) => {
-    setStageData({ ...stageData, attestation: e.target.files[0] });
+  /* 📌 Ajouter un stage */
+  const handleSubmit = async () => {
+    if (aucunStage) {
+      alert("Vous avez choisi de ne déclarer aucun stage.");
+      return;
+    }
+
+    try {
+      await axios.post("http://localhost:5001/api/stages/ajouter", {
+        idUtilisateur,
+        ...stageData,
+      });
+
+      alert("Stage enregistré avec succès !");
+      fetchStages();
+      setStageData({ duree: "", entreprise: "", description: "" });
+    } catch (error) {
+      console.error("Erreur ajout stage :", error);
+      alert("Erreur lors de l'enregistrement.");
+    }
   };
 
-  const handleSubmit = async () => {
+  /* 📌 Supprimer un stage */
+  const handleDelete = async (stageId) => {
     try {
-      if (aucunStage) {
-        alert("Vous avez choisi de ne déclarer aucun stage.");
-        return;
-      }
-
-      const formData = new FormData();
-      Object.keys(stageData).forEach((key) => {
-        formData.append(key, stageData[key]);
-      });
-
-      const response = await fetch("http://localhost:5001/api/stages", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        alert("Stage enregistré avec succès !");
-      } else {
-        alert("Erreur lors de l'enregistrement du stage.");
-      }
+      await axios.delete(`http://localhost:5001/api/stages/supprimer/${stageId}`);
+      alert("Stage supprimé !");
+      fetchStages();
     } catch (error) {
-      console.error("Erreur :", error);
-      alert("Erreur de connexion au serveur.");
+      console.error("Erreur suppression stage :", error);
+      alert("Erreur lors de la suppression.");
     }
   };
 
   return (
-    <div className="stage-container">
-      <h2>Ajouter un stage</h2>
-      <p className="stage-description">
-        Vous pouvez indiquer l’ensemble des stages effectués durant votre cursus en détaillant votre rôle, vos réalisations et l’impact sur votre projet d’études.
-      </p>
+    <>
+      <h2>Mes stages</h2>
 
-      <div className="form-group">
-        <input
-          type="checkbox"
-          id="aucunStage"
-          checked={aucunStage}
-          onChange={() => setAucunStage(!aucunStage)}
-        />
-        <label htmlFor="aucunStage">Je ne déclare aucun stage.</label>
-      </div>
+      <input
+        type="checkbox"
+        id="aucunStage"
+        checked={aucunStage}
+        onChange={() => setAucunStage(!aucunStage)}
+      />
+      <label htmlFor="aucunStage">Je ne déclare aucun stage.</label>
 
       {!aucunStage && (
         <>
-          <h3>J’ajoute un stage.</h3>
-
-          <div className="form-group">
-            <label>Année du début *</label>
-            <input
-              type="text"
-              name="anneeDebut"
-              value={stageData.anneeDebut}
-              onChange={handleInputChange}
-              placeholder="Exemple : 2022"
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Durée en semaines *</label>
-            <input
-              type="text"
-              name="dureeSemaines"
-              value={stageData.dureeSemaines}
-              onChange={handleInputChange}
-              placeholder="Exemple : 8"
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Nombre d'heures par semaine</label>
-            <input
-              type="text"
-              name="heuresParSemaine"
-              value={stageData.heuresParSemaine}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Employeur ou organisme *</label>
-            <input
-              type="text"
-              name="entreprise"
-              value={stageData.entreprise}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Intitulé du stage *</label>
-            <input
-              type="text"
-              name="intitule"
-              value={stageData.intitule}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Descriptif</label>
-            <textarea
-              name="description"
-              value={stageData.description}
-              onChange={handleInputChange}
-            ></textarea>
-          </div>
-
-          <div className="form-group">
-            <label>Attestation de stage</label>
-            <input
-              type="file"
-              accept=".pdf,.jpg,.png"
-              onChange={handleFileUpload}
-            />
-          </div>
-
-          <div className="button-container">
-            <button className="btn-save" onClick={handleSubmit}>
-              Enregistrer
-            </button>
-            <button className="btn-cancel">
-              Annuler les modifications
-            </button>
-          </div>
+          <input type="text" name="duree" placeholder="Durée" value={stageData.duree} onChange={handleInputChange} />
+          <input type="text" name="entreprise" placeholder="Entreprise" value={stageData.entreprise} onChange={handleInputChange} />
+          <textarea name="description" placeholder="Description" value={stageData.description} onChange={handleInputChange} />
+          <button onClick={handleSubmit}>Enregistrer</button>
         </>
       )}
-    </div>
+
+      <h3>Stages enregistrés</h3>
+      <ul>
+        {stages.length > 0 ? (
+          stages.map((stage) => (
+            <li key={stage.stageId}>
+              <span>{stage.duree} - {stage.entreprise} ({stage.description})</span>
+              <button onClick={() => handleDelete(stage.stageId)}>🗑 Supprimer</button>
+            </li>
+          ))
+        ) : (
+          <p>Aucun stage enregistré.</p>
+        )}
+      </ul>
+    </>
   );
-}
+};
 
 export default Stages;
