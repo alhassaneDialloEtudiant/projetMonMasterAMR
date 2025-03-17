@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/PageConnexionEtudiant.css";
-import DossierCandidat from './DossierCandidat' // Import du composant
+import DossierCandidat from './DossierCandidat'; // Import du composant
+import Formations from './Formations'; // Import du composant Formations
 
 function PageTableauDeBordEtudiant() {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [searchQuery, setSearchQuery] = useState(""); // État pour la recherche
   const navigate = useNavigate();
 
   const tabs = [
@@ -31,7 +33,6 @@ function PageTableauDeBordEtudiant() {
 
   return (
     <div className="page-container">
-      {/* Statuts en haut de la page */}
       <div className="status-container">
         {statuses.map((status, index) => (
           <div key={index} className="status-card">
@@ -42,7 +43,6 @@ function PageTableauDeBordEtudiant() {
         ))}
       </div>
 
-      {/* Section Tabs */}
       <div className="tabs-container">
         {tabs.map((tab) => (
           <div
@@ -58,7 +58,6 @@ function PageTableauDeBordEtudiant() {
         </button>
       </div>
 
-      {/* Contenu Principal */}
       <main className="main-content">
         {activeTab === "dashboard" && (
           <>
@@ -81,8 +80,21 @@ function PageTableauDeBordEtudiant() {
           </>
         )}
 
-        {/* Afficher le formulaire du dossier candidat si on clique sur "Mon dossier candidat" */}
         {activeTab === "dossier" && <DossierCandidat />}
+
+        {activeTab === "formation" && (
+          <>
+            <div className="recherche-formation">
+              <input
+                type="text"
+                placeholder="Rechercher une formation..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <Formations searchQuery={searchQuery} />
+          </>
+        )}
       </main>
     </div>
   );

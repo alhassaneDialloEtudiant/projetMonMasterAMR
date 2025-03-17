@@ -36,11 +36,7 @@ function Menu() {
 
             {/* 🟢 Menu principal */}
             <ul className={`menu-list ${isOpen ? "menu-open" : ""}`}>
-                <li>
-                    <Link to="/rechercher" onClick={closeMenu}>
-                        Rechercher une formation
-                    </Link>
-                </li>
+                
                 <li>
                     <Link to="/s-informer" onClick={closeMenu}>
                         S'informer
@@ -53,7 +49,7 @@ function Menu() {
                 </li>
                 <li>
                     <Link to="/pageConnexion" onClick={closeMenu}>
-                        Connexion
+                        Mon space candidat
                     </Link>
                 </li>
                 <li>

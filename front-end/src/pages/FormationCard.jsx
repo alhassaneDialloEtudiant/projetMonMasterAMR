@@ -1,39 +1,45 @@
 import React, { useState, useEffect } from "react";
-import "../styles/FormationCard.css";
 import { FaMapMarkerAlt, FaStar, FaCheck } from "react-icons/fa";
-import CandidatureForm from "./CandidatureForm";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import "../styles/FormationCard.css";
+import CandidatureForm from "./CandidatureForm";
 
 const FormationCard = ({ formation }) => {
   const [favoris, setFavoris] = useState([]);
-  const [candidatures, setCandidatures] = useState([]);
-  const [showCandidatureForm, setShowCandidatureForm] = useState(false);
+  const [afficherForm, setAfficherForm] = useState(false);
   const navigate = useNavigate();
-
-  // ✅ Récupérer l'utilisateur connecté
-  const utilisateurConnecte = JSON.parse(localStorage.getItem("utilisateur"));
-  const idUtilisateur = utilisateurConnecte?.idUtilisateur;
 
   useEffect(() => {
     setFavoris(JSON.parse(localStorage.getItem("favoris")) || []);
-    setCandidatures(JSON.parse(localStorage.getItem("candidatures")) || []);
   }, []);
 
-  const estDansFavoris = favoris.some((fav) => fav.idFormation === formation.idFormation);
-  const estCandidatee = candidatures.some((cand) => cand.idFormation === formation.idFormation);
+  const utilisateurConnecte = JSON.parse(localStorage.getItem("utilisateur"));
+  const idUtilisateur = utilisateurConnecte?.idUtilisateur;
 
-  // ✅ Vérifie si l'utilisateur est connecté avant de postuler
+  const estDansFavoris = favoris.some(
+    (fav) => fav.idFormation === formation.idFormation
+  );
+
   const postuler = () => {
     if (!idUtilisateur) {
-      // 📌 Sauvegarde la formation sélectionnée pour la redirection après connexion
-      localStorage.setItem("lastFormation", JSON.stringify(formation));
-
+      localStorage.setItem("formationSelectionnee", JSON.stringify(formation));
       alert("Vous devez être connecté pour candidater !");
-      navigate("/pageConnexion"); // 📌 Redirige vers la page de connexion
-      return;
+      navigate("/connexion");
+    } else {
+      setAfficherForm(true);
     }
+  };
 
-    setShowCandidatureForm(true);
+  const ajouterRetirerFavoris = () => {
+    let newFavoris;
+    if (estDansFavoris) {
+      newFavoris = favoris.filter(fav => fav.idFormation !== formation.idFormation);
+    } else {
+      newFavoris = [...favoris, formation];
+    }
+    setFavoris(newFavoris);
+    localStorage.setItem("favoris", JSON.stringify(newFavoris));
   };
 
   return (
@@ -67,7 +73,10 @@ const FormationCard = ({ formation }) => {
       <div className="formation-actions">
         <button className="btn-primary">En savoir plus</button>
 
-        <button className={`btn-secondary ${estDansFavoris ? "active" : ""}`} onClick={() => alert("Ajouté aux favoris")}>
+        <button
+          className={`btn-secondary ${estDansFavoris ? "active" : ""}`}
+          onClick={ajouterRetirerFavoris}
+        >
           <FaStar /> {estDansFavoris ? "Retirer des favoris" : "Ajouter aux favoris"}
         </button>
 
@@ -76,8 +85,13 @@ const FormationCard = ({ formation }) => {
         </button>
       </div>
 
-      {/* 📌 Affiche le formulaire de candidature si l'utilisateur clique sur "Candidater" */}
-      {showCandidatureForm && <CandidatureForm idFormation={formation.idFormation} idUtilisateur={idUtilisateur} />}
+      {afficherForm && idUtilisateur && (
+        <CandidatureForm
+          idFormation={formation.idFormation}
+          idUtilisateur={idUtilisateur}
+          fermerFormulaire={() => setAfficherForm(false)}
+        />
+      )}
     </div>
   );
 };
