@@ -15,6 +15,9 @@ import Programmes from './pages/Programmes'; // Page Programmes
 import PageConnexion from './pages/PageConnexion';
 import ConnexionEtudiant from './pages/PageConnexionEtudiant';
 import DossierCandidat from './pages/DossierCandidat';
+import Formations from './pages/AjouterFormation';
+import MesFavoris from "./pages/MesFavoris";
+import MesCandidatures from "./pages/MesCandidatures";
 
 function App() {
     return (
@@ -31,7 +34,7 @@ function App() {
                         <Route path="/connexion" element={<Construction />} />
                         <Route path="/tableau-de-bord" element={<Construction />} />
                         <Route path="/programmes" element={<Construction />} />
-                        <Route path="/testes" element={<Programmes />} />
+                        {/*<Route path="/testes" element={<Programmes />} />*/}
                         <Route path="/s-informer" element={<InformezVous />} />
                        
                         {/* Nouvelle page pour la gestion des utilisateurs */}
@@ -43,8 +46,10 @@ function App() {
                         {/*<Route path="/authentication" element={<Authentication />} />*/}
                         <Route path="/connexion-etudiant" element={<ConnexionEtudiant/>} />
                         <Route path="/pageConnexion" element={<PageConnexion />} />
-                        <Route path="/teste" element={<DossierCandidat/>} />
+                        <Route path="/teste" element={<Formations/>} />
                         <Route path="/dossier-candidat" element={<DossierCandidat />} />
+                        <Route path="/mes-favoris" element={<MesFavoris />} />
+                        <Route path="/mes-candidatures" element={<MesCandidatures />} />
                         
                     </Routes>
                 </main>
