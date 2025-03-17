@@ -22,8 +22,9 @@ const FormationCard = ({ formation }) => {
   );
 
   const postuler = () => {
-    if (!utilisateurConnecte) {
+    if (!idUtilisateur) {
       localStorage.setItem("formationSelectionnee", JSON.stringify(formation));
+      alert("Vous devez être connecté pour candidater !");
       navigate("/connexion");
     } else {
       setAfficherForm(true);
@@ -84,7 +85,7 @@ const FormationCard = ({ formation }) => {
         </button>
       </div>
 
-      {afficherForm && (
+      {afficherForm && idUtilisateur && (
         <CandidatureForm
           idFormation={formation.idFormation}
           idUtilisateur={idUtilisateur}
