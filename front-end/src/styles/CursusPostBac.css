@@ -1,4 +1,4 @@
-/* 🌟 Style global */
+/* 🌟 Global */
 body {
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
@@ -6,48 +6,36 @@ body {
     padding: 0;
 }
 
-/* 🌟 Titre principal */
-h2, h3 {
+/* 🌟 Conteneur principal */
+.cursus-container {
+    max-width: 500px;
+    background: white;
+    margin: 30px auto;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
+}
+
+/* 🌟 Titres */
+h2, h3 {
     color: #003366;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: bold;
     margin-bottom: 10px;
 }
 
-/* 🌟 Sous-titre et description */
+/* 🌟 Sous-titre */
 p {
-    text-align: center;
-    color: #555;
+    color: #666;
     font-size: 14px;
     margin-bottom: 20px;
 }
 
-/* 🌟 Infos obligatoires */
-.info-obligatoire {
-    text-align: center;
-    color: #003366;
-    font-weight: bold;
-    margin-bottom: 15px;
-}
-
-.obligatoire {
-    color: red;
-}
-
-/* 🌟 Conteneur du formulaire */
-.cursus-container {
-    max-width: 500px;
-    background: white;
-    margin: 20px auto;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* 🌟 Champs du formulaire */
+/* 🌟 Champs de formulaire */
 .cursus-group {
     margin-bottom: 15px;
+    text-align: left;
 }
 
 .cursus-label {
@@ -55,61 +43,65 @@ p {
     font-weight: bold;
     color: #333;
     margin-bottom: 5px;
+    font-size: 14px;
 }
 
-/* 🌟 Champs texte et sélection */
+/* 🌟 Champs Input et Select */
 .cursus-input,
 .cursus-select {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: white;
+    transition: border-color 0.3s ease-in-out;
 }
 
-/* 🌟 Radios boutons */
+.cursus-input:focus,
+.cursus-select:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 5px rgba(0, 85, 170, 0.3);
+    outline: none;
+}
+
+/* 🌟 Boutons radios */
 .radio-group {
     display: flex;
     justify-content: flex-start;
-    gap: 15px;
+    gap: 10px;
+    align-items: center;
     margin-top: 5px;
 }
 
 .radio-group label {
     font-size: 14px;
     cursor: pointer;
+    margin-left: 5px;
 }
 
 /* 🌟 Boutons */
 .cursus-buttons {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     gap: 10px;
-    margin-top: 15px;
+    margin-top: 20px;
 }
 
-.cursus-save-button, .delete-button {
+.cursus-save-button {
     background-color: #007bff;
     color: white;
     border: none;
-    padding: 10px 15px;
+    padding: 12px 20px;
     font-size: 14px;
     border-radius: 5px;
     cursor: pointer;
     transition: 0.3s;
-}
-
-.delete-button {
-    background-color: #dc3545;
+    width: 100%;
 }
 
 .cursus-save-button:hover {
     background-color: #0056b3;
-}
-
-.delete-button:hover {
-    background-color: #a71d2a;
 }
 
 /* 🌟 Liste des années enregistrées */
@@ -122,58 +114,40 @@ p {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
+    padding: 12px;
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 5px;
     margin-bottom: 10px;
+    font-size: 14px;
+    transition: background 0.3s ease-in-out;
+}
+
+.cursus-item:hover {
+    background-color: #f1f1f1;
 }
 
 .cursus-item span {
-    font-size: 14px;
+    font-weight: bold;
     color: #333;
 }
-h2 {
-    color: #003366;
-    text-align: center;
-  }
-  
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 50%;
-    margin: auto;
-  }
-  
-  input, select {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 100%;
-  }
-  
-  button {
-    background-color: #0056b3;
-    color: white;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #003366;
-  }
-  
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  li {
-    background: #f8f8f8;
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 5px;
-  }
-  
+
+/* 🌟 Responsive */
+@media (max-width: 768px) {
+    .cursus-container {
+        width: 90%;
+    }
+
+    .cursus-buttons {
+        flex-direction: column;
+    }
+
+    .cursus-save-button {
+        width: 100%;
+        text-align: center;
+    }
+
+    .cursus-list {
+        width: 90%;
+    }
+}

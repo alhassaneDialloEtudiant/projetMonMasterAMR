@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom"; // ✅ Ajout de Link pour la navigation SPA
 import "../styles/Menu.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes, faStar } from "@fortawesome/free-solid-svg-icons";
-import logo from "../assets/photos/logo.png"; // Chemin correct pour le logo
+import logo from "../assets/photos/logo.png"; // Assurez-vous que le chemin est correct
 
 function Menu() {
     const [isOpen, setIsOpen] = useState(false);
@@ -17,60 +18,69 @@ function Menu() {
 
     return (
         <nav className="menu-container">
-            {/* Logo et Titre */}
+            {/* 🟢 Logo et Titre */}
             <div className="menu-left">
-                <a href="/" className="logo-link">
+                <Link to="/" className="logo-link">
                     <img src={logo} alt="Logo Mon Maître" className="logo" />
-                </a>
+                </Link>
                 <div className="menu-title">
                     <h1>Mon Maître</h1>
                     <p>La plateforme nationale des masters</p>
                 </div>
             </div>
 
-            {/* Bouton Hamburger */}
+            {/* 🟢 Bouton Hamburger */}
             <button className="menu-toggle" onClick={toggleMenu}>
                 <FontAwesomeIcon icon={isOpen ? faTimes : faBars} />
             </button>
 
-            {/* Menu principal */}
+            {/* 🟢 Menu principal */}
             <ul className={`menu-list ${isOpen ? "menu-open" : ""}`}>
                 <li>
-                    <a href="/rechercher" onClick={closeMenu}>
+                    <Link to="/rechercher" onClick={closeMenu}>
                         Rechercher une formation
-                    </a>
-                </li>
-                
-                <li>
-                    <a href="/s-informer" onClick={closeMenu}>S'informer</a>
-                </li>
-                
-                <li>
-                        <a href="/candidater" onClick={closeMenu}>Candidater</a>
+                    </Link>
                 </li>
                 <li>
-                    <a href="/pageConnexion" onClick={closeMenu}>Connexion</a>
+                    <Link to="/s-informer" onClick={closeMenu}>
+                        S'informer
+                    </Link>
                 </li>
                 <li>
-                    <a href="/informer" onClick={closeMenu}>se décider</a>
+                    <Link to="/candidater" onClick={closeMenu}>
+                        Candidater
+                    </Link>
                 </li>
                 <li>
-                    <a href="/calendrier" onClick={closeMenu}>
+                    <Link to="/pageConnexion" onClick={closeMenu}>
+                        Connexion
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/informer" onClick={closeMenu}>
+                        Se décider
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/calendrier" onClick={closeMenu}>
                         Calendrier
-                    </a>
+                    </Link>
                 </li>
                 <li>
-                    <a href="/teste" onClick={closeMenu}>
+                    <Link to="/teste" onClick={closeMenu}>
                         TESTE
-                    </a>
+                    </Link>
+                </li>
+                <li>
+                <a href="/mes-candidatures">📩 Mes Candidatures</a>
                 </li>
             </ul>
 
-            {/* Bouton Voir mes favoris */}
+            {/* 🟢 Bouton Voir mes favoris */}
             <div className="menu-right">
-                <a href="/favoris" className="favorites-button">
-                    <FontAwesomeIcon icon={faStar} /> Voir mes favoris
-                </a>
+                <Link to="/mes-favoris" className="favorites-button">
+                    <FontAwesomeIcon icon={faStar} /> Mes Favoris
+                </Link>
             </div>
         </nav>
     );

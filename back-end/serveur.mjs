@@ -16,8 +16,11 @@ import coordonneesRoutes from "./routes/coordonneesRoutes.mjs"; // 💡 Assure-t
 import cvRoutes from "./routes/cvRoutes.mjs";
 import baccalaureatRoutes from "./routes/baccalaureatRoutes.mjs"; // 📌 Importation des routes Baccalauréat
 import cursusRoutes from "./routes/cursusPostBac.mjs";
-
-
+import relevesNotesRoutes from "./routes/relevesNotesRoutes.mjs";
+import stagesRoutes from "./routes/stages.mjs";
+import experiencesRoutes from "./routes/experiencesRoutes.mjs"; // 📌 Importation des route s
+import formationsRoutes from "./routes/formationsRoutes.mjs"; // 📌 Importation des routes
+import routeurCandidatures from "./routes/candidaturesRoutes.mjs";
 dotenv.config();
 
 const app = express();
@@ -74,6 +77,22 @@ app.use("/uploads", express.static("uploads"));  // Permet d'accéder aux fichie
 app.use("/api/baccalaureat", baccalaureatRoutes); // 📌 Intégration de la route Baccalauréat
 
 app.use("/api/cursuspostbac", cursusRoutes);
+
+app.use("/api/relevesnotes", relevesNotesRoutes);
+
+app.use("/api/stages", stagesRoutes);
+
+// 📌 Intégration des routes
+app.use("/api/experiences", experiencesRoutes);
+
+app.use("/uploads", express.static("uploads")); // Pour les fichiers statiques
+
+// Routes API
+app.use("/api/formations", formationsRoutes);
+
+
+app.use("/api/candidatures", routeurCandidatures);
+
 
 // Démarrer le serveur
 const port = process.env.port || 5001;

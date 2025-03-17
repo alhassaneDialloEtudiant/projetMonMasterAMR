@@ -1,122 +1,110 @@
-import { Router } from 'express'; // Importer le module Router d'Express pour créer des routes
-import { baseDeDonnees } from '../db/baseDeDonnees.mjs'; // Importer la connexion à la base de données
+import { Router } from "express";
+import { baseDeDonnees } from "../db/baseDeDonnees.mjs";
+import multer from "multer";
 
-const routeurCandidatures = Router(); // Créer un routeur spécifique à la table `candidatures`
+const routeurCandidatures = Router();
 
-// Route pour ajouter une candidature
-routeurCandidatures.post('/ajouter', async (req, res) => {
-    const { idProgramme, idUtilisateur, statutCandidature } = req.body; // Extraire les données du corps de la requête
+// 📌 Configuration de l'upload de fichiers avec Multer
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/candidatures/"); // 📂 Stockage des fichiers
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + "-" + file.originalname);
+    }
+});
+const upload = multer({ storage });
 
+// ✅ Middleware pour protéger les routes (nécessite une authentification)
+const verifierConnexion = (req, res, next) => {
+    if (!req.user) {
+        return res.status(401).json({ erreur: "Utilisateur non authentifié. Veuillez vous connecter." });
+    }
+    next();
+};
+
+// ✅ 1. Ajouter une candidature (avec vérification de l'existence de la formation)
+routeurCandidatures.post("/ajouter", verifierConnexion, upload.fields([
+    { name: "cv" }, { name: "releveNotes" }, { name: "diplome" }, { name: "lettreMotivation" }
+]), async (req, res) => {
+    const { idFormation } = req.body;
+    const idUtilisateur = req.user.idUtilisateur; // 📌 Récupération de l'utilisateur connecté
+
+    if (!idUtilisateur || !idFormation) {
+        return res.status(400).json({ erreur: "Utilisateur ou formation non renseignés." });
+    }
+
+    // Vérification de l'existence de la formation
     try {
-        // Validation des données reçues
-        if (!idProgramme || !idUtilisateur) {
-            return res.status(400).json({ erreur: 'Les champs idProgramme et idUtilisateur sont obligatoires.' }); // Retourner une erreur si des champs sont manquants
+        const [formation] = await baseDeDonnees.query(
+            "SELECT idFormation FROM formations WHERE idFormation = ?",
+            [idFormation]
+        );
+
+        if (formation.length === 0) {
+            return res.status(404).json({ erreur: "La formation sélectionnée n'existe pas." });
         }
 
-        // Requête SQL pour ajouter une candidature
-        const requeteAjoutCandidature = `
-            INSERT INTO candidatures (idProgramme, idUtilisateur, statutCandidature)
-            VALUES (?, ?, ?)
+        // Récupération des fichiers uploadés
+        const lettreMotivation = req.files["lettreMotivation"] ? req.files["lettreMotivation"][0].filename : null;
+        const cv = req.files["cv"] ? req.files["cv"][0].filename : null;
+        const releveNotes = req.files["releveNotes"] ? req.files["releveNotes"][0].filename : null;
+        const diplome = req.files["diplome"] ? req.files["diplome"][0].filename : null;
+
+        // Insertion dans la base de données
+        const requeteAjout = `
+            INSERT INTO candidatures (idUtilisateur, idFormation, lettreMotivation, cv, releveNotes, diplome)
+            VALUES (?, ?, ?, ?, ?, ?)
         `;
-        const [resultat] = await baseDeDonnees.query(requeteAjoutCandidature, [
-            idProgramme,
-            idUtilisateur,
-            statutCandidature || 'enAttente', // Défaut à "enAttente" si non fourni
+        const [resultat] = await baseDeDonnees.query(requeteAjout, [
+            idUtilisateur, idFormation, lettreMotivation, cv, releveNotes, diplome
         ]);
 
-        res.status(201).json({ message: 'Candidature ajoutée avec succès.', idCandidature: resultat.insertId }); // Retourner un message de succès avec l'ID de la candidature ajoutée
+        res.status(201).json({ message: "Candidature enregistrée avec succès.", idCandidature: resultat.insertId });
+
     } catch (error) {
-        console.error('Erreur lors de l’ajout de la candidature :', error); // Afficher l'erreur dans la console
-        res.status(500).json({ erreur: 'Erreur lors de l’ajout de la candidature.', details: error.message }); // Retourner une erreur au client
+        console.error("Erreur lors de l'ajout de la candidature :", error);
+        res.status(500).json({ erreur: "Erreur interne du serveur." });
     }
 });
 
-// Route pour récupérer toutes les candidatures
-routeurCandidatures.get('/afficher', async (req, res) => {
+// ✅ 2. Récupérer toutes les candidatures d'un utilisateur
+routeurCandidatures.get("/utilisateur/:idUtilisateur", async (req, res) => {
+    const { idUtilisateur } = req.params;
+
     try {
-        const requeteRecupererToutesCandidatures = `
-            SELECT * FROM candidatures
+        const requete = `
+            SELECT c.*, f.nomFormation, f.universite, f.typeFormation
+            FROM candidatures c
+            JOIN formations f ON c.idFormation = f.idFormation
+            WHERE c.idUtilisateur = ?
         `;
-        const [resultats] = await baseDeDonnees.query(requeteRecupererToutesCandidatures); // Exécuter la requête
-        res.status(200).json(resultats); // Retourner les résultats au client
+        const [resultats] = await baseDeDonnees.query(requete, [idUtilisateur]);
+
+        res.status(200).json(resultats);
     } catch (error) {
-        console.error('Erreur lors de la récupération des candidatures :', error); // Afficher l'erreur dans la console
-        res.status(500).json({ erreur: 'Erreur lors de la récupération des candidatures.', details: error.message }); // Retourner une erreur au client
+        console.error("Erreur lors de la récupération des candidatures :", error);
+        res.status(500).json({ erreur: "Erreur interne du serveur." });
     }
 });
 
-// Route pour récupérer une candidature par son ID
-routeurCandidatures.get('/afficher/:id', async (req, res) => {
-    const { id } = req.params; // Extraire l'ID des paramètres de la requête
+// ✅ 3. Supprimer une candidature
+routeurCandidatures.delete("/supprimer/:idCandidature", async (req, res) => {
+    const { idCandidature } = req.params;
 
     try {
-        const requeteRecupererCandidatureParId = `
-            SELECT * FROM candidatures WHERE idCandidature = ?
-        `;
-        const [resultats] = await baseDeDonnees.query(requeteRecupererCandidatureParId, [id]); // Exécuter la requête avec l'ID fourni
-        if (resultats.length === 0) {
-            return res.status(404).json({ erreur: 'Candidature non trouvée.' }); // Retourner une erreur si la candidature n'est pas trouvée
-        }
-        res.status(200).json(resultats[0]); // Retourner les résultats au client
-    } catch (error) {
-        console.error('Erreur lors de la récupération de la candidature :', error); // Afficher l'erreur dans la console
-        res.status(500).json({ erreur: 'Erreur lors de la récupération de la candidature.', details: error.message }); // Retourner une erreur au client
-    }
-});
-
-// Route pour modifier une candidature
-routeurCandidatures.put('/modifier/:id', async (req, res) => {
-    const { id } = req.params; // Extraire l'ID des paramètres de la requête
-    const { idProgramme, idUtilisateur, statutCandidature } = req.body; // Extraire les données du corps de la requête
-
-    try {
-        // Validation des données reçues
-        if (!idProgramme || !idUtilisateur || !statutCandidature) {
-            return res.status(400).json({ erreur: 'Tous les champs sont requis.' }); // Retourner une erreur si des champs sont manquants
-        }
-
-        const requeteModifierCandidature = `
-            UPDATE candidatures
-            SET idProgramme = ?, idUtilisateur = ?, statutCandidature = ?
-            WHERE idCandidature = ?
-        `;
-        const [resultat] = await baseDeDonnees.query(requeteModifierCandidature, [
-            idProgramme,
-            idUtilisateur,
-            statutCandidature,
-            id,
-        ]); // Exécuter la requête avec les données fournies
+        const requete = `DELETE FROM candidatures WHERE idCandidature = ?`;
+        const [resultat] = await baseDeDonnees.query(requete, [idCandidature]);
 
         if (resultat.affectedRows === 0) {
-            return res.status(404).json({ erreur: 'Candidature non trouvée.' }); // Retourner une erreur si la candidature n'est pas trouvée
+            return res.status(404).json({ erreur: "Candidature non trouvée." });
         }
 
-        res.status(200).json({ message: 'Candidature mise à jour avec succès.' }); // Retourner un message de succès
+        res.status(200).json({ message: "Candidature supprimée avec succès." });
     } catch (error) {
-        console.error('Erreur lors de la mise à jour de la candidature :', error); // Afficher l'erreur dans la console
-        res.status(500).json({ erreur: 'Erreur lors de la mise à jour de la candidature.', details: error.message }); // Retourner une erreur au client
+        console.error("Erreur lors de la suppression de la candidature :", error);
+        res.status(500).json({ erreur: "Erreur interne du serveur." });
     }
 });
 
-// Route pour supprimer une candidature
-routeurCandidatures.delete('/supprimer/:id', async (req, res) => {
-    const { id } = req.params; // Extraire l'ID des paramètres de la requête
-
-    try {
-        const requeteSupprimerCandidature = `
-            DELETE FROM candidatures WHERE idCandidature = ?
-        `;
-        const [resultat] = await baseDeDonnees.query(requeteSupprimerCandidature, [id]); // Exécuter la requête avec l'ID fourni
-
-        if (resultat.affectedRows === 0) {
-            return res.status(404).json({ erreur: 'Candidature non trouvée.' }); // Retourner une erreur si la candidature n'est pas trouvée
-        }
-
-        res.status(200).json({ message: 'Candidature supprimée avec succès.' }); // Retourner un message de succès
-    } catch (error) {
-        console.error('Erreur lors de la suppression de la candidature :', error); // Afficher l'erreur dans la console
-        res.status(500).json({ erreur: 'Erreur lors de la suppression de la candidature.', details: error.message }); // Retourner une erreur au client
-    }
-});
-
-export default routeurCandidatures; // Exporter le routeur pour l'utiliser dans d'autres fichiers
+export default routeurCandidatures;

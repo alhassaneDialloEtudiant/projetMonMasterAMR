@@ -1,17 +1,17 @@
-/* Conteneur principal */
+/* 📌 Conteneur principal */
 .dossier-container {
     display: flex;
     height: 100vh;
     font-family: "Arial", sans-serif;
-    background-color: #f9f9f9;
+    background-color: #f8f9fa;
     width: 100%;
     max-width: 1600px;
     margin: auto;
 }
 
-/* Barre latérale */
+/* 📌 Barre latérale */
 .sidebar {
-    width: 300px;
+    width: 280px;
     background: linear-gradient(135deg, #003366, #0055aa);
     padding: 20px;
     color: white;
@@ -19,14 +19,17 @@
     flex-direction: column;
     min-height: 100vh;
     overflow-y: auto;
-    border-radius: 10px 0 0 10px;
+    border-radius: 0 10px 10px 0;
+    box-shadow: 2px 0px 8px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar h2 {
-    font-size: 20px;
+    font-size: 18px;
     margin-bottom: 20px;
     text-align: center;
     font-weight: bold;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+    padding-bottom: 8px;
 }
 
 .sidebar ul {
@@ -34,24 +37,25 @@
     padding: 0;
 }
 
+/* 📌 Élément du menu */
 .menu-item {
     display: flex;
     align-items: center;
     padding: 12px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
-    transition: background 0.3s ease-in-out;
+    font-size: 15px;
+    transition: all 0.3s ease-in-out;
 }
 
 .menu-item:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.15);
 }
 
-/* Icônes */
+/* 📌 Icônes */
 .icon {
     margin-right: 10px;
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .valid-icon {
@@ -62,7 +66,7 @@
     color: #ffcc00;
 }
 
-/* Contenu principal */
+/* 📌 Contenu principal */
 .content {
     flex: 1;
     padding: 40px;
@@ -77,9 +81,9 @@
     overflow-y: auto;
 }
 
-/* Titres */
+/* 📌 Titres */
 .section-title {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: bold;
     color: #003366;
     text-align: center;
@@ -87,14 +91,14 @@
 }
 
 .section-description {
-    font-size: 16px;
+    font-size: 14px;
     color: #666;
     margin-bottom: 20px;
     text-align: center;
     width: 100%;
 }
 
-/* Formulaire */
+/* 📌 Formulaire */
 .form-group {
     width: 100%;
     max-width: 800px;
@@ -128,7 +132,7 @@
     box-shadow: 0 0 5px rgba(0, 85, 170, 0.3);
 }
 
-/* Upload fichiers */
+/* 📌 Upload fichiers */
 .file-input {
     width: 100%;
     padding: 12px;
@@ -144,7 +148,7 @@
     background: #e2e8f0;
 }
 
-/* Boutons */
+/* 📌 Boutons */
 .button-container {
     display: flex;
     justify-content: center;
@@ -165,7 +169,7 @@
     text-align: center;
 }
 
-/* Bouton Enregistrer */
+/* 📌 Bouton Enregistrer */
 .btn-save {
     background: #0055aa;
     color: white;
@@ -176,7 +180,7 @@
     background: #003366;
 }
 
-/* Bouton Annuler */
+/* 📌 Bouton Annuler */
 .btn-cancel {
     background-color: #f0f0f0;
     color: black;
@@ -188,7 +192,7 @@
     background-color: #e0e0e0;
 }
 
-/* RESPONSIVE DESIGN */
+/* 📌 Responsive Design */
 @media (max-width: 1024px) {
     .dossier-container {
         flex-direction: column;

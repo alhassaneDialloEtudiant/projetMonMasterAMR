@@ -71,3 +71,24 @@
     line-height: 1.5;
   }
   
+  /* ✅ Permet d'afficher les formations sous le menu */
+.formations-container {
+  margin-top: 20px; /* ✅ Espace sous le menu */
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+/* ✅ Affichage en grille propre */
+.formations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* ✅ Message d'erreur en rouge */
+.error-message {
+  color: red;
+  font-weight: bold;
+}
