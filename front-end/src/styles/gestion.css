@@ -1,0 +1,83 @@
+#root {
+    overflow-x: hidden;
+}
+
+.gestion-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+}
+
+.liste-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.liste-container li {
+    padding: 1rem;
+    border: 1px solid #eee;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s;
+}
+
+.liste-container li:hover {
+    background-color: #818181;
+}
+
+.add-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.delete-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.gestion-container form {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.gestion-container input {
+    flex: 1;
+    padding: 0.8rem;
+    border: 2px solid #666;
+    border-radius: 4px;
+    min-width: 200px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.gestion-container input:focus {
+    outline: none;
+    border-color: #ddd;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.gestion-container button {
+    background-color: #000;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease-in-out;
+}
+
+.gestion-container button:hover {
+    background-color: #363636;
+}
