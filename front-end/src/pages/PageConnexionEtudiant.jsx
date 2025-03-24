@@ -1,18 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/PageConnexionEtudiant.css";
-import DossierCandidat from './DossierCandidat'; // Import du composant
-import Formations from './Formations'; // Import du composant Formations
+import DossierCandidat from "./DossierCandidat";
+import Formations from "./Formations";
+import MesCandidatures from "./MesCandidatures"; // ✅ Importation du composant
 
 function PageTableauDeBordEtudiant() {
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [searchQuery, setSearchQuery] = useState(""); // État pour la recherche
+  const [searchQuery, setSearchQuery] = useState("");
+  const [utilisateurConnecte, setUtilisateurConnecte] = useState(null);
   const navigate = useNavigate();
+
+  // ✅ Vérification de l'état de connexion
+  useEffect(() => {
+    const idUtilisateur = localStorage.getItem("idUtilisateur");
+    setUtilisateurConnecte(idUtilisateur ? idUtilisateur : null);
+  }, []);
 
   const tabs = [
     { id: "dashboard", label: "Mon tableau de bord" },
     { id: "dossier", label: "Mon dossier candidat" },
-    { id: "candidatures", label: "Mes candidatures" },
+    { id: "candidatures", label: "Mes candidatures" }, // ✅ Ajout de l'affichage des candidatures ici
     { id: "alternance", label: "Mes candidatures en alternance" },
     { id: "documents", label: "Mes documents" },
     { id: "formation", label: "Je sélectionne une formation" },
@@ -28,6 +36,8 @@ function PageTableauDeBordEtudiant() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("idUtilisateur");
+    setUtilisateurConnecte(null);
     navigate("/");
   };
 
@@ -92,9 +102,11 @@ function PageTableauDeBordEtudiant() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <Formations searchQuery={searchQuery} />
+            <Formations searchQuery={searchQuery} isUserConnected={!!utilisateurConnecte} />
           </>
         )}
+
+        {activeTab === "candidatures" && utilisateurConnecte && <MesCandidatures idUtilisateur={utilisateurConnecte} />}
       </main>
     </div>
   );

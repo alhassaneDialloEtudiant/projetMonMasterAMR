@@ -1,0 +1,284 @@
+/* ✅ Réinitialisation et configuration globale */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  height: 100%;
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+}
+
+/* ✅ Structure principale */
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+}
+
+.footer {
+  background-color: #0a2472;
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+}
+
+/* ✅ Conteneur principal de l'administration */
+.admin-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 20px;
+}
+
+/* ✅ Barre de navigation */
+.admin-nav {
+  display: flex;
+  justify-content: space-between;
+  background: #007bff;
+  padding: 10px;
+  border-radius: 8px;
+  align-items: center;
+  flex-wrap: wrap; /* ✅ Meilleure gestion sur petits écrans */
+}
+
+.nav-item {
+  color: white;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 5px;
+}
+
+.nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-item.active {
+  background-color: white;
+  color: #007bff;
+  font-weight: bold;
+}
+
+/* ✅ Bouton de déconnexion */
+.btn-deconnexion {
+  background: red;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-deconnexion:hover {
+  background: darkred;
+}
+
+/* ✅ Contenu principal */
+.admin-content {
+  margin-top: 20px;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* ✅ Tableau de bord */
+.dashboard {
+  text-align: center;
+}
+
+.stats-container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  flex-wrap: wrap; /* ✅ Permet l'adaptabilité sur petits écrans */
+}
+
+.stat-card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  min-width: 150px; /* ✅ Empêche le rétrécissement excessif */
+  text-align: center;
+}
+
+/* ✅ Conteneur des formations avec scroll */
+.formations-container {
+  max-height: 500px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #fff;
+  width: 90%; /* ✅ Augmente la largeur globale */
+  margin: auto; /* ✅ Centre le conteneur */
+}
+
+/* ✅ Cartes des formations */
+.formation-card {
+  flex: 1 1 calc(33.33% - 20px); /* ✅ Les cartes prennent 1/3 de l’espace */
+  min-width: 300px; /* ✅ Largeur minimale */
+  max-width: 400px; /* ✅ Limite pour éviter l’étirement excessif */
+  min-height: 250px; /* ✅ Hauteur minimum pour uniformiser */
+  overflow: hidden; /* ✅ Empêcher le contenu de déborder */
+  text-overflow: ellipsis; /* ✅ Si trop long, mettre des "..." */
+  white-space: normal; /* ✅ S'assurer que le texte s'affiche bien */
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  background: white;
+  padding: 15px;
+}
+
+/* ✅ Ajout d'un conteneur avec un scroll horizontal si nécessaire */
+.formations-wrapper {
+  display: flex;
+  flex-wrap: wrap; /* ✅ Permet d'adapter l'affichage selon l'écran */
+  justify-content: space-between; /* ✅ Ajuste l'espacement entre les cartes */
+  gap: 20px; /* ✅ Espacement plus fluide */
+  padding-bottom: 10px;
+  overflow-x: auto; /* ✅ Ajoute un scroll horizontal */
+}
+
+/* ✅ Amélioration du bouton de suppression et modification */
+.btn-supprimer {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-supprimer:hover {
+  background-color: darkred;
+}
+
+.btn-modifier {
+  background-color: #f59e0b;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-modifier:hover {
+  background-color: #d97706;
+}
+
+/* ✅ Adaptabilité sur écrans plus petits */
+@media (max-width: 768px) {
+  .admin-nav {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .nav-item {
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+  }
+
+  .stats-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stat-card {
+    width: 90%;
+  }
+
+  .formations-container {
+    max-height: 400px;
+    width: 100%;
+  }
+
+  .formations-wrapper {
+    flex-wrap: wrap;
+    overflow-x: hidden;
+  }
+
+  .formation-card {
+    flex: 1 1 100%; /* ✅ Une seule colonne sur petit écran */
+    max-width: 100%;
+  }
+}
+
+/* ✅ Responsivité pour écrans moyens */
+@media (max-width: 1024px) {
+  .formation-card {
+    flex: 1 1 calc(50% - 20px); /* ✅ Passe en 2 colonnes sur écran moyen */
+  }
+}
+
+.stat-card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  text-align: center;
+  cursor: default;
+}
+
+.stat-card.clickable {
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.stat-card.clickable:hover {
+  background: #f0f8ff;
+}
+
+.stat-card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  text-align: center;
+  cursor: default;
+}
+
+.stat-card.clickable {
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.stat-card.clickable:hover {
+  background: #f0f8ff;
+}
+
+.universites-container {
+  margin-top: 20px;
+  padding: 15px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.universites-container ul {
+  list-style: none;
+  padding: 0;
+}
+
+.universites-container li {
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #ddd;
+}
+
+.universites-container li:hover {
+  background-color: #f5f5f5;
+}

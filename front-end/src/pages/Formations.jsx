@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"; 
 import axios from "axios";
-import FormationCard from "./FormationCard"; 
+import FormationCardConnecte from "./FormationCardConnecte";
+import FormationCardNonConnecte from "./FormationCardNonConnecte";
 import "../styles/Formations.css";
 
 const Formations = ({ searchQuery, zoneGeo, dernierDiplome, mention }) => {
@@ -11,7 +12,19 @@ const Formations = ({ searchQuery, zoneGeo, dernierDiplome, mention }) => {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [utilisateurConnecte, setUtilisateurConnecte] = useState(null);
 
+    // ✅ Vérifier si l'utilisateur est connecté
+    useEffect(() => {
+        try {
+            const idUtilisateur = localStorage.getItem("idUtilisateur");
+            setUtilisateurConnecte(idUtilisateur && idUtilisateur !== "undefined" ? idUtilisateur : null);
+        } catch (error) {
+            console.error("❌ Erreur lors de la récupération de l'utilisateur :", error);
+        }
+    }, []);
+
+    // ✅ Charger les formations
     useEffect(() => {
         fetchFormations();
     }, []);
@@ -23,12 +36,13 @@ const Formations = ({ searchQuery, zoneGeo, dernierDiplome, mention }) => {
             setFormations(response.data);
             setFilteredFormations(response.data);
         } catch (err) {
-            setError("Erreur lors du chargement des formations");
+            setError("❌ Erreur lors du chargement des formations");
         } finally {
             setLoading(false);
         }
     };
 
+    // ✅ Filtrer les formations selon les critères de recherche
     useEffect(() => {
         if (!searchQuery && !zoneGeo && !dernierDiplome && !mention) {
             setFilteredFormations(formations);
@@ -58,13 +72,17 @@ const Formations = ({ searchQuery, zoneGeo, dernierDiplome, mention }) => {
         setFilteredFormations(filtered);
     }, [searchQuery, zoneGeo, dernierDiplome, mention, formations]);
 
-    // ✅ Fonction pour ajouter aux favoris
-    const ajouterAuxFavoris = (formation) => {
-        if (!favoris.some(fav => fav.idFormation === formation.idFormation)) {
-            const newFavoris = [...favoris, formation];
-            setFavoris(newFavoris);
-            localStorage.setItem("favoris", JSON.stringify(newFavoris));
+    // ✅ Ajouter/retirer des favoris sans recharger la page
+    const toggleFavori = (formation) => {
+        let newFavoris;
+        if (favoris.some(fav => fav.idFormation === formation.idFormation)) {
+            newFavoris = favoris.filter(fav => fav.idFormation !== formation.idFormation);
+        } else {
+            newFavoris = [...favoris, formation];
         }
+
+        setFavoris(newFavoris);
+        localStorage.setItem("favoris", JSON.stringify(newFavoris));
     };
 
     return (
@@ -76,21 +94,30 @@ const Formations = ({ searchQuery, zoneGeo, dernierDiplome, mention }) => {
                 }
             </h2>
 
-            {loading && <p className="loading">Chargement des formations...</p>}
+            {loading && <p className="loading">⏳ Chargement des formations...</p>}
             {error && <p className="error">{error}</p>}
 
             {filteredFormations.length > 0 ? (
                 <div className="formations-grid">
-                    {filteredFormations.map((formation) => (
-                        <FormationCard
-                            key={formation.idFormation}
-                            formation={formation}
-                            onAddFavori={() => ajouterAuxFavoris(formation)}
-                        />
-                    ))}
+                    {filteredFormations.map((formation) =>
+                        utilisateurConnecte ? (
+                            <FormationCardConnecte
+                                key={formation.idFormation}
+                                formation={formation}
+                                utilisateurConnecte={utilisateurConnecte}
+                                onToggleFavori={() => toggleFavori(formation)}
+                            />
+                        ) : (
+                            <FormationCardNonConnecte
+                                key={formation.idFormation}
+                                formation={formation}
+                                onFavoriUpdate={() => toggleFavori(formation)}
+                            />
+                        )
+                    )}
                 </div>
             ) : (
-                <p className="no-results">Aucune formation trouvée.</p>
+                <p className="no-results">⚠️ Aucune formation trouvée.</p>
             )}
         </div>
     );

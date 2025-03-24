@@ -1,40 +1,89 @@
 import React, { useState, useEffect } from "react";
 import { FaMapMarkerAlt, FaStar, FaCheck } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import "../styles/FormationCard.css";
 import CandidatureForm from "./CandidatureForm";
+import axios from "axios";
 
 const FormationCard = ({ formation }) => {
   const [favoris, setFavoris] = useState([]);
   const [afficherForm, setAfficherForm] = useState(false);
+  const [utilisateurConnecte, setUtilisateurConnecte] = useState(null);
+  const [candidatureExistante, setCandidatureExistante] = useState(false);
   const navigate = useNavigate();
 
+  // ✅ Récupération de l'utilisateur une seule fois au chargement
   useEffect(() => {
-    setFavoris(JSON.parse(localStorage.getItem("favoris")) || []);
+    try {
+      const utilisateurStorage = localStorage.getItem("idUtilisateur");
+      if (utilisateurStorage && utilisateurStorage !== "undefined") {
+        setUtilisateurConnecte(utilisateurStorage);
+      }
+    } catch (error) {
+      console.error("❌ Erreur lors de la récupération de l'utilisateur :", error);
+    }
   }, []);
 
-  const utilisateurConnecte = JSON.parse(localStorage.getItem("utilisateur"));
-  const idUtilisateur = utilisateurConnecte?.idUtilisateur;
+  // ✅ Vérifier si l'utilisateur a déjà candidaté à cette formation
+  useEffect(() => {
+    if (!utilisateurConnecte) return;
 
-  const estDansFavoris = favoris.some(
-    (fav) => fav.idFormation === formation.idFormation
-  );
+    const verifierCandidature = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5001/api/candidatures/utilisateur/${utilisateurConnecte}`
+        );
 
-  const postuler = () => {
-    if (!idUtilisateur) {
-      localStorage.setItem("formationSelectionnee", JSON.stringify(formation));
-      alert("Vous devez être connecté pour candidater !");
-      navigate("/connexion");
-    } else {
-      setAfficherForm(true);
+        const candidatures = response.data;
+        const dejaCandidate = candidatures.some(
+          (candidature) => candidature.idFormation === formation.idFormation
+        );
+
+        setCandidatureExistante(dejaCandidate);
+      } catch (error) {
+        console.error("❌ Erreur lors de la vérification des candidatures :", error);
+      }
+    };
+
+    verifierCandidature();
+  }, [utilisateurConnecte]);
+
+  // ✅ Chargement des favoris depuis le stockage local
+  useEffect(() => {
+    try {
+      const favorisStockes = localStorage.getItem("favoris");
+      setFavoris(favorisStockes ? JSON.parse(favorisStockes) : []);
+    } catch (error) {
+      console.error("❌ Erreur lors du chargement des favoris :", error);
+      setFavoris([]);
     }
+  }, []);
+
+  const estDansFavoris = favoris.some((fav) => fav.idFormation === formation.idFormation);
+
+  // ✅ Gérer la candidature (connexion requise)
+  const postuler = () => {
+    if (!utilisateurConnecte) {
+      alert("⚠️ Vous devez être connecté pour candidater !");
+      localStorage.setItem("formationSelectionnee", JSON.stringify(formation));
+      navigate("/connexion-etudiant"); // 🔄 Redirection vers la connexion
+      return;
+    }
+
+    if (candidatureExistante) {
+      alert("⚠️ Vous avez déjà candidaté à cette formation !");
+      return;
+    }
+
+    // ✅ Si connecté et pas encore candidaté, ouvrir le formulaire
+    setAfficherForm(true);
   };
 
+  // ✅ Ajout/retrait des favoris
   const ajouterRetirerFavoris = () => {
     let newFavoris;
     if (estDansFavoris) {
-      newFavoris = favoris.filter(fav => fav.idFormation !== formation.idFormation);
+      newFavoris = favoris.filter((fav) => fav.idFormation !== formation.idFormation);
     } else {
       newFavoris = [...favoris, formation];
     }
@@ -80,15 +129,20 @@ const FormationCard = ({ formation }) => {
           <FaStar /> {estDansFavoris ? "Retirer des favoris" : "Ajouter aux favoris"}
         </button>
 
-        <button className="btn-candidater" onClick={postuler}>
-          <FaCheck /> Candidater
+        <button
+          className="btn-candidater"
+          onClick={postuler}
+          disabled={candidatureExistante}
+        >
+          <FaCheck /> {candidatureExistante ? "Déjà candidaté" : "Candidater"}
         </button>
       </div>
 
-      {afficherForm && idUtilisateur && (
+      {/* ✅ Affichage du formulaire uniquement si l'utilisateur est connecté */}
+      {afficherForm && utilisateurConnecte && (
         <CandidatureForm
           idFormation={formation.idFormation}
-          idUtilisateur={idUtilisateur}
+          idUtilisateur={utilisateurConnecte}
           fermerFormulaire={() => setAfficherForm(false)}
         />
       )}

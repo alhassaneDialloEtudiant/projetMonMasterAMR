@@ -18,6 +18,7 @@ import DossierCandidat from './pages/DossierCandidat';
 import Formations from './pages/AjouterFormation';
 import MesFavoris from "./pages/MesFavoris";
 import MesCandidatures from "./pages/MesCandidatures";
+import PageAccueilAdmin from './pages/PageAccueilAdmin';
 
 function App() {
     return (
@@ -50,13 +51,17 @@ function App() {
                         <Route path="/dossier-candidat" element={<DossierCandidat />} />
                         <Route path="/mes-favoris" element={<MesFavoris />} />
                         <Route path="/mes-candidatures" element={<MesCandidatures />} />
+                        <Route path="/admin-universitaire" element={<PageAccueilAdmin  />} />
+                        
                         
                     </Routes>
+                    
                 </main>
 
                 {/* Pied de page fixe */}
                 <PiedDePage />
             </div>
+            
         </Router>
     );
 }
