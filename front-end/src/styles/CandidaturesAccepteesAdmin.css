@@ -1,0 +1,85 @@
+/* ✅ Conteneur principal */
+.candidatures-acceptees-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    margin: auto;
+  }
+  
+  /* ✅ Titre principal */
+  .candidatures-acceptees-container h2 {
+    text-align: center;
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  /* ✅ Sélecteur d'université */
+  .universite-selector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .universite-selector label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .universite-selector select {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  /* ✅ Liste des candidatures */
+  .candidatures-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+  }
+  
+  /* ✅ Carte candidature */
+  .candidature-card {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 280px;
+    text-align: center;
+  }
+  
+  .candidature-card h3 {
+    color: #007bff;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .candidature-card p {
+    font-size: 14px;
+    color: #555;
+    margin: 5px 0;
+  }
+  
+  /* ✅ Statut accepté */
+  .status.acceptee {
+    color: #28a745;
+    font-weight: bold;
+  }
+  
+  /* ✅ Messages de chargement et erreur */
+  .loading, .error, .no-results {
+    text-align: center;
+    font-size: 16px;
+    margin-top: 15px;
+    color: #d9534f;
+  }
+  

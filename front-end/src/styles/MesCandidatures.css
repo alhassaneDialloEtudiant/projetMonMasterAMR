@@ -1,30 +1,113 @@
+/* ✅ Conteneur principal */
 .mes-candidatures-container {
-    text-align: center;
-    padding: 20px;
-  }
-  
-  .mes-candidatures-title {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-  
-  .mes-candidatures-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-  }
-  
-  .btn-retirer {
-    background: red;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .btn-retirer:hover {
-    background: darkred;
-  }
-  
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* ✅ Titre principal */
+.mes-candidatures-container h2 {
+  font-size: 24px;
+  color: #002855;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.icon {
+  margin-right: 8px;
+  color: #002855;
+}
+
+/* ✅ Liste des candidatures */
+.candidatures-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* ✅ Carte de candidature */
+.candidature-card {
+  width: 400px;
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  transition: transform 0.2s ease-in-out;
+}
+
+.candidature-card:hover {
+  transform: translateY(-5px);
+}
+
+/* ✅ Logo de l'université */
+.logo-container {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.university-logo {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  border-radius: 5px;
+}
+
+/* ✅ Nom de la formation */
+.formation-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #002855;
+  text-transform: capitalize;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* ✅ Informations */
+p {
+  font-size: 14px;
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  color: #333;
+}
+
+p strong {
+  font-weight: bold;
+  color: #002855;
+}
+
+/* ✅ Icônes */
+p .icon {
+  margin-right: 8px;
+  font-size: 16px;
+  color: #002855;
+}
+
+/* ✅ Message d'erreur */
+.error {
+  color: #d9534f;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* ✅ Chargement */
+.loading {
+  font-size: 16px;
+  color: #333;
+  font-weight: bold;
+}
+
+/* ✅ Aucun résultat */
+.no-results {
+  font-size: 16px;
+  color: #666;
+  font-weight: bold;
+}
