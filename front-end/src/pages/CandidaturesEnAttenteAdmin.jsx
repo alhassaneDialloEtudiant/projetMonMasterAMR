@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import DossierCandidat from "./DossierCandidat";
 import "../styles/CandidaturesEnAttenteAdmin.css";
 
 const CandidaturesEnAttenteAdmin = ({ idAdminUniversite }) => {
@@ -10,6 +11,7 @@ const CandidaturesEnAttenteAdmin = ({ idAdminUniversite }) => {
   const [error, setError] = useState(null);
   const [commentaires, setCommentaires] = useState({});
   const [demandesSupp, setDemandesSupp] = useState({});
+  const [modalEtudiant, setModalEtudiant] = useState(null);
 
   useEffect(() => {
     const fetchUniversites = async () => {
@@ -109,6 +111,14 @@ const CandidaturesEnAttenteAdmin = ({ idAdminUniversite }) => {
     setDemandesSupp((prev) => ({ ...prev, [id]: value }));
   };
 
+  const handleOpenModal = (idUtilisateur) => {
+    setModalEtudiant(idUtilisateur);
+  };
+
+  const handleCloseModal = () => {
+    setModalEtudiant(null);
+  };
+
   return (
     <div className="candidatures-container">
       <h2>📄 Candidatures en Attente</h2>
@@ -134,28 +144,34 @@ const CandidaturesEnAttenteAdmin = ({ idAdminUniversite }) => {
       {candidatures.length > 0 && (
         <div className="candidatures-list">
           {candidatures.map((cand) => (
-            <div key={cand.idCandidature} className="candidature-card">
-              <h3>{cand.nomEtudiant}</h3>
+            <div key={cand.idCandidature} className={`candidature-card ${cand.demandeSupp && !cand.justificatifSupplementaire ? "highlight-warning" : ""}`}>
+              <div className="card-header">
+                <h3>{cand.nomEtudiant}</h3>
+                {cand.demandeSupp && !cand.justificatifSupplementaire && (
+                  <span className="badge-alert">⚠️ Suivi requis</span>
+                )}
+              </div>
+
               <p><strong>Formation :</strong> {cand.nomFormation}</p>
               <p><strong>Université :</strong> {cand.universite}</p>
               <p><strong>Localisation :</strong> {cand.localisation}</p>
               <p><strong>Statut :</strong> <span className="status en-attente">En attente</span></p>
               <p><strong>Documents :</strong></p>
               <ul>
-                {cand.cv && <li><a href={`/uploads/candidatures/${cand.cv}`} download>📄 CV</a></li>}
-                {cand.releveNotes && <li><a href={`/uploads/candidatures/${cand.releveNotes}`} download>📄 Relevé de notes</a></li>}
-                {cand.diplome && <li><a href={`/uploads/candidatures/${cand.diplome}`} download>📄 Diplôme</a></li>}
-                {cand.lettreMotivation && <li><a href={`/uploads/candidatures/${cand.lettreMotivation}`} download>📄 Lettre de motivation</a></li>}
-                {cand.justificatifSupplementaire && <li><a href={`/uploads/candidatures/${cand.justificatifSupplementaire}`} download>📄 Autre justificatif</a></li>}
+                {cand.cv && <li><a href={`http://localhost:5001/uploads/candidatures/${cand.cv}`} download target="_blank" rel="noopener noreferrer">📄 CV</a></li>}
+                {cand.releveNotes && <li><a href={`http://localhost:5001/uploads/candidatures/${cand.releveNotes}`} download target="_blank" rel="noopener noreferrer">📄 Relevé de notes</a></li>}
+                {cand.diplome && <li><a href={`http://localhost:5001/uploads/candidatures/${cand.diplome}`} download target="_blank" rel="noopener noreferrer">📄 Diplôme</a></li>}
+                {cand.lettreMotivation && <li><a href={`http://localhost:5001/uploads/candidatures/${cand.lettreMotivation}`} download target="_blank" rel="noopener noreferrer">📄 Lettre de motivation</a></li>}
+                {cand.justificatifSupplementaire && <li><a href={`http://localhost:5001/uploads/candidatures/${cand.justificatifSupplementaire}`} download target="_blank" rel="noopener noreferrer">📄 Autre justificatif</a></li>}
               </ul>
 
               {cand.demandeSupp && (
                 <p className="info-supp">
-                  📩 Document demandé : <strong>{cand.demandeSupp}</strong><br/>
+                  📩 Document demandé : <strong>{cand.demandeSupp}</strong><br />
                   {cand.justificatifSupplementaire ? (
-                    <span className="ok">✅ Document reçu</span>
+                    <span className="ok">✅ Document complémentaire reçu</span>
                   ) : (
-                    <span className="pending">❌ Document non reçu</span>
+                    <span className="pending">⚠️ En attente du document complémentaire</span>
                   )}
                 </p>
               )}
@@ -174,6 +190,10 @@ const CandidaturesEnAttenteAdmin = ({ idAdminUniversite }) => {
               />
               <button onClick={() => handleDemandeSupp(cand.idCandidature)}>📩 Envoyer la demande</button>
 
+              <button className="btn-voir" onClick={() => handleOpenModal(cand.idUtilisateur)}>
+                📂 Voir le dossier complet
+              </button>
+
               <div className="actions">
                 <button 
                   className="accept-btn" 
@@ -188,6 +208,15 @@ const CandidaturesEnAttenteAdmin = ({ idAdminUniversite }) => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {modalEtudiant && (
+        <div className="modal-overlay" onClick={handleCloseModal}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <button className="close-modal" onClick={handleCloseModal}>✖</button>
+            <DossierCandidat utilisateurId={modalEtudiant} />
+          </div>
         </div>
       )}
 

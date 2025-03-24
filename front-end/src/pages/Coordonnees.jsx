@@ -2,26 +2,26 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/Coordonnees.css";
 
-const Coordonnees = () => {
+const Coordonnees = ({ utilisateurId: propUtilisateurId }) => {
   const [formData, setFormData] = useState({
     emailUtilisateur: "",
     telephone1: "",
     telephone2: "",
   });
 
-  // 📌 Récupérer l'ID utilisateur connecté
-  const idUtilisateur = localStorage.getItem("idUtilisateur");
+  const [idUtilisateur, setIdUtilisateur] = useState(null);
 
   useEffect(() => {
-    const fetchCoordonnees = async () => {
-      if (!idUtilisateur) {
-        console.error("ID utilisateur introuvable");
-        return;
-      }
+    const id = propUtilisateurId || localStorage.getItem("idUtilisateur");
+    if (!id) {
+      console.error("ID utilisateur introuvable");
+      return;
+    }
+    setIdUtilisateur(id);
 
+    const fetchCoordonnees = async () => {
       try {
-        // 🔥 Appeler l'API pour récupérer l'email + téléphones
-        const response = await axios.get(`http://localhost:5001/api/coordonnees/${idUtilisateur}`);
+        const response = await axios.get(`http://localhost:5001/api/coordonnees/${id}`);
         if (response.status === 200) {
           setFormData({
             emailUtilisateur: response.data.emailUtilisateur || "",
@@ -35,13 +35,14 @@ const Coordonnees = () => {
     };
 
     fetchCoordonnees();
-  }, [idUtilisateur]);
+  }, [propUtilisateurId]);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async () => {
+    if (!idUtilisateur) return;
     try {
       await axios.post(`http://localhost:5001/api/coordonnees/enregistrer/${idUtilisateur}`, formData);
       alert("Coordonnées enregistrées avec succès !");
@@ -56,17 +57,37 @@ const Coordonnees = () => {
 
       <div className="coord-group">
         <label>Adresse électronique :</label>
-        <input type="email" name="emailUtilisateur" value={formData.emailUtilisateur} readOnly className="coord-input" />
+        <input
+          type="email"
+          name="emailUtilisateur"
+          value={formData.emailUtilisateur}
+          readOnly
+          className="coord-input"
+        />
       </div>
 
       <div className="coord-group">
         <label>Téléphone 1 :</label>
-        <input type="text" name="telephone1" value={formData.telephone1} onChange={handleInputChange} placeholder="Exemple : +337XXXXXXXX" className="coord-input" />
+        <input
+          type="text"
+          name="telephone1"
+          value={formData.telephone1}
+          onChange={handleInputChange}
+          placeholder="Exemple : +337XXXXXXXX"
+          className="coord-input"
+        />
       </div>
 
       <div className="coord-group">
         <label>Téléphone 2 :</label>
-        <input type="text" name="telephone2" value={formData.telephone2} onChange={handleInputChange} placeholder="Exemple : +224XXXXXXXX" className="coord-input" />
+        <input
+          type="text"
+          name="telephone2"
+          value={formData.telephone2}
+          onChange={handleInputChange}
+          placeholder="Exemple : +224XXXXXXXX"
+          className="coord-input"
+        />
       </div>
 
       <button onClick={handleSubmit} className="coord-button">Enregistrer</button>

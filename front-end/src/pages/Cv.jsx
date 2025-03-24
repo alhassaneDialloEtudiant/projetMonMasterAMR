@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/CV.css";
-import { FaFilePdf, FaTrash, FaUpload } from "react-icons/fa"; // Ajout d'icônes
+import { FaFilePdf, FaTrash, FaUpload } from "react-icons/fa";
 
-const CV = () => {
+const CV = ({ utilisateurId }) => {
   const [cv, setCv] = useState(null);
   const [cvUrl, setCvUrl] = useState("");
-  const idUtilisateur = localStorage.getItem("idUtilisateur");
+
+  const resolvedId = utilisateurId || localStorage.getItem("idUtilisateur");
 
   useEffect(() => {
-    fetchCv();
-  }, []);
+    if (resolvedId) fetchCv();
+  }, [resolvedId]);
 
-  // 📌 Récupérer le CV existant
   const fetchCv = async () => {
     try {
-      const response = await axios.get(`http://localhost:5001/api/cv/${idUtilisateur}`);
+      const response = await axios.get(`http://localhost:5001/api/cv/${resolvedId}`);
       if (response.data.cv) {
         setCvUrl(`http://localhost:5001/uploads/${response.data.cv}`);
       }
@@ -24,12 +24,11 @@ const CV = () => {
     }
   };
 
-  // 📌 Upload du CV
   const handleUpload = async (e) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("cv", cv);
-    formData.append("idUtilisateur", idUtilisateur);
+    formData.append("idUtilisateur", resolvedId);
 
     try {
       const response = await axios.post("http://localhost:5001/api/cv/upload", formData, {
@@ -43,10 +42,9 @@ const CV = () => {
     }
   };
 
-  // 📌 Supprimer le CV
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5001/api/cv/supprimer/${idUtilisateur}`);
+      await axios.delete(`http://localhost:5001/api/cv/supprimer/${resolvedId}`);
       alert("CV supprimé avec succès !");
       setCvUrl("");
     } catch (error) {
@@ -68,7 +66,6 @@ const CV = () => {
             </a>
           </div>
 
-          {/* 📌 Boutons alignés à droite */}
           <div className="button-container">
             <button className="delete-button" onClick={handleDelete}>
               <FaTrash /> Supprimer
@@ -86,7 +83,6 @@ const CV = () => {
             required
           />
 
-          {/* 📌 Boutons alignés à droite */}
           <div className="button-container">
             <button type="submit" className="cv-button" onClick={handleUpload}>
               <FaUpload /> Enregistrer

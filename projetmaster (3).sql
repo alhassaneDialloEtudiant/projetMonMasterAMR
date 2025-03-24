@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : ven. 21 mars 2025 à 12:42
+-- Généré le : lun. 24 mars 2025 à 13:49
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -34,14 +34,6 @@ CREATE TABLE `admingeneraux` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `admingeneraux`
---
-
-INSERT INTO `admingeneraux` (`idAdminGeneral`, `idUtilisateur`, `pouvoirAdmin`) VALUES
-('ADMGEN1157', 'USER16544', 'salaire 1'),
-('ADMGEN9576', 'USER09289', 'general admin');
-
---
 -- Déclencheurs `admingeneraux`
 --
 DELIMITER $$
@@ -63,13 +55,6 @@ CREATE TABLE `adminuniversitaires` (
   `idEtablissement` varchar(10) NOT NULL,
   `poste` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Déchargement des données de la table `adminuniversitaires`
---
-
-INSERT INTO `adminuniversitaires` (`idAdminUniversitaire`, `idUtilisateur`, `idEtablissement`, `poste`) VALUES
-('ADMUNIV944', 'USER33040', 'ETAB17524', 'rosane');
 
 --
 -- Déclencheurs `adminuniversitaires`
@@ -101,8 +86,7 @@ CREATE TABLE `baccalaureats` (
 --
 
 INSERT INTO `baccalaureats` (`baccalaureatId`, `idUtilisateur`, `anneeObtention`, `typeBaccalaureat`, `serieBaccalaureat`, `paysObtention`) VALUES
-('BAC6392', 'USER91022', '2020', 'Technologique', 'Scientifique', 'France'),
-('BAC8718', 'USER70385', '0000', '', '', '');
+('BAC3611', 'USER70822', '2023', 'Général', 'Scientifique', 'France');
 
 --
 -- Déclencheurs `baccalaureats`
@@ -129,16 +113,19 @@ CREATE TABLE `candidatures` (
   `releveNotes` varchar(255) NOT NULL,
   `diplome` varchar(255) NOT NULL,
   `justificatifSupplementaire` varchar(255) DEFAULT NULL,
-  `statut` enum('En attente','acceptée','Refusée','Liste d’attente') DEFAULT 'En attente'
+  `statut` enum('En attente','acceptée','Refusée','Liste d’attente') DEFAULT 'En attente',
+  `commentaire` text DEFAULT NULL,
+  `demandeSupp` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `candidatures`
 --
 
-INSERT INTO `candidatures` (`idCandidature`, `idUtilisateur`, `idFormation`, `lettreMotivation`, `cv`, `releveNotes`, `diplome`, `justificatifSupplementaire`, `statut`) VALUES
-('CAND0030', 'USER97142', 'FOR3367', '1742433124901-devenir_ingÃ©nieur_en_dÃ©veloppement_web_avance_lille.pdf', '1742433124902-Lettre_Motivation_MIAGE1EvryIngWeb.pdf', '1742433124906-lettre de motivation le Haveen dev web.pdf', '1742433124906-Lettre_Motivation_MIAGE1EvryIngWeb.pdf', '1742433124908-AttestationEngagementEtudiant.pdf', 'acceptée'),
-('CAND1278', 'USER63919', 'FOR3367', '1742438316738-Lettre_Motivation_MIAGE1EvryIngWeb.pdf', '1742438316740-Lettre_Motivation_MIAGE1EvryIngWeb.pdf', '1742438316742-Lettre_Motivation_MIAGE1EvryIngWebAlternance.pdf', '1742438316746-Lettre_Motivation_MIAGE1EvryIngWeb.pdf', '1742438316749-Lettre_Motivation_MIAGE1EvryIngWebAlternance.pdf', 'Refusée');
+INSERT INTO `candidatures` (`idCandidature`, `idUtilisateur`, `idFormation`, `lettreMotivation`, `cv`, `releveNotes`, `diplome`, `justificatifSupplementaire`, `statut`, `commentaire`, `demandeSupp`) VALUES
+('CAND1423', 'USER70822', 'FOR9704', '1742819824904-CV.pdf', '1742819824907-CV.pdf', '1742819824909-CV.pdf', '1742819824911-CV.pdf', NULL, 'acceptée', NULL, NULL),
+('CAND8244', 'USER70822', 'FOR3258', '1742819805458-cvHavreDev.pdf', '1742819805460-cvHavreDev.pdf', '1742819805462-CV.pdf', '1742819805464-CV.pdf', NULL, 'acceptée', NULL, NULL),
+('CAND9933', 'USER70822', 'FOR3070', '1742819731262-cvHavreDev.pdf', '1742819731265-cvHavreDev.pdf', '1742819731266-cvHavreDev.pdf', '1742819731269-cvHavreDev.pdf', '1742819731270-CV.pdf', 'Refusée', 'niveau insuffisant', NULL);
 
 --
 -- Déclencheurs `candidatures`
@@ -168,10 +155,7 @@ CREATE TABLE `coordonnees` (
 --
 
 INSERT INTO `coordonnees` (`coordonneesId`, `idUtilisateur`, `telephone1`, `telephone2`) VALUES
-('ADDR0540', 'USER91022', '+33753846170', ''),
-('ADDR4984', 'USER70385', '', ''),
-('ADDR5307', 'USER97142', '+33753846170', ''),
-('ADDR8827', 'USER66749', '+33753846170', '');
+('ADDR6645', 'USER70822', '+33753846170', '');
 
 --
 -- Déclencheurs `coordonnees`
@@ -202,12 +186,8 @@ CREATE TABLE `cursuspostbac` (
 --
 
 INSERT INTO `cursuspostbac` (`cursusId`, `idUtilisateur`, `anneeUniversitaire`, `diplomeFrancais`, `niveauDiplome`) VALUES
-('CURS1643', 'USER97142', 'T', 'Oui', 'Bac+1'),
-('CURS3348', 'USER70385', '2023', 'Oui', 'Bac+1'),
-('CURS3353', 'USER91022', '2023', 'Non', 'Bac+1'),
-('CURS5100', 'USER70385', '2023', 'Oui', 'Licence 3'),
-('CURS5630', 'USER70385', '2024', 'Oui', 'Bac+2'),
-('CURS8274', 'USER97142', 'T', 'Oui', 'Bac+2');
+('CURS3612', 'USER70822', '2023', 'Non', 'Bac+2'),
+('CURS6889', 'USER70822', '2023', 'Oui', 'Bac+1');
 
 --
 -- Déclencheurs `cursuspostbac`
@@ -236,10 +216,7 @@ CREATE TABLE `cv` (
 --
 
 INSERT INTO `cv` (`idCV`, `idUtilisateur`, `nomFichier`) VALUES
-('CV1496', 'USER66749', 'cv_undefined.pdf'),
-('CV7591', 'USER91022', 'cv_undefined.pdf'),
-('CV9512', 'USER97142', 'cv_undefined.pdf'),
-('CV9601', 'USER70385', 'cv_undefined.pdf');
+('CV3723', 'USER70822', 'cv_undefined.pdf');
 
 --
 -- Déclencheurs `cv`
@@ -299,14 +276,6 @@ CREATE TABLE `etudiants` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `etudiants`
---
-
-INSERT INTO `etudiants` (`idEtudiant`, `idUtilisateur`, `numeroEtudiant`, `niveauEtudiant`, `dateInscription`) VALUES
-('ETUD64192', 'USER42314', '1', 'L3 info', '2025-01-16'),
-('ETUD64926', 'USER85117', '12345632', 'L3 CHIMIE ⚗', '2025-02-15');
-
---
 -- Déclencheurs `etudiants`
 --
 DELIMITER $$
@@ -339,7 +308,7 @@ CREATE TABLE `experiencespro` (
 --
 
 INSERT INTO `experiencespro` (`expId`, `idUtilisateur`, `anneeDebut`, `dureeMois`, `tempsTravail`, `employeur`, `intitule`, `descriptif`, `fichierJustificatif`) VALUES
-('EXP3461', 'USER97142', '2003', 3, 'Temps partiel', 'TOTO', 'INFORMATIQUE', 'TT', 'c36ec1c36e58a4a749242616f54977d6');
+('EXP8499', 'USER70822', '2023', 14, 'Temps partiel', 'TOTO', 'INFORMATIQUE', 'FRONT END', '8abfa3f0325a64d81df48d3d25b19b37');
 
 --
 -- Déclencheurs `experiencespro`
@@ -374,15 +343,9 @@ CREATE TABLE `formations` (
 --
 
 INSERT INTO `formations` (`idFormation`, `universite`, `nomFormation`, `typeFormation`, `capacite`, `tauxAcces`, `localisation`, `logo`, `idAdminUniversite`) VALUES
-('FOR3215', 'université de marseille', 'Chimie ', 'Alternance', 100, 50.00, 'marseille', '1742423788581-Capture d\'Ã©cran 2025-03-19 132904.png', 'USER30977'),
-('FOR3367', 'SORBONNE', 'Président Diallo Alhassane', 'Formation initiale', 2, 23.00, 'SORBONNE PARIS NORD', '1742424491286-Capture d\'Ã©cran 2025-03-13 033411.png', 'USER30977'),
-('FOR4017', 'SORBONNE', 'Président Diallo Alhassane', 'Formation initiale', 2, 23.00, 'SORBONNE PARIS NORD', '1742424480600-Capture d\'Ã©cran 2025-03-13 033411.png', 'USER30977'),
-('FOR4131', 'COTE D\'IVOIRE', 'commerce', 'Formation initiale', 40, 10.00, 'COCODY', '1742465174203-Capture d\'Ã©cran 2025-03-19 220929.png', 'USER68256'),
-('FOR4386', 'SORBONNE', 'Président Diallo Alhassane', 'Formation initiale', 2, 23.00, 'SORBONNE PARIS NORD', NULL, 'USER30977'),
-('FOR5083', 'SORBONNE', 'Président Diallo Alhassane', 'Formation initiale', 2, 23.00, 'SORBONNE PARIS NORD', '1742424480786-Capture d\'Ã©cran 2025-03-13 033411.png', 'USER30977'),
-('FOR7069', 'paris sorbonne', 'informatique ', 'Alternance', 23, 13.00, 'sorbonne', NULL, 'USER03767'),
-('FOR7831', 'université d\"evry', 'mathématique', 'Formation initiale', 23, 13.00, 'evry', NULL, 'USER30977'),
-('FOR9073', 'SORBONNE diallo', 'Président Diallo Alhassane', 'Formation initiale', 2, 23.00, 'SORBONNE PARIS NORD', NULL, 'USER30977');
+('FOR3070', 'université de marseille', 'informatique', 'Alternance', 50, 12.00, 'marseille', '1742567245331-Capture d\'Ã©cran 2025-03-21 151129.png', 'USER06981'),
+('FOR3258', 'université d\'evry', 'miage', 'Alternance', 12, 1.00, 'evry', '1742567279450-Capture d\'Ã©cran 2025-03-13 033411.png', 'USER06981'),
+('FOR9704', 'SORBONNE', 'mathématique', 'Formation initiale', 20, 12.00, 'marseille', '1742570405192-Capture d\'Ã©cran 2025-03-13 033411.png', 'USER06981');
 
 --
 -- Déclencheurs `formations`
@@ -473,10 +436,7 @@ CREATE TABLE `relevesnotes` (
 --
 
 INSERT INTO `relevesnotes` (`releveId`, `idUtilisateur`, `fichierReleve`, `commentaire`) VALUES
-('REL3655', 'USER70385', 'releve_undefined_c3236864-bced-4067-bd18-f35803a5eb69.pdf', NULL),
-('REL4225', 'USER91022', 'releve_undefined_feed3c16-e519-4242-9935-de0d5cf8b921.pdf', NULL),
-('REL4372', 'USER70385', 'releve_undefined_13451a71-8ad7-467e-b47f-64ab1b8645c5.pdf', 'TT'),
-('REL9677', 'USER97142', 'releve_undefined_36668539-f856-4fb3-ac4e-be68de91d507.pdf', 'YY');
+('REL7394', 'USER70822', 'releve_undefined_43a4cf60-fe5a-457c-a897-b3face32c65d.pdf', NULL);
 
 --
 -- Déclencheurs `relevesnotes`
@@ -507,8 +467,7 @@ CREATE TABLE `stages` (
 --
 
 INSERT INTO `stages` (`stageId`, `idUtilisateur`, `entreprise`, `duree`, `description`) VALUES
-('STG2651', 'USER91022', '65656', '2', ''),
-('STG3950', 'USER70385', '65656', '2', 'DEV WEB');
+('STG6136', 'USER70822', 'DIALLO', '2', 'DÉVELOPPEMENT WEB');
 
 --
 -- Déclencheurs `stages`
@@ -552,26 +511,10 @@ CREATE TABLE `utilisateurs` (
 --
 
 INSERT INTO `utilisateurs` (`idUtilisateur`, `nomUtilisateur`, `prenomUtilisateur`, `emailUtilisateur`, `motDePasseUtilisateur`, `roleUtilisateur`, `status`, `civilite`, `deuxiemePrenom`, `nomUsage`, `nationalite`, `dateNaissance`, `paysNaissance`, `adresse`, `complementAdresse`, `codePostal`, `ville`, `ine`) VALUES
-('USER03767', 'DIALLO', ' Alhassane evry', 'alhassane.diallo1.etu@gmail.com', '$2b$10$ebOitPJ162W7qX1la3jtOu0QYgQAtgawknE.1dFw7FNZ3NbP6bzey', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
-('USER09289', 'CAMARA', 'Alhassane', 'alhassane.diallo41.etu@gmail.com', '$2b$10$V2ZZi3w0ghzaa7tf3srrqOMdLnY5utfCmJ7p9JHFpJ2Y36Doh2Iou', 'AdminGeneral', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
-('USER10801', 'barry ', 'atigou', 'atigou@gmail.com', '123456789', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
-('USER16544', 'BAH', 'soumah', 'alascodiallo1111@gmail.com', '$2b$10$2KT3K5dTfm8MoTNNCAL6XuQ9jzK6SNjZwIBszpiKExp5c1V3r/VN.', 'AdminGeneral', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
-('USER28599', 'barry ', 'atigou1', 'a@gmail.com', '$2b$10$fg59QL5ib8vs2axfwRZcXO1daYMCJsCOipRZeqeNR9ropR9dawoie', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
-('USER30977', 'bah bah', 'houleymatou ', 'ba@gmail.com', '$2b$10$Nauo7PmuNK5eWi95SpBeWu0WvfPHlLt8Nsf8M1gLmpCJzXZap44Eq', 'AdminUniversitaire', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
-('USER33040', 'SYLLA', 'Diallo Alhassane', 'alhassane.diallo.23etu@gmail.com', '$2b$10$E1UaHRwIlXD.vqTeko30D.q1vtT0tYxIypyJkyXOZM1pXzIe2VjB2', 'AdminUniversitaire', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
-('USER33851', 'Diallo  Alhassane', 'Président', 'alascodiallo@gmail.com', '$2b$10$zqwm4SN3MgkxzlP7PA4Zo.VzzbjNX/yUw8KRsQsOfOjK4VD/o3bbK', 'AdminGeneral', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
-('USER42314', 'Diallo', 'Alhassane', 'alhassane.diallo11.etu@gmail.com', '$2b$10$cpwufJLioqChPEbfvOm2G.aqy4PPInRtn0k13Cn5dT5/Utalpgc9q', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
-('USER51878', 'Raissa', 'camara', 'raissa@gmail.com', '$2b$10$jA8mfTg0iUQU8kxMWlBN/.bLWBcqAVgEYMI/igzZ8WM6bNBrLcBlK', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
-('USER53901', 'Diallo', 'Alseny', 'alascodiallo111@gmail.com', '$2b$10$bRMGnIJz5W/iYHE/sab21ejrcbPO4b3vHSShpeDLHTexttNT0Hc7a', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
-('USER63919', 'BAH', '', 'alhassane.diall1.etu@gmail.com', '$2b$10$blKPDSefJOHbbvT6VWvGgeAWs6ejT6IxvhiWlgUI2tBb8NmAeauX6', 'Etudiant', 'actif', 'M.', '', NULL, 'FRANCE', '0000-00-00', '', '', '', '', '', ''),
-('USER66749', 'Diallo', 'alhassane', 'diallo@gmail.com', '$2b$10$ZX5sZeFTvgM/gv7cGrzuMeC3vW8Wd4dCA8cMi/GjcEyG66ZWw95Li', 'Etudiant', 'actif', 'M.', '', NULL, 'FRANCE', '2025-02-28', 'France', 'LES ULIS(LES ULIS)', 'résidence bosquet les ulis,91940', '91940', 'LES ULIS', 'HHFYD'),
-('USER68256', 'sogoba', 'mariame', 'mariame@gmail.com', '$2b$10$VmHjR09YT2yIF9gk7w7w5OcujxzuPrr6J3yKIYx9ZTPXSQmsF4k9W', 'AdminUniversitaire', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
-('USER69604', 'BAH', 'aplha', 'alpha@gmail.com', '&é\"\'(-', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
-('USER70385', 'sow', 'fatima', 'fatima@gmail.com', '$2b$10$7/oCmf0mL.7AXe1L.QFuB.FVYrGeslDdOUldPS/kB8Hj3TRdjihhm', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
-('USER72097', 'bah SOW', 'houleymatou ', 'baSow@gmail.com', '$2b$10$rL..Wo7GpVj.znMVQvytCuIHDphGTGt6Ez7QxVlmEbCWsfMo1pwJ6', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
-('USER85117', 'sow', 'oumar', 'alala@gmail.com', 'dill]@gm', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
-('USER91022', 'bah', 'aissatou', 'aissa@gmail.com', '$2b$10$sglDMHfOfT3CZHLjAU4K4OKyTyS1/2SpnFD4r0ks.2jLzxF0t1Dw6', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
-('USER97142', 'DIALLO', '', 'alhassane.diallo.etu@gmail.com', '$2b$10$EtCtTU.PUqxyJn4JME0pZ.tAGL.RYrBXeH9.9TE8kVnO9zH5MhkBq', 'Etudiant', 'actif', 'M.', '', NULL, 'FRANCE', '2025-03-02', 'Guinée', '15 rue le bosquet', 'résidence bosquet les ulis,91940', '91940', 'Les ULIS', '1334GTY45CG');
+('USER05866', 'bah', 'houleymatou', 'hou@gmail.com', '123', 'AdminUniversitaire', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
+('USER06981', 'BAH', 'houleymatou', 'ba@gmail.com', '$2b$10$oRqrlaZPBSRKqwPHjwMt1.RRW4WXI3aQEyHZuzixegkXcuk.XvKUq', 'AdminUniversitaire', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
+('USER55142', 'sow', 'mamadou', 'mama@gmail.com', '123', 'AdminGeneral', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
+('USER70822', 'DIALLO', '', 'alascodiallo111@gmail.com', '$2b$10$IfEKr16O630c62EmVzG4fekn/RvxxGoY9ZC4ZUwUYvrkLeX3our/2', 'Etudiant', 'actif', 'M.', '', NULL, 'FRANCE', '2025-03-11', 'Guinée', '15 rue le bosquet', 'résidence bosquet les ulis,91940', '91310', 'LINAS', '123BHA');
 
 --
 -- Déclencheurs `utilisateurs`
