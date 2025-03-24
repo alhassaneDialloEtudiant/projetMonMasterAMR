@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mer. 12 mars 2025 à 01:18
+-- Généré le : ven. 21 mars 2025 à 12:42
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -101,7 +101,8 @@ CREATE TABLE `baccalaureats` (
 --
 
 INSERT INTO `baccalaureats` (`baccalaureatId`, `idUtilisateur`, `anneeObtention`, `typeBaccalaureat`, `serieBaccalaureat`, `paysObtention`) VALUES
-('BAC8109', 'USER70385', '2020', 'Général', 'Scientifique', 'France');
+('BAC6392', 'USER91022', '2020', 'Technologique', 'Scientifique', 'France'),
+('BAC8718', 'USER70385', '0000', '', '', '');
 
 --
 -- Déclencheurs `baccalaureats`
@@ -122,17 +123,29 @@ DELIMITER ;
 CREATE TABLE `candidatures` (
   `idCandidature` varchar(10) NOT NULL,
   `idUtilisateur` varchar(10) NOT NULL,
-  `idProgramme` varchar(10) NOT NULL,
-  `statutCandidature` enum('enAttente','acceptee','refusee') DEFAULT 'enAttente',
-  `dateSoumission` timestamp NOT NULL DEFAULT current_timestamp()
+  `idFormation` varchar(10) NOT NULL,
+  `lettreMotivation` text NOT NULL,
+  `cv` varchar(255) NOT NULL,
+  `releveNotes` varchar(255) NOT NULL,
+  `diplome` varchar(255) NOT NULL,
+  `justificatifSupplementaire` varchar(255) DEFAULT NULL,
+  `statut` enum('En attente','acceptée','Refusée','Liste d’attente') DEFAULT 'En attente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `candidatures`
+--
+
+INSERT INTO `candidatures` (`idCandidature`, `idUtilisateur`, `idFormation`, `lettreMotivation`, `cv`, `releveNotes`, `diplome`, `justificatifSupplementaire`, `statut`) VALUES
+('CAND0030', 'USER97142', 'FOR3367', '1742433124901-devenir_ingÃ©nieur_en_dÃ©veloppement_web_avance_lille.pdf', '1742433124902-Lettre_Motivation_MIAGE1EvryIngWeb.pdf', '1742433124906-lettre de motivation le Haveen dev web.pdf', '1742433124906-Lettre_Motivation_MIAGE1EvryIngWeb.pdf', '1742433124908-AttestationEngagementEtudiant.pdf', 'acceptée'),
+('CAND1278', 'USER63919', 'FOR3367', '1742438316738-Lettre_Motivation_MIAGE1EvryIngWeb.pdf', '1742438316740-Lettre_Motivation_MIAGE1EvryIngWeb.pdf', '1742438316742-Lettre_Motivation_MIAGE1EvryIngWebAlternance.pdf', '1742438316746-Lettre_Motivation_MIAGE1EvryIngWeb.pdf', '1742438316749-Lettre_Motivation_MIAGE1EvryIngWebAlternance.pdf', 'Refusée');
 
 --
 -- Déclencheurs `candidatures`
 --
 DELIMITER $$
-CREATE TRIGGER `avantInsertionCandidatures` BEFORE INSERT ON `candidatures` FOR EACH ROW BEGIN
-    SET NEW.idCandidature = CONCAT('CAND', LPAD(FLOOR(RAND() * 99999), 5, '0')); -- Génère un ID aléatoire
+CREATE TRIGGER `before_insert_candidatures` BEFORE INSERT ON `candidatures` FOR EACH ROW BEGIN
+    SET NEW.idCandidature = CONCAT('CAND', LPAD(FLOOR(RAND() * 9999), 4, '0'));
 END
 $$
 DELIMITER ;
@@ -156,6 +169,8 @@ CREATE TABLE `coordonnees` (
 
 INSERT INTO `coordonnees` (`coordonneesId`, `idUtilisateur`, `telephone1`, `telephone2`) VALUES
 ('ADDR0540', 'USER91022', '+33753846170', ''),
+('ADDR4984', 'USER70385', '', ''),
+('ADDR5307', 'USER97142', '+33753846170', ''),
 ('ADDR8827', 'USER66749', '+33753846170', '');
 
 --
@@ -187,8 +202,12 @@ CREATE TABLE `cursuspostbac` (
 --
 
 INSERT INTO `cursuspostbac` (`cursusId`, `idUtilisateur`, `anneeUniversitaire`, `diplomeFrancais`, `niveauDiplome`) VALUES
+('CURS1643', 'USER97142', 'T', 'Oui', 'Bac+1'),
 ('CURS3348', 'USER70385', '2023', 'Oui', 'Bac+1'),
-('CURS5630', 'USER70385', '2024', 'Oui', 'Bac+2');
+('CURS3353', 'USER91022', '2023', 'Non', 'Bac+1'),
+('CURS5100', 'USER70385', '2023', 'Oui', 'Licence 3'),
+('CURS5630', 'USER70385', '2024', 'Oui', 'Bac+2'),
+('CURS8274', 'USER97142', 'T', 'Oui', 'Bac+2');
 
 --
 -- Déclencheurs `cursuspostbac`
@@ -218,6 +237,8 @@ CREATE TABLE `cv` (
 
 INSERT INTO `cv` (`idCV`, `idUtilisateur`, `nomFichier`) VALUES
 ('CV1496', 'USER66749', 'cv_undefined.pdf'),
+('CV7591', 'USER91022', 'cv_undefined.pdf'),
+('CV9512', 'USER97142', 'cv_undefined.pdf'),
 ('CV9601', 'USER70385', 'cv_undefined.pdf');
 
 --
@@ -226,29 +247,6 @@ INSERT INTO `cv` (`idCV`, `idUtilisateur`, `nomFichier`) VALUES
 DELIMITER $$
 CREATE TRIGGER `before_insert_cv` BEFORE INSERT ON `cv` FOR EACH ROW BEGIN
     SET NEW.idCV = CONCAT('CV', LPAD(FLOOR(RAND() * 9999), 4, '0'));
-END
-$$
-DELIMITER ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `documents`
---
-
-CREATE TABLE `documents` (
-  `idDocument` varchar(10) NOT NULL,
-  `idCandidature` varchar(10) NOT NULL,
-  `typeDocument` varchar(50) NOT NULL,
-  `cheminFichier` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Déclencheurs `documents`
---
-DELIMITER $$
-CREATE TRIGGER `avantInsertionDocuments` BEFORE INSERT ON `documents` FOR EACH ROW BEGIN
-    SET NEW.idDocument = CONCAT('DOC', LPAD(FLOOR(RAND() * 99999), 5, '0')); -- Génère un ID aléatoire
 END
 $$
 DELIMITER ;
@@ -341,7 +339,7 @@ CREATE TABLE `experiencespro` (
 --
 
 INSERT INTO `experiencespro` (`expId`, `idUtilisateur`, `anneeDebut`, `dureeMois`, `tempsTravail`, `employeur`, `intitule`, `descriptif`, `fichierJustificatif`) VALUES
-('EXP4351', 'USER66749', '2020', 4, 'Temps plein', 'TOTO', 'INFORMATIQUE', 'DEVELOPPEUR FULL STOCK', '0fa456eafae2f440f716afc04e5634d9');
+('EXP3461', 'USER97142', '2003', 3, 'Temps partiel', 'TOTO', 'INFORMATIQUE', 'TT', 'c36ec1c36e58a4a749242616f54977d6');
 
 --
 -- Déclencheurs `experiencespro`
@@ -349,6 +347,49 @@ INSERT INTO `experiencespro` (`expId`, `idUtilisateur`, `anneeDebut`, `dureeMois
 DELIMITER $$
 CREATE TRIGGER `before_insert_experiencesPro` BEFORE INSERT ON `experiencespro` FOR EACH ROW BEGIN
     SET NEW.expId = CONCAT('EXP', LPAD(FLOOR(RAND() * 9999), 4, '0'));
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `formations`
+--
+
+CREATE TABLE `formations` (
+  `idFormation` varchar(10) NOT NULL,
+  `universite` varchar(255) NOT NULL,
+  `nomFormation` varchar(255) NOT NULL,
+  `typeFormation` enum('Formation initiale','Formation continue','Alternance') NOT NULL,
+  `capacite` int(11) NOT NULL,
+  `tauxAcces` decimal(5,2) NOT NULL,
+  `localisation` varchar(255) NOT NULL,
+  `logo` varchar(255) DEFAULT NULL,
+  `idAdminUniversite` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `formations`
+--
+
+INSERT INTO `formations` (`idFormation`, `universite`, `nomFormation`, `typeFormation`, `capacite`, `tauxAcces`, `localisation`, `logo`, `idAdminUniversite`) VALUES
+('FOR3215', 'université de marseille', 'Chimie ', 'Alternance', 100, 50.00, 'marseille', '1742423788581-Capture d\'Ã©cran 2025-03-19 132904.png', 'USER30977'),
+('FOR3367', 'SORBONNE', 'Président Diallo Alhassane', 'Formation initiale', 2, 23.00, 'SORBONNE PARIS NORD', '1742424491286-Capture d\'Ã©cran 2025-03-13 033411.png', 'USER30977'),
+('FOR4017', 'SORBONNE', 'Président Diallo Alhassane', 'Formation initiale', 2, 23.00, 'SORBONNE PARIS NORD', '1742424480600-Capture d\'Ã©cran 2025-03-13 033411.png', 'USER30977'),
+('FOR4131', 'COTE D\'IVOIRE', 'commerce', 'Formation initiale', 40, 10.00, 'COCODY', '1742465174203-Capture d\'Ã©cran 2025-03-19 220929.png', 'USER68256'),
+('FOR4386', 'SORBONNE', 'Président Diallo Alhassane', 'Formation initiale', 2, 23.00, 'SORBONNE PARIS NORD', NULL, 'USER30977'),
+('FOR5083', 'SORBONNE', 'Président Diallo Alhassane', 'Formation initiale', 2, 23.00, 'SORBONNE PARIS NORD', '1742424480786-Capture d\'Ã©cran 2025-03-13 033411.png', 'USER30977'),
+('FOR7069', 'paris sorbonne', 'informatique ', 'Alternance', 23, 13.00, 'sorbonne', NULL, 'USER03767'),
+('FOR7831', 'université d\"evry', 'mathématique', 'Formation initiale', 23, 13.00, 'evry', NULL, 'USER30977'),
+('FOR9073', 'SORBONNE diallo', 'Président Diallo Alhassane', 'Formation initiale', 2, 23.00, 'SORBONNE PARIS NORD', NULL, 'USER30977');
+
+--
+-- Déclencheurs `formations`
+--
+DELIMITER $$
+CREATE TRIGGER `before_insert_formations` BEFORE INSERT ON `formations` FOR EACH ROW BEGIN
+    SET NEW.idFormation = CONCAT('FOR', LPAD(FLOOR(RAND() * 9999), 4, '0'));
 END
 $$
 DELIMITER ;
@@ -432,7 +473,10 @@ CREATE TABLE `relevesnotes` (
 --
 
 INSERT INTO `relevesnotes` (`releveId`, `idUtilisateur`, `fichierReleve`, `commentaire`) VALUES
-('REL3655', 'USER70385', 'releve_undefined_c3236864-bced-4067-bd18-f35803a5eb69.pdf', NULL);
+('REL3655', 'USER70385', 'releve_undefined_c3236864-bced-4067-bd18-f35803a5eb69.pdf', NULL),
+('REL4225', 'USER91022', 'releve_undefined_feed3c16-e519-4242-9935-de0d5cf8b921.pdf', NULL),
+('REL4372', 'USER70385', 'releve_undefined_13451a71-8ad7-467e-b47f-64ab1b8645c5.pdf', 'TT'),
+('REL9677', 'USER97142', 'releve_undefined_36668539-f856-4fb3-ac4e-be68de91d507.pdf', 'YY');
 
 --
 -- Déclencheurs `relevesnotes`
@@ -463,6 +507,7 @@ CREATE TABLE `stages` (
 --
 
 INSERT INTO `stages` (`stageId`, `idUtilisateur`, `entreprise`, `duree`, `description`) VALUES
+('STG2651', 'USER91022', '65656', '2', ''),
 ('STG3950', 'USER70385', '65656', '2', 'DEV WEB');
 
 --
@@ -512,14 +557,18 @@ INSERT INTO `utilisateurs` (`idUtilisateur`, `nomUtilisateur`, `prenomUtilisateu
 ('USER10801', 'barry ', 'atigou', 'atigou@gmail.com', '123456789', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
 ('USER16544', 'BAH', 'soumah', 'alascodiallo1111@gmail.com', '$2b$10$2KT3K5dTfm8MoTNNCAL6XuQ9jzK6SNjZwIBszpiKExp5c1V3r/VN.', 'AdminGeneral', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
 ('USER28599', 'barry ', 'atigou1', 'a@gmail.com', '$2b$10$fg59QL5ib8vs2axfwRZcXO1daYMCJsCOipRZeqeNR9ropR9dawoie', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
+('USER30977', 'bah bah', 'houleymatou ', 'ba@gmail.com', '$2b$10$Nauo7PmuNK5eWi95SpBeWu0WvfPHlLt8Nsf8M1gLmpCJzXZap44Eq', 'AdminUniversitaire', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
 ('USER33040', 'SYLLA', 'Diallo Alhassane', 'alhassane.diallo.23etu@gmail.com', '$2b$10$E1UaHRwIlXD.vqTeko30D.q1vtT0tYxIypyJkyXOZM1pXzIe2VjB2', 'AdminUniversitaire', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
 ('USER33851', 'Diallo  Alhassane', 'Président', 'alascodiallo@gmail.com', '$2b$10$zqwm4SN3MgkxzlP7PA4Zo.VzzbjNX/yUw8KRsQsOfOjK4VD/o3bbK', 'AdminGeneral', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
 ('USER42314', 'Diallo', 'Alhassane', 'alhassane.diallo11.etu@gmail.com', '$2b$10$cpwufJLioqChPEbfvOm2G.aqy4PPInRtn0k13Cn5dT5/Utalpgc9q', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
 ('USER51878', 'Raissa', 'camara', 'raissa@gmail.com', '$2b$10$jA8mfTg0iUQU8kxMWlBN/.bLWBcqAVgEYMI/igzZ8WM6bNBrLcBlK', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
 ('USER53901', 'Diallo', 'Alseny', 'alascodiallo111@gmail.com', '$2b$10$bRMGnIJz5W/iYHE/sab21ejrcbPO4b3vHSShpeDLHTexttNT0Hc7a', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
+('USER63919', 'BAH', '', 'alhassane.diall1.etu@gmail.com', '$2b$10$blKPDSefJOHbbvT6VWvGgeAWs6ejT6IxvhiWlgUI2tBb8NmAeauX6', 'Etudiant', 'actif', 'M.', '', NULL, 'FRANCE', '0000-00-00', '', '', '', '', '', ''),
 ('USER66749', 'Diallo', 'alhassane', 'diallo@gmail.com', '$2b$10$ZX5sZeFTvgM/gv7cGrzuMeC3vW8Wd4dCA8cMi/GjcEyG66ZWw95Li', 'Etudiant', 'actif', 'M.', '', NULL, 'FRANCE', '2025-02-28', 'France', 'LES ULIS(LES ULIS)', 'résidence bosquet les ulis,91940', '91940', 'LES ULIS', 'HHFYD'),
+('USER68256', 'sogoba', 'mariame', 'mariame@gmail.com', '$2b$10$VmHjR09YT2yIF9gk7w7w5OcujxzuPrr6J3yKIYx9ZTPXSQmsF4k9W', 'AdminUniversitaire', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
 ('USER69604', 'BAH', 'aplha', 'alpha@gmail.com', '&é\"\'(-', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
 ('USER70385', 'sow', 'fatima', 'fatima@gmail.com', '$2b$10$7/oCmf0mL.7AXe1L.QFuB.FVYrGeslDdOUldPS/kB8Hj3TRdjihhm', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
+('USER72097', 'bah SOW', 'houleymatou ', 'baSow@gmail.com', '$2b$10$rL..Wo7GpVj.znMVQvytCuIHDphGTGt6Ez7QxVlmEbCWsfMo1pwJ6', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
 ('USER85117', 'sow', 'oumar', 'alala@gmail.com', 'dill]@gm', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
 ('USER91022', 'bah', 'aissatou', 'aissa@gmail.com', '$2b$10$sglDMHfOfT3CZHLjAU4K4OKyTyS1/2SpnFD4r0ks.2jLzxF0t1Dw6', 'Etudiant', 'actif', NULL, NULL, NULL, '', NULL, '', '', NULL, '', '', NULL),
 ('USER97142', 'DIALLO', '', 'alhassane.diallo.etu@gmail.com', '$2b$10$EtCtTU.PUqxyJn4JME0pZ.tAGL.RYrBXeH9.9TE8kVnO9zH5MhkBq', 'Etudiant', 'actif', 'M.', '', NULL, 'FRANCE', '2025-03-02', 'Guinée', '15 rue le bosquet', 'résidence bosquet les ulis,91940', '91940', 'Les ULIS', '1334GTY45CG');
@@ -566,7 +615,7 @@ ALTER TABLE `baccalaureats`
 ALTER TABLE `candidatures`
   ADD PRIMARY KEY (`idCandidature`),
   ADD KEY `idUtilisateur` (`idUtilisateur`),
-  ADD KEY `idProgramme` (`idProgramme`);
+  ADD KEY `idFormation` (`idFormation`);
 
 --
 -- Index pour la table `coordonnees`
@@ -590,13 +639,6 @@ ALTER TABLE `cv`
   ADD KEY `idUtilisateur` (`idUtilisateur`);
 
 --
--- Index pour la table `documents`
---
-ALTER TABLE `documents`
-  ADD PRIMARY KEY (`idDocument`),
-  ADD KEY `idCandidature` (`idCandidature`);
-
---
 -- Index pour la table `etablissements`
 --
 ALTER TABLE `etablissements`
@@ -616,6 +658,13 @@ ALTER TABLE `etudiants`
 ALTER TABLE `experiencespro`
   ADD PRIMARY KEY (`expId`),
   ADD KEY `idUtilisateur` (`idUtilisateur`);
+
+--
+-- Index pour la table `formations`
+--
+ALTER TABLE `formations`
+  ADD PRIMARY KEY (`idFormation`),
+  ADD KEY `fk_adminUniversite` (`idAdminUniversite`);
 
 --
 -- Index pour la table `notifications`
@@ -679,7 +728,8 @@ ALTER TABLE `baccalaureats`
 -- Contraintes pour la table `candidatures`
 --
 ALTER TABLE `candidatures`
-  ADD CONSTRAINT `candidatures_ibfk_1` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateurs` (`idUtilisateur`) ON DELETE CASCADE;
+  ADD CONSTRAINT `candidatures_ibfk_1` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateurs` (`idUtilisateur`) ON DELETE CASCADE,
+  ADD CONSTRAINT `candidatures_ibfk_2` FOREIGN KEY (`idFormation`) REFERENCES `formations` (`idFormation`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `coordonnees`
@@ -700,12 +750,6 @@ ALTER TABLE `cv`
   ADD CONSTRAINT `cv_ibfk_1` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateurs` (`idUtilisateur`) ON DELETE CASCADE;
 
 --
--- Contraintes pour la table `documents`
---
-ALTER TABLE `documents`
-  ADD CONSTRAINT `documents_ibfk_1` FOREIGN KEY (`idCandidature`) REFERENCES `candidatures` (`idCandidature`) ON DELETE CASCADE;
-
---
 -- Contraintes pour la table `etudiants`
 --
 ALTER TABLE `etudiants`
@@ -716,6 +760,12 @@ ALTER TABLE `etudiants`
 --
 ALTER TABLE `experiencespro`
   ADD CONSTRAINT `experiencespro_ibfk_1` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateurs` (`idUtilisateur`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `formations`
+--
+ALTER TABLE `formations`
+  ADD CONSTRAINT `fk_adminUniversite` FOREIGN KEY (`idAdminUniversite`) REFERENCES `utilisateurs` (`idUtilisateur`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `notifications`

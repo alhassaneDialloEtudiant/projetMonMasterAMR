@@ -171,12 +171,14 @@ routeurUtilisateurs.post("/inscrire", async (req, res) => {
 });
 
 // Route pour la connexion des étudiants
+// Route pour la connexion des utilisateurs (Étudiants + Admins Universitaires)
 routeurUtilisateurs.post("/connexion", async (req, res) => {
     const { email, motDePasse } = req.body;
 
     try {
+        // 🔹 Rechercher l'utilisateur en base
         const [resultats] = await baseDeDonnees.query(
-            "SELECT * FROM utilisateurs WHERE emailUtilisateur = ? AND roleUtilisateur = 'Etudiant'",
+            "SELECT * FROM utilisateurs WHERE emailUtilisateur = ?",
             [email]
         );
 
@@ -186,25 +188,26 @@ routeurUtilisateurs.post("/connexion", async (req, res) => {
 
         const utilisateur = resultats[0];
 
-        // Vérification du mot de passe
+        // 🔹 Vérifier le mot de passe
         const motDePasseValide = await bcrypt.compare(motDePasse, utilisateur.motDePasseUtilisateur);
 
         if (!motDePasseValide) {
             return res.status(401).json({ message: "Mot de passe incorrect." });
         }
 
-        // Générer un JWT
+        // 🔹 Générer un token JWT avec le rôle inclus
         const token = jwt.sign(
             { id: utilisateur.idUtilisateur, role: utilisateur.roleUtilisateur },
-            process.env.JWT_SECRET || "ddiallo",
+            process.env.JWT_SECRET || "diallo",
             { expiresIn: "2h" }
         );
 
-        // 📌 On retourne aussi `idUtilisateur` pour le stocker dans `localStorage`
+        // 📌 Retourne aussi `idUtilisateur` et `role` pour la redirection
         res.status(200).json({ 
             message: "Connexion réussie.", 
             token, 
-            idUtilisateur: utilisateur.idUtilisateur 
+            idUtilisateur: utilisateur.idUtilisateur,
+            role: utilisateur.roleUtilisateur // ✅ Ajout du rôle pour le front-end
         });
 
     } catch (error) {
@@ -212,6 +215,7 @@ routeurUtilisateurs.post("/connexion", async (req, res) => {
         res.status(500).json({ message: "Erreur interne du serveur." });
     }
 });
+
 
 routeurUtilisateurs.put('/enregistrer-informations/:id', async (req, res) => {
     const { id } = req.params;

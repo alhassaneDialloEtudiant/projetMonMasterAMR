@@ -110,26 +110,31 @@ function PageConnexion() {
   const handleSubmitConnexion = async (e) => {
     e.preventDefault();
     try {
-        const response = await axios.post(apiUrlConnexion, { ...connexionData });
+      const response = await axios.post(apiUrlConnexion, { ...connexionData });
 
-        if (response.status === 200) {
-            toast.success("Connexion réussie !");
-            
-            // 📌 Stocker `idUtilisateur` et `token` dans localStorage
-            localStorage.setItem("token", response.data.token);
-            localStorage.setItem("idUtilisateur", response.data.idUtilisateur);
+      if (response.status === 200) {
+        toast.success("Connexion réussie !");
+        
+        // 📌 Stocker `idUtilisateur`, `token` et `role` dans localStorage
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("idUtilisateur", response.data.idUtilisateur);
+        localStorage.setItem("role", response.data.role);
 
-            // 🔄 Rediriger vers la page d'informations personnelles
-            navigate("/connexion-etudiant");
+        // 🔄 Rediriger en fonction du rôle
+        if (response.data.role === "AdminUniversitaire") {
+          localStorage.setItem("idAdminUniversite", response.data.idUtilisateur); // Stocker l'ID admin
+          navigate("/admin-universitaire");
         } else {
-            toast.error("Erreur lors de la connexion.");
+          navigate("/connexion-etudiant");
         }
+      } else {
+        toast.error("Erreur lors de la connexion.");
+      }
     } catch (error) {
-        toast.error("Une erreur s'est produite lors de la connexion.");
-        console.error("Erreur lors de la connexion :", error);
+      toast.error("Une erreur s'est produite lors de la connexion.");
+      console.error("Erreur lors de la connexion :", error);
     }
-};
-
+  };
 
   return (
     <div className="connexion-container">

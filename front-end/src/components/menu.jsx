@@ -24,7 +24,7 @@ function Menu() {
                     <img src={logo} alt="Logo Mon Maître" className="logo" />
                 </Link>
                 <div className="menu-title">
-                    <h1>Mon Maître</h1>
+                    <h1>Mon Master</h1>
                     <p>La plateforme nationale des masters</p>
                 </div>
             </div>
@@ -42,11 +42,7 @@ function Menu() {
                         S'informer
                     </Link>
                 </li>
-                <li>
-                    <Link to="/candidater" onClick={closeMenu}>
-                        Candidater
-                    </Link>
-                </li>
+                
                 <li>
                     <Link to="/pageConnexion" onClick={closeMenu}>
                         Mon space candidat
@@ -58,17 +54,9 @@ function Menu() {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/calendrier" onClick={closeMenu}>
-                        Calendrier
-                    </Link>
-                </li>
-                <li>
                     <Link to="/teste" onClick={closeMenu}>
                         TESTE
                     </Link>
-                </li>
-                <li>
-                <a href="/mes-candidatures">📩 Mes Candidatures</a>
                 </li>
             </ul>
 

@@ -1,0 +1,65 @@
+.etudiants-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 1000px;
+    margin: auto;
+  }
+  
+  .etudiants-container h2 {
+    text-align: center;
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .selector-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .selector-container select {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .etudiants-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .etudiants-table th, .etudiants-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .etudiants-table th {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .status {
+    font-weight: bold;
+  }
+  
+  .status.en-attente {
+    color: #e67e22;
+  }
+  
+  .status.acceptee {
+    color: #28a745;
+  }
+  
+  .status.refusee {
+    color: #d9534f;
+  }
+  

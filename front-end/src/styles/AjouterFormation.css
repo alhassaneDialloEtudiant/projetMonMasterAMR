@@ -1,87 +1,107 @@
-/* 🌟 Styles globaux */
-.ajouter-formation {
-  max-width: 500px;
-  margin: 30px auto;
-  padding: 20px;
+/* ✅ Conteneur principal pour éviter le débordement */
+.ajouter-formation-container {
+  position: fixed; /* Permet de superposer le formulaire sans affecter le footer */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Centrage parfait */
+  z-index: 1000; /* S'assure que le formulaire est au-dessus */
   background: white;
-  border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+  width: 90%;
+  max-width: 600px;
+  padding: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  overflow-y: auto; /* Ajoute le défilement si nécessaire */
+  max-height: 90vh; /* Empêche le débordement en hauteur */
 }
 
-/* 🌟 Titre du formulaire */
-.ajouter-formation h2 {
+/* ✅ Titre du formulaire */
+.ajouter-formation-container h2 {
   text-align: center;
-  color: #003366;
   font-size: 22px;
-  margin-bottom: 10px;
+  color: #0B2C6A;
+  margin-bottom: 15px;
 }
 
-/* 🌟 Styles des champs */
-.ajouter-formation input,
-.ajouter-formation select {
+/* ✅ Champs du formulaire */
+.ajouter-formation-container input,
+.ajouter-formation-container select {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
+  margin: 8px 0;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 14px;
-  transition: border 0.3s ease-in-out;
+  font-size: 16px;
 }
 
-/* 🌟 Focus sur les champs */
-.ajouter-formation input:focus,
-.ajouter-formation select:focus {
-  border-color: #0056b3;
-  box-shadow: 0 0 5px rgba(0, 86, 179, 0.3);
-  outline: none;
-}
-
-/* 🌟 Bouton */
-.ajouter-formation button {
-  background-color: #0056b3;
-  color: white;
+/* ✅ Boutons */
+.ajouter-formation-container button {
+  width: 100%;
   padding: 12px;
   border: none;
   border-radius: 5px;
   font-size: 16px;
   cursor: pointer;
-  transition: background 0.3s ease-in-out;
+  margin-top: 10px;
 }
 
-.ajouter-formation button:hover {
-  background-color: #003366;
+/* ✅ Bouton Ajouter */
+.ajouter-formation-container button[type="submit"] {
+  background: #28a745;
+  color: white;
 }
 
-/* 🌟 Bouton Modifier */
-.ajouter-formation button.modify {
-  background-color: #f0ad4e;
+/* ✅ Bouton Annuler */
+.ajouter-formation-container .btn-annuler {
+  background: #dc3545;
+  color: white;
 }
 
-.ajouter-formation button.modify:hover {
-  background-color: #d89e3c;
+/* ✅ Effet hover */
+.ajouter-formation-container button:hover {
+  opacity: 0.8;
 }
 
-/* 🌟 Responsiveness */
-@media (max-width: 768px) {
-  .ajouter-formation {
-      width: 90%;
+/* ✅ Gestion du Modal */
+.custom-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  z-index: 1050;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+.custom-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1040;
+}
+
+/* ✅ Défilement si le contenu est trop grand */
+.ajouter-formation-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.ajouter-formation-container::-webkit-scrollbar-thumb {
+  background: #0B2C6A;
+  border-radius: 5px;
+}
+
+/* ✅ Responsivité */
+@media (max-width: 600px) {
+  .ajouter-formation-container {
+      width: 95%;
+      max-height: 80vh;
   }
-
-  .ajouter-formation h2 {
-      font-size: 20px;
-  }
-
-  .ajouter-formation input,
-  .ajouter-formation select {
-      font-size: 14px;
-      padding: 10px;
-  }
-
-  .ajouter-formation button {
-      font-size: 14px;
-      padding: 10px;
-  }
 }
-

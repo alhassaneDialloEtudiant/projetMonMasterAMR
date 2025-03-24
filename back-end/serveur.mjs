@@ -21,6 +21,9 @@ import stagesRoutes from "./routes/stages.mjs";
 import experiencesRoutes from "./routes/experiencesRoutes.mjs"; // 📌 Importation des route s
 import formationsRoutes from "./routes/formationsRoutes.mjs"; // 📌 Importation des routes
 import routeurCandidatures from "./routes/candidaturesRoutes.mjs";
+import routeurStats from "./routes/stats.mjs";
+
+
 dotenv.config();
 
 const app = express();
@@ -92,6 +95,8 @@ app.use("/api/formations", formationsRoutes);
 
 
 app.use("/api/candidatures", routeurCandidatures);
+
+app.use("/api/stats", routeurStats);
 
 
 // Démarrer le serveur
