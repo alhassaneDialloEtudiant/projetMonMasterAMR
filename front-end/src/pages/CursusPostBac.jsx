@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/CursusPostBac.css";
 
-const CursusPostBac = () => {
-  const idUtilisateur = localStorage.getItem("idUtilisateur");
+const CursusPostBac = ({ utilisateurId }) => {
+  const resolvedId = utilisateurId || localStorage.getItem("idUtilisateur");
   const [cursusList, setCursusList] = useState([]);
   const [formData, setFormData] = useState({
     anneeUniversitaire: "",
@@ -12,30 +12,27 @@ const CursusPostBac = () => {
   });
 
   useEffect(() => {
-    fetchCursus();
-  }, []);
+    if (resolvedId) fetchCursus();
+  }, [resolvedId]);
 
-  // 📌 Récupérer la liste des cursus enregistrés
   const fetchCursus = async () => {
     try {
-      const response = await axios.get(`http://localhost:5001/api/cursusPostBac/${idUtilisateur}`);
+      const response = await axios.get(`http://localhost:5001/api/cursusPostBac/${resolvedId}`);
       setCursusList(response.data);
     } catch (error) {
       console.error("Erreur lors de la récupération des cursus post-bac :", error);
     }
   };
 
-  // 📌 Gestion du changement des champs
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // 📌 Enregistrement des données
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await axios.post("http://localhost:5001/api/cursusPostBac/enregistrer", {
-        idUtilisateur,
+        idUtilisateur: resolvedId,
         ...formData,
       });
 

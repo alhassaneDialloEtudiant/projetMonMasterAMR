@@ -1,131 +1,154 @@
-.candidatures-container {
-    margin-top: 20px;
+/* =========================
+   Styles pour Admin - Candidatures
+   ========================= */
+
+   .candidatures-container {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 1000px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .universite-selector {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .universite-selector select {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
   }
   
   .candidatures-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
-  }
-  
-  .candidature-card {
-    background: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    width: 300px;
-  }
-  
-  .candidature-card h3 {
-    color: #2c3e50;
-  }
-  
-  .status.en-attente {
-    color: orange;
-    font-weight: bold;
-  }
-  
-  .actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-  }
-  
-  .accept-btn {
-    background: #2ecc71;
-    border: none;
-    color: white;
-    padding: 8px 12px;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  
-  .reject-btn {
-    background: #e74c3c;
-    border: none;
-    color: white;
-    padding: 8px 12px;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  
-  .btn-voir {
-    margin-top: 15px;
-    padding: 10px 15px;
-    background: #3498db;
-    border: none;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-
-  .candidatures-container {
-    padding: 20px;
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 900px;
-    margin: auto;
-  }
-  
-  .universite-selection ul {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  
-  .universite-selection li {
-    padding: 10px;
-    background: #f5f5f5;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  
-  .universite-selection li:hover, .universite-selection .selected {
-    background: #007bff;
-    color: white;
+    gap: 20px;
+    justify-content: center;
   }
   
   .candidature-card {
     background: #f9f9f9;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    margin-top: 10px;
+    padding: 20px;
+    width: 320px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
   }
   
-  .actions {
+  .card-header {
     display: flex;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .card-header h3 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #c0392b;
+    margin: 0;
+  }
+  
+  .badge-alert {
+    background: #ffa726;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+  
+  .status.en-attente {
+    color: #f39c12;
+    font-weight: bold;
+    font-size: 0.95rem;
+  }
+  
+  ul {
+    padding-left: 20px;
+    margin-bottom: 10px;
+  }
+  
+  ul li a {
+    color: #5e35b1;
+    text-decoration: none;
+  }
+  
+  ul li a:hover {
+    text-decoration: underline;
+  }
+  
+  textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+  }
+  
+  button {
+    margin-top: 8px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
   
   .accept-btn {
-    background: #28a745;
+    background-color: #27ae60;
     color: white;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
   }
   
   .reject-btn {
-    background: #dc3545;
+    background-color: #e74c3c;
     color: white;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
   }
   
   .accept-btn:hover {
-    background: #218838;
+    background-color: #219150;
   }
   
   .reject-btn:hover {
-    background: #c82333;
+    background-color: #c0392b;
+  }
+  
+  .info-supp {
+    background-color: #fff8e1;
+    border-left: 4px solid #ffa726;
+    padding: 10px 12px;
+    border-radius: 5px;
+    font-size: 0.95rem;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .ok {
+    color: #2e7d32;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 4px;
+  }
+  
+  .pending {
+    color: #f57c00;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 4px;
+  }
+  
+  .highlight-warning {
+    border: 2px solid #ffa726;
+    background-color: #fffde7;
+    box-shadow: 0 0 10px rgba(255, 152, 0, 0.2);
   }
   

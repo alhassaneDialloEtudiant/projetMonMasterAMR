@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/InformationsPersonnelles.css"; // Fichier CSS
 
-const InformationsPersonnelles = () => {
+function InformationsPersonnelles({ utilisateurId: propUtilisateurId }) {
     const [formData, setFormData] = useState({
         civilite: "M.",
         nomUtilisateur: "",
@@ -20,9 +20,8 @@ const InformationsPersonnelles = () => {
 
     const [idUtilisateur, setIdUtilisateur] = useState(null);
 
-    // 🔥 Charger les infos utilisateur depuis l'API après connexion
     useEffect(() => {
-        const id = localStorage.getItem("idUtilisateur");
+        const id = propUtilisateurId || localStorage.getItem("idUtilisateur");
 
         if (!id) {
             alert("Erreur : ID utilisateur introuvable.");
@@ -36,7 +35,7 @@ const InformationsPersonnelles = () => {
                 if (response.status !== 200) throw new Error("Erreur de récupération des informations.");
                 
                 const data = response.data;
-                console.log("✅ Données utilisateur reçues :", data); // Debug
+                console.log("✅ Données utilisateur reçues :", data);
 
                 setFormData((prevData) => ({
                     ...prevData,
@@ -59,14 +58,12 @@ const InformationsPersonnelles = () => {
         };
 
         fetchUserInfo();
-    }, []);
+    }, [propUtilisateurId]);
 
-    // 🔥 Gérer la saisie utilisateur
     const handleInputChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    // 🔥 Envoyer les données mises à jour à l'API
     const handleSubmit = async () => {
         if (!idUtilisateur) {
             alert("Erreur : Impossible d'enregistrer sans ID utilisateur.");

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/ExperiencesPro.css";
 
-const ExperiencesPro = () => {
-  const idUtilisateur = localStorage.getItem("idUtilisateur");
+const ExperiencesPro = ({ utilisateurId }) => {
+  const resolvedId = utilisateurId || localStorage.getItem("idUtilisateur");
 
   const [experienceData, setExperienceData] = useState({
     anneeDebut: "",
@@ -19,13 +19,12 @@ const ExperiencesPro = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchExperiences();
-  }, []);
+    if (resolvedId) fetchExperiences();
+  }, [resolvedId]);
 
-  // 📌 Charger les expériences existantes
   const fetchExperiences = async () => {
     try {
-      const response = await axios.get(`http://localhost:5001/api/experiences/${idUtilisateur}`);
+      const response = await axios.get(`http://localhost:5001/api/experiences/${resolvedId}`);
       setExperiences(response.data);
     } catch (error) {
       console.error("Erreur récupération expériences :", error);
@@ -33,32 +32,26 @@ const ExperiencesPro = () => {
     setLoading(false);
   };
 
-  // 📌 Gérer le changement des champs
   const handleInputChange = (e) => {
     setExperienceData({ ...experienceData, [e.target.name]: e.target.value });
   };
 
-  // 📌 Gérer l'upload de fichier
   const handleFileUpload = (e) => {
     setExperienceData({ ...experienceData, fichierJustificatif: e.target.files[0] });
   };
 
-  // 📌 Envoyer les données au backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-
     Object.keys(experienceData).forEach((key) => {
       formData.append(key, experienceData[key]);
     });
-
-    formData.append("idUtilisateur", idUtilisateur);
+    formData.append("idUtilisateur", resolvedId);
 
     try {
       await axios.post("http://localhost:5001/api/experiences/enregistrer", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
       alert("Expérience enregistrée !");
       fetchExperiences();
       setExperienceData({
@@ -75,7 +68,6 @@ const ExperiencesPro = () => {
     }
   };
 
-  // 📌 Supprimer une expérience
   const handleDelete = async (expId) => {
     try {
       await axios.delete(`http://localhost:5001/api/experiences/supprimer/${expId}`);
@@ -86,6 +78,8 @@ const ExperiencesPro = () => {
     }
   };
 
+  const isReadOnly = utilisateurId !== undefined;
+
   return (
     <div className="experience-container">
       <h2 className="experience-title">Ajouter une expérience professionnelle</h2>
@@ -93,49 +87,50 @@ const ExperiencesPro = () => {
         Indiquez toutes les expériences professionnelles permettant d'éclairer votre parcours.
       </p>
 
-      <form onSubmit={handleSubmit}>
-        <div className="experience-group">
-          <label>Année de début *</label>
-          <input type="number" name="anneeDebut" value={experienceData.anneeDebut} onChange={handleInputChange} required />
-        </div>
+      {!isReadOnly && (
+        <form onSubmit={handleSubmit}>
+          <div className="experience-group">
+            <label>Année de début *</label>
+            <input type="number" name="anneeDebut" value={experienceData.anneeDebut} onChange={handleInputChange} required />
+          </div>
 
-        <div className="experience-group">
-          <label>Durée en mois *</label>
-          <input type="number" name="dureeMois" value={experienceData.dureeMois} onChange={handleInputChange} required />
-        </div>
+          <div className="experience-group">
+            <label>Durée en mois *</label>
+            <input type="number" name="dureeMois" value={experienceData.dureeMois} onChange={handleInputChange} required />
+          </div>
 
-        <div className="experience-group">
-          <label>Temps plein ou partiel *</label>
-          <select name="tempsTravail" value={experienceData.tempsTravail} onChange={handleInputChange}>
-            <option value="Temps plein">Temps plein</option>
-            <option value="Temps partiel">Temps partiel</option>
-          </select>
-        </div>
+          <div className="experience-group">
+            <label>Temps plein ou partiel *</label>
+            <select name="tempsTravail" value={experienceData.tempsTravail} onChange={handleInputChange}>
+              <option value="Temps plein">Temps plein</option>
+              <option value="Temps partiel">Temps partiel</option>
+            </select>
+          </div>
 
-        <div className="experience-group">
-          <label>Employeur *</label>
-          <input type="text" name="employeur" value={experienceData.employeur} onChange={handleInputChange} required />
-        </div>
+          <div className="experience-group">
+            <label>Employeur *</label>
+            <input type="text" name="employeur" value={experienceData.employeur} onChange={handleInputChange} required />
+          </div>
 
-        <div className="experience-group">
-          <label>Intitulé *</label>
-          <input type="text" name="intitule" value={experienceData.intitule} onChange={handleInputChange} required />
-        </div>
+          <div className="experience-group">
+            <label>Intitulé *</label>
+            <input type="text" name="intitule" value={experienceData.intitule} onChange={handleInputChange} required />
+          </div>
 
-        <div className="experience-group">
-          <label>Descriptif</label>
-          <textarea name="descriptif" value={experienceData.descriptif} onChange={handleInputChange}></textarea>
-        </div>
+          <div className="experience-group">
+            <label>Descriptif</label>
+            <textarea name="descriptif" value={experienceData.descriptif} onChange={handleInputChange}></textarea>
+          </div>
 
-        <div className="experience-group">
-          <label>Justificatif</label>
-          <input type="file" accept=".pdf,.jpg,.png" onChange={handleFileUpload} />
-        </div>
+          <div className="experience-group">
+            <label>Justificatif</label>
+            <input type="file" accept=".pdf,.jpg,.png" onChange={handleFileUpload} />
+          </div>
 
-        <button type="submit">Enregistrer</button>
-      </form>
+          <button type="submit">Enregistrer</button>
+        </form>
+      )}
 
-      {/* Liste des expériences */}
       <h3>Expériences enregistrées</h3>
       <ul>
         {loading ? (
@@ -144,7 +139,9 @@ const ExperiencesPro = () => {
           experiences.map((exp) => (
             <li key={exp.expId}>
               <strong>{exp.intitule}</strong> chez {exp.employeur} ({exp.anneeDebut})
-              <button onClick={() => handleDelete(exp.expId)}>Supprimer</button>
+              {!isReadOnly && (
+                <button onClick={() => handleDelete(exp.expId)}>Supprimer</button>
+              )}
             </li>
           ))
         ) : (

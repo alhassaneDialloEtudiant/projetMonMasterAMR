@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "../styles/Baccalaureat.css"; 
+import "../styles/Baccalaureat.css";
 
-const Baccalaureat = () => {
-  const idUtilisateur = localStorage.getItem("idUtilisateur");
+const Baccalaureat = ({ utilisateurId }) => {
+  const resolvedId = utilisateurId || localStorage.getItem("idUtilisateur");
 
   const [formData, setFormData] = useState({
     typeBaccalaureat: "",
@@ -15,12 +15,14 @@ const Baccalaureat = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchBaccalaureat();
-  }, []);
+    if (resolvedId) {
+      fetchBaccalaureat();
+    }
+  }, [resolvedId]);
 
   const fetchBaccalaureat = async () => {
     try {
-      const response = await axios.get(`http://localhost:5001/api/baccalaureat/${idUtilisateur}`);
+      const response = await axios.get(`http://localhost:5001/api/baccalaureat/${resolvedId}`);
       if (response.status === 200) {
         setFormData(response.data);
       }
@@ -37,10 +39,9 @@ const Baccalaureat = () => {
   const handleSubmit = async () => {
     try {
       await axios.post("http://localhost:5001/api/baccalaureat/enregistrer", {
-        idUtilisateur,
+        idUtilisateur: resolvedId,
         ...formData,
       });
-
       alert("Baccalauréat enregistré avec succès !");
     } catch (error) {
       alert("Erreur lors de l'enregistrement.");
@@ -49,7 +50,7 @@ const Baccalaureat = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5001/api/baccalaureat/supprimer/${idUtilisateur}`);
+      await axios.delete(`http://localhost:5001/api/baccalaureat/supprimer/${resolvedId}`);
       alert("Baccalauréat supprimé avec succès !");
       setFormData({
         typeBaccalaureat: "",

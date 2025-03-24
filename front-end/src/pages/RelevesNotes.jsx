@@ -1,43 +1,38 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const RelevesNotes = () => {
+const RelevesNotes = ({ utilisateurId }) => {
+  const resolvedId = utilisateurId || localStorage.getItem("idUtilisateur");
   const [file, setFile] = useState(null);
   const [commentaire, setCommentaire] = useState("");
   const [selectedOption, setSelectedOption] = useState("mes-releves");
   const [releves, setReleves] = useState([]);
-  const idUtilisateur = localStorage.getItem("idUtilisateur");
 
   useEffect(() => {
-    fetchReleves();
-  }, []);
+    if (resolvedId) fetchReleves();
+  }, [resolvedId]);
 
-  // 📌 Récupérer les relevés de notes enregistrés
   const fetchReleves = async () => {
     try {
-      const response = await axios.get(`http://localhost:5001/api/relevesnotes/${idUtilisateur}`);
+      const response = await axios.get(`http://localhost:5001/api/relevesnotes/${resolvedId}`);
       setReleves(response.data);
     } catch (error) {
       console.error("Erreur récupération relevés :", error);
     }
   };
 
-  // 📌 Gestion de l'upload de fichier
   const handleFileUpload = (e) => {
     setFile(e.target.files[0]);
   };
 
-  // 📌 Supprimer le fichier sélectionné avant l'enregistrement
   const handleFileDelete = () => {
     setFile(null);
   };
 
-  // 📌 Changer l'option sélectionnée
   const handleOptionChange = (e) => {
     setSelectedOption(e.target.value);
   };
 
-  // 📌 Enregistrer un relevé de notes
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -48,7 +43,7 @@ const RelevesNotes = () => {
 
     const formData = new FormData();
     formData.append("fichierReleve", file);
-    formData.append("idUtilisateur", idUtilisateur);
+    formData.append("idUtilisateur", resolvedId);
     formData.append("commentaire", commentaire);
 
     try {
@@ -57,7 +52,7 @@ const RelevesNotes = () => {
       });
 
       alert("Relevé enregistré !");
-      fetchReleves(); // Rafraîchir la liste des relevés
+      fetchReleves();
       setFile(null);
       setCommentaire("");
     } catch (error) {
@@ -65,12 +60,11 @@ const RelevesNotes = () => {
     }
   };
 
-  // 📌 Supprimer un relevé enregistré
   const handleDelete = async (releveId) => {
     try {
       await axios.delete(`http://localhost:5001/api/relevesnotes/supprimer/${releveId}`);
       alert("Relevé supprimé !");
-      fetchReleves(); // Rafraîchir la liste après suppression
+      fetchReleves();
     } catch (error) {
       alert("Erreur lors de la suppression.");
     }
@@ -87,62 +81,61 @@ const RelevesNotes = () => {
         Si certains de ces relevés sont en langue étrangère, vous devez en fournir une version traduite en français ou en anglais.
       </p>
 
-      {/* Options de relevés */}
-      <div className="releves-radio-group">
-        <p className="releves-label">Tous les relevés de notes de mon cursus post-baccalauréat *</p>
-        <label>
-          <input type="radio" name="option" value="mes-releves" checked={selectedOption === "mes-releves"} onChange={handleOptionChange} />
-          Je dispose de mes relevés de notes
-        </label>
-        <label>
-          <input type="radio" name="option" value="releves-etranger" checked={selectedOption === "releves-etranger"} onChange={handleOptionChange} />
-          Mes relevés de notes étrangers sont traduits en français ou en anglais
-        </label>
-        <label>
-          <input type="radio" name="option" value="partiel" checked={selectedOption === "partiel"} onChange={handleOptionChange} />
-          Je ne dispose pas de tous mes relevés
-        </label>
-        <label>
-          <input type="radio" name="option" value="aucun" checked={selectedOption === "aucun"} onChange={handleOptionChange} />
-          Je ne dispose d’aucun relevé
-        </label>
-      </div>
-
-      {/* Formulaire d'upload */}
-      <form onSubmit={handleSubmit}>
-        <div className="releves-group">
-          <label>Vos relevés de notes *</label>
-          <input type="file" accept=".pdf,.jpg,.png" onChange={handleFileUpload} className="releves-input" />
-          <p className="releves-note">Le fichier doit être au format PDF, JPEG, JPG ou PNG (max. 2 Mo).</p>
-        </div>
-
-        {file && (
-          <div className="releves-file">
-            <span className="releves-file-name">📄 {file.name} ({(file.size / 1024).toFixed(2)} Ko)</span>
-            <button type="button" className="releves-delete-button" onClick={handleFileDelete}>🗑 Supprimer</button>
+      {!utilisateurId && (
+        <>
+          <div className="releves-radio-group">
+            <p className="releves-label">Tous les relevés de notes de mon cursus post-baccalauréat *</p>
+            <label>
+              <input type="radio" name="option" value="mes-releves" checked={selectedOption === "mes-releves"} onChange={handleOptionChange} />
+              Je dispose de mes relevés de notes
+            </label>
+            <label>
+              <input type="radio" name="option" value="releves-etranger" checked={selectedOption === "releves-etranger"} onChange={handleOptionChange} />
+              Mes relevés de notes étrangers sont traduits en français ou en anglais
+            </label>
+            <label>
+              <input type="radio" name="option" value="partiel" checked={selectedOption === "partiel"} onChange={handleOptionChange} />
+              Je ne dispose pas de tous mes relevés
+            </label>
+            <label>
+              <input type="radio" name="option" value="aucun" checked={selectedOption === "aucun"} onChange={handleOptionChange} />
+              Je ne dispose d’aucun relevé
+            </label>
           </div>
-        )}
 
-        {/* Champ commentaire */}
-        <div className="releves-group">
-          <label>Commentaire</label>
-          <textarea
-            className="releves-textarea"
-            rows="4"
-            placeholder="Ajoutez un commentaire..."
-            value={commentaire}
-            onChange={(e) => setCommentaire(e.target.value)}
-          ></textarea>
-        </div>
+          <form onSubmit={handleSubmit}>
+            <div className="releves-group">
+              <label>Vos relevés de notes *</label>
+              <input type="file" accept=".pdf,.jpg,.png" onChange={handleFileUpload} className="releves-input" />
+              <p className="releves-note">Le fichier doit être au format PDF, JPEG, JPG ou PNG (max. 2 Mo).</p>
+            </div>
 
-        {/* Boutons */}
-        <div className="releves-buttons">
-          <button type="submit" className="releves-save-button">Enregistrer</button>
-          <button type="button" className="releves-cancel-button">Annuler</button>
-        </div>
-      </form>
+            {file && (
+              <div className="releves-file">
+                <span className="releves-file-name">📄 {file.name} ({(file.size / 1024).toFixed(2)} Ko)</span>
+                <button type="button" className="releves-delete-button" onClick={handleFileDelete}>🗑 Supprimer</button>
+              </div>
+            )}
 
-      {/* Liste des relevés enregistrés */}
+            <div className="releves-group">
+              <label>Commentaire</label>
+              <textarea
+                className="releves-textarea"
+                rows="4"
+                placeholder="Ajoutez un commentaire..."
+                value={commentaire}
+                onChange={(e) => setCommentaire(e.target.value)}
+              ></textarea>
+            </div>
+
+            <div className="releves-buttons">
+              <button type="submit" className="releves-save-button">Enregistrer</button>
+              <button type="button" className="releves-cancel-button">Annuler</button>
+            </div>
+          </form>
+        </>
+      )}
+
       <h3 className="releves-registered-title">Relevés enregistrés</h3>
       <ul className="releves-list">
         {releves.length > 0 ? (
@@ -157,7 +150,9 @@ const RelevesNotes = () => {
                 📄 {releve.fichierReleve}
               </a>
               <span className="releves-comment">📝 {releve.commentaire || "Pas de commentaire"}</span>
-              <button className="releves-delete-button" onClick={() => handleDelete(releve.releveId)}>🗑 Supprimer</button>
+              {!utilisateurId && (
+                <button className="releves-delete-button" onClick={() => handleDelete(releve.releveId)}>🗑 Supprimer</button>
+              )}
             </li>
           ))
         ) : (
