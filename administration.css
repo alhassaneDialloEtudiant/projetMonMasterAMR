@@ -1,0 +1,118 @@
+#root {
+    overflow-x: hidden;
+}
+
+.gestion-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.liste-container ul,
+.delete-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.liste-container li,
+.delete-container li {
+    padding: 1rem;
+    border: 1px solid #eee;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s;
+    width: 100%;
+}
+
+.liste-container li:hover {
+    background-color: #818181;
+}
+
+.add-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /*background-color:red;*/
+    width: 100%;
+    justify-content: center;
+}
+
+.delete-container {
+    display: flex;
+    /*background-color:blue;*/
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+}
+
+.admin-containerr {
+    margin-top: 100px;
+    background-color: red;
+}
+
+.gestion-container form {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.gestion-container input {
+    /* flex: 1;*/
+    width: 20%;
+    padding: 0.8rem;
+    border: 2px solid #666;
+    border-radius: 4px;
+    /* min-width: 200px;*/
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.gestion-container input:focus {
+    outline: none;
+    border-color: #ddd;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.create-button {
+    background-color: #000;
+    color: white;
+    width: 12%;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease-in-out;
+}
+
+.delete-button {
+    background-color: #000;
+    color: white;
+    width: auto;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease-in-out;
+}
+
+.input-delete {
+    flex: 1;
+    width: auto;
+    margin-left: 60px;
+}
+
+.gestion-container button:hover {
+    background-color: #363636;
+}
