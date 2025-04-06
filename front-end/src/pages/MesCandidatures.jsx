@@ -59,6 +59,24 @@ const MesCandidatures = ({ idUtilisateur }) => {
     }
   };
 
+  const handleDecisionEtudiant = async (idCandidature, decision) => {
+    try {
+      await axios.put(`http://localhost:5001/api/candidatures/decision-etudiant/${idCandidature}`, {
+        decision: decision,
+      });
+      alert("Votre décision a bien été enregistrée.");
+      setCandidatures((prev) =>
+        prev.map((c) =>
+          c.idCandidature === idCandidature
+            ? { ...c, decisionEtudiant: decision, statut: decision === "refuse" ? "refusée" : c.statut }
+            : c
+        )
+      );
+    } catch (err) {
+      alert("Erreur lors de l'envoi de la décision.");
+    }
+  };
+
   if (loading) return <p className="loading">Chargement des candidatures...</p>;
   if (error) return <p className="error">{error}</p>;
   if (candidatures.length === 0)
@@ -88,6 +106,10 @@ const MesCandidatures = ({ idUtilisateur }) => {
               {candidature.dateSoumission ? new Date(candidature.dateSoumission).toLocaleDateString() : "Non disponible"}
             </p>
 
+            {candidature.rang && (
+              <p><strong>🎯Rang d'attente :</strong> {candidature.rang}</p>
+            )}
+
             {candidature.commentaire && candidature.statut.toLowerCase() === "refusée" && (
               <p className="motif-refus">❌ <strong>Motif du refus :</strong> {candidature.commentaire}</p>
             )}
@@ -110,6 +132,28 @@ const MesCandidatures = ({ idUtilisateur }) => {
                   </div>
                 ) : (
                   <p className="ok">✅ Document envoyé</p>
+                )}
+              </div>
+            )}
+
+            {candidature.notificationEnvoyee && candidature.statut === "acceptée" && (
+              <div className="reponse-admission">
+                <p><strong>🎓 Admission reçue :</strong></p>
+                {candidature.decisionEtudiant ? (
+                  <p>
+                    {candidature.decisionEtudiant === "accepte"
+                      ? "✅ Vous avez accepté cette admission."
+                      : "❌ Vous avez refusé cette admission."}
+                  </p>
+                ) : (
+                  <div className="decision-buttons">
+                    <button className="accept-btn" onClick={() => handleDecisionEtudiant(candidature.idCandidature, "accepte")}>
+                      ✅ Accepter l'admission
+                    </button>
+                    <button className="reject-btn" onClick={() => handleDecisionEtudiant(candidature.idCandidature, "refuse")}>
+                      ❌ Refuser l'admission
+                    </button>
+                  </div>
                 )}
               </div>
             )}

@@ -284,4 +284,73 @@ routeurUtilisateurs.get('/informations/:id', async (req, res) => {
     }
 });
 
+  // routes/utilisateurs.js ou routeurUtilisateurs.js
+
+routeurUtilisateurs.post("/recherche-email", async (req, res) => {
+    const { email } = req.body;
+  
+    try {
+      const [result] = await baseDeDonnees.query(
+        "SELECT idUtilisateur FROM utilisateurs WHERE emailUtilisateur = ?",
+        [email]
+      );
+  
+      if (result.length === 0) {
+        return res.status(404).json({ message: "Utilisateur non trouvé." });
+      }
+  
+      return res.json({ idUtilisateur: result[0].idUtilisateur });
+    } catch (error) {
+      console.error("Erreur recherche email :", error);
+      return res.status(500).json({ message: "Erreur serveur." });
+    }
+  });
+
+  // ✅ Mise à jour sécurisée du mot de passe (haché avec bcrypt)
+  routeurUtilisateurs.put("/nouveau-motdepasse/:idUtilisateur", async (req, res) => {
+    const { idUtilisateur } = req.params;
+    const { nouveauMotDePasse } = req.body;
+  
+    if (!nouveauMotDePasse) {
+      return res.status(400).json({ message: "Mot de passe requis." });
+    }
+  
+    try {
+      // 🔐 Hachage avec bcrypt
+      const motDePasseHashe = await bcrypt.hash(nouveauMotDePasse, 10);
+  
+      // 🔁 Mise à jour dans la base
+      await baseDeDonnees.query(
+        "UPDATE utilisateurs SET motDePasseUtilisateur = ? WHERE idUtilisateur = ?",
+        [motDePasseHashe, idUtilisateur]
+      );
+  
+      res.json({ message: "Mot de passe mis à jour." });
+    } catch (error) {
+      console.error("Erreur update mot de passe :", error);
+      res.status(500).json({ message: "Erreur serveur." });
+    }
+  });
+  
+  // Suppression définitive de l'utilisateur et de ses données
+routeurUtilisateurs.delete("/suppression-definitive/:id", async (req, res) => {
+    const idUtilisateur = req.params.id;
+  
+    try {
+      // Supprimer les candidatures liées
+      await baseDeDonnees.query("DELETE FROM candidatures WHERE idUtilisateur = ?", [idUtilisateur]);
+  
+      // Supprimer d'autres données associées (ajoute d'autres tables si nécessaire)
+  
+      // Supprimer le compte utilisateur
+      await baseDeDonnees.query("DELETE FROM utilisateurs WHERE idUtilisateur = ?", [idUtilisateur]);
+  
+      res.status(200).json({ message: "Compte et données supprimés avec succès." });
+    } catch (error) {
+      console.error("Erreur lors de la suppression :", error);
+      res.status(500).json({ message: "Une erreur est survenue lors de la suppression." });
+    }
+  });
+  
+
 export default routeurUtilisateurs; // Exporter le routeur pour l'utiliser dans d'autres fichiers

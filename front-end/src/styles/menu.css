@@ -1,4 +1,4 @@
-/* Conteneur principal */
+/* ================== 🔵 CONTENEUR PRINCIPAL ================== */
 .menu-container {
     background-color: #1e3a8a;
     padding: 10px 20px;
@@ -10,9 +10,21 @@
     align-items: center;
     color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: slideDown 0.5s ease-in-out;
 }
 
-/* Logo et titre */
+@keyframes slideDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ================== 🔵 GAUCHE : LOGO + TITRE ================== */
 .menu-left {
     display: flex;
     align-items: center;
@@ -46,13 +58,15 @@
     color: #d1d5db;
 }
 
-/* Liste des liens */
+/* ================== 🔵 LIENS DE MENU ================== */
 .menu-list {
     list-style: none;
     display: flex;
     gap: 30px;
     margin: 0;
     padding: 0;
+    opacity: 1;
+    transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .menu-list li {
@@ -65,14 +79,31 @@
     font-weight: bold;
     font-size: 16px;
     text-transform: uppercase;
+    position: relative;
+    padding-bottom: 2px;
     transition: color 0.3s ease;
+}
+
+.menu-list a::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 0%;
+    background-color: #f59e0b;
+    transition: width 0.3s ease-in-out;
 }
 
 .menu-list a:hover {
     color: #f59e0b;
 }
 
-/* Bouton "Voir mes favoris" */
+.menu-list a:hover::after {
+    width: 100%;
+}
+
+/* ================== 🔵 BOUTON "FAVORIS" ================== */
 .menu-right .favorites-button {
     display: flex;
     align-items: center;
@@ -90,21 +121,26 @@
     color: #1e3a8a;
 }
 
-/* Bouton hamburger */
+/* ================== 🔵 BOUTON BURGER ================== */
 .menu-toggle {
     background: none;
     border: none;
     color: white;
-    font-size: 24px;
+    font-size: 28px;
     cursor: pointer;
     display: none;
+    transition: transform 0.3s ease;
 }
 
 .menu-toggle:hover {
     color: #f59e0b;
 }
 
-/* Menu responsive */
+.menu-toggle:active {
+    transform: rotate(90deg);
+}
+
+/* ================== 🔵 RESPONSIVE ================== */
 @media (max-width: 768px) {
     .menu-toggle {
         display: block;
@@ -122,10 +158,15 @@
         border-radius: 5px;
         width: 90%;
         text-align: center;
+        opacity: 0;
+        transform: translateY(-20px);
+        transition: opacity 0.4s ease, transform 0.4s ease;
     }
 
     .menu-list.menu-open {
         display: flex;
+        opacity: 1;
+        transform: translateY(0);
     }
 
     .menu-list li {
@@ -135,4 +176,44 @@
     .menu-right {
         display: none;
     }
+}
+
+
+.menu-container {
+    background-color: #1e3a8a;
+    padding: 20px 40px; /* ✅ plus d’espace vertical et horizontal */
+    height: auto;        /* ou laisse cette ligne de côté */
+    min-height: 70px;    /* ✅ garantie que le menu ne soit pas écrasé */
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.menu-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.menu-list {
+    list-style: none;
+    display: flex;
+    gap: 40px; /* ✅ plus d'espace entre les éléments */
+    margin: 0;
+    padding: 0;
+}
+
+.logo {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%; /* Rend le logo rond */
+    background-color: #1e3a8a; /* Même couleur que le menu */
+    padding: 5px; /* Ajoute un espace intérieur */
+    border: 2px solid white; /* Ajoute un contour blanc pour démarquer */
+    object-fit: cover; /* Ajuste bien l'image dans le rond */
 }

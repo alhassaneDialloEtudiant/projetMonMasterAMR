@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../styles/TableauDeBordEtudiant.css";
 import axios from "axios";
-import FormationCard from "./FormationCard";
 import Formations from "./Formations";
 
 function TableauDeBordEtudiant() {
@@ -10,11 +9,18 @@ function TableauDeBordEtudiant() {
   const [afficherFormations, setAfficherFormations] = useState(false);
   const [loading, setLoading] = useState(false);
   const [erreur, setErreur] = useState(null);
+  const [voeux, setVoeux] = useState({ classique: 0, alternance: 0 });
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("utilisateur"));
     if (user) {
       setUtilisateur(user);
+
+      // 🔄 Requête vers le back-end pour récupérer le nombre de vœux par type
+      axios
+        .get(`http://localhost:5001/api/candidatures/statistiques/voeux/${user.idUtilisateur}`)
+        .then((res) => setVoeux(res.data))
+        .catch((err) => console.error("Erreur lors du chargement des voeux:", err));
 
       const lastFormation = JSON.parse(localStorage.getItem("lastFormation"));
       if (lastFormation) {
@@ -42,54 +48,31 @@ function TableauDeBordEtudiant() {
   }, [afficherFormations]);
 
   return (
-    <div className="dashboard-container">
-      <div className="dashboard-navigation">
-        <div className="navigation-item">Mon tableau de bord</div>
-        <div className="navigation-item">Mon dossier candidat</div>
-        <div className="navigation-item">Mes candidatures</div>
-        <div className="navigation-item">Mes candidatures en alternance</div>
-        <div className="navigation-item">Mes documents</div>
+    <div className="dashboard-content">
+      <h1>MON TABLEAU DE BORD</h1>
+      <p>Retrouvez ici les informations et outils importants concernant la procédure de Mon Master.</p>
 
-        <div
-          className={`navigation-item ${afficherFormations ? "active" : ""}`}
-          onClick={() => setAfficherFormations(true)}
-        >
-          Je sélectionne une formation
+      {afficherFormations ? (
+        <div className="formations-list">
+          <Formations
+            formations={formations}
+            loading={loading}
+            erreur={erreur}
+            idUtilisateur={utilisateur?.idUtilisateur}
+          />
         </div>
-
-        <div className="navigation-item">Je démissionne</div>
-      </div>
-
-      <div className="dashboard-content">
-        <h1>Mon tableau de bord</h1>
-        <p>Retrouvez ici les informations et outils importants concernant la procédure de Mon Master.</p>
-
-        {afficherFormations ? (
-          <div className="formations-list">
-            <Formations
-              formations={formations}
-              loading={loading}
-              erreur={erreur}
-              idUtilisateur={utilisateur?.idUtilisateur}
-            />
+      ) : (
+        <div className="dashboard-info">
+          <div className="info-card">
+            <h2>Mes candidatures hors alternance</h2>
+            <p>Nombre de vœux comptabilisés : {voeux.classique ?? 0} sur 15.</p>
           </div>
-        ) : (
-          <div className="dashboard-info">
-            <div className="info-card">
-              <h2>Mes candidatures hors alternance</h2>
-              <p>Nombre de vœux comptabilisés : 0 sur 15.</p>
-              <p>Vous avez actuellement 0 candidature(s) non confirmée(s).</p>
-              <p>Vous avez actuellement 0 candidature(s) complètes non confirmée(s).</p>
-            </div>
-            <div className="info-card">
-              <h2>Mes candidatures en alternance</h2>
-              <p>Nombre de vœux comptabilisés : 0 sur 15.</p>
-              <p>Vous avez actuellement 0 candidature(s) non confirmée(s).</p>
-              <p>Vous avez actuellement 0 candidature(s) complètes non confirmée(s).</p>
-            </div>
+          <div className="info-card">
+            <h2>Mes candidatures en alternance</h2>
+            <p>Nombre de vœux comptabilisés : {voeux.alternance ?? 0} sur 15.</p>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

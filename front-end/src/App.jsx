@@ -15,10 +15,11 @@ import Programmes from './pages/Programmes'; // Page Programmes
 import PageConnexion from './pages/PageConnexion';
 import ConnexionEtudiant from './pages/PageConnexionEtudiant';
 import DossierCandidat from './pages/DossierCandidat';
-import Formations from './pages/AjouterFormation';
+import Formations from './pages/Utilisateurs';
 import MesFavoris from "./pages/MesFavoris";
 import MesCandidatures from "./pages/MesCandidatures";
 import PageAccueilAdmin from './pages/PageAccueilAdmin';
+import EspaceAdminGeneral from './pages/EspaceAdminGeneral'; // Page d'accueil administrateur général
 
 function App() {
     return (
@@ -53,7 +54,8 @@ function App() {
                         <Route path="/mes-candidatures" element={<MesCandidatures />} />
                         <Route path="/admin-universitaire" element={<PageAccueilAdmin  />} />
                         
-                        
+                        <Route path="/admin-general" element={<EspaceAdminGeneral />} />
+
                     </Routes>
                     
                 </main>
