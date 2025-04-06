@@ -1,9 +1,9 @@
 import React from 'react';
 import '../styles/InformezVous.css'; // Fichier CSS à compléter pour le style
-import bannerImage from '../assets/photos/1ylnlhgn.png'; // Chemin correct pour l'image
-import cardImage1 from '../assets/photos/c2ndjnve-removebg-preview.png'; // Images pour les cartes
-import cardImage2 from '../assets/photos/ceb9o30y-removebg-preview.png';
-import cardImage3 from '../assets/photos/cxhk53sh-removebg-preview.png';
+import bannerImage from '../assets/photos/a.png'; // Chemin correct pour l'image
+import cardImage1 from '../assets/photos/e.png'; // Images pour les cartes
+import cardImage2 from '../assets/photos/d.png';
+import cardImage3 from '../assets/photos/c.png';
 
 function InformezVous() {
   return (

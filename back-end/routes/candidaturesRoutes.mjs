@@ -435,5 +435,219 @@ routeurCandidatures.post("/upload-justificatif/:idCandidature", upload.single("j
       res.status(500).json({ erreur: "Erreur serveur lors de l'envoi du fichier." });
     }
   });
+
+  // Modifier le rang d'une candidature
+  routeurCandidatures.put("/rang/:idCandidature", async (req, res) => {
+    const { idCandidature } = req.params;
+    const { rang } = req.body;
+  
+    try {
+      await baseDeDonnees.query(
+        "UPDATE candidatures SET rang = ? WHERE idCandidature = ?",
+        [rang, idCandidature]
+      );
+      res.status(200).json({ message: "Rang mis à jour avec succès." });
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du rang :", error);
+      res.status(500).json({ message: "Erreur serveur." });
+    }
+  });
+  
+
+  // ✅ Route pour attribuer automatiquement les candidatures à une formation
+routeurCandidatures.post("/attribuer/:idFormation", async (req, res) => {
+    const { idFormation } = req.params;
+  
+    try {
+      // 1. Obtenir la capacité
+      const [[formation]] = await baseDeDonnees.query(
+        "SELECT capacite FROM formations WHERE idFormation = ?",
+        [idFormation]
+      );
+  
+      const capacite = formation?.capacite;
+      if (!capacite) {
+        return res.status(404).json({ erreur: "Formation non trouvée ou capacité non définie." });
+      }
+  
+      // 2. Récupérer les candidatures triées par date (ou autre critère de mérite)
+      const [candidatures] = await baseDeDonnees.query(
+        `SELECT idCandidature FROM candidatures 
+         WHERE idFormation = ? AND statut = 'En attente'
+         ORDER BY dateSoumission ASC`, // à adapter si tri par note/score
+        [idFormation]
+      );
+  
+      const acceptes = candidatures.slice(0, capacite);
+      const enAttente = candidatures.slice(capacite);
+  
+      for (const c of acceptes) {
+        await baseDeDonnees.query(
+          "UPDATE candidatures SET statut = 'acceptée' WHERE idCandidature = ?",
+          [c.idCandidature]
+        );
+      }
+  
+      for (const c of enAttente) {
+        await baseDeDonnees.query(
+          "UPDATE candidatures SET statut = 'liste d\'attente' WHERE idCandidature = ?",
+          [c.idCandidature]
+        );
+      }
+  
+      res.status(200).json({
+        message: "Attribution des candidatures effectuée.",
+        acceptes: acceptes.length,
+        listeAttente: enAttente.length
+      });
+    } catch (error) {
+      console.error("Erreur attribution des candidatures:", error);
+      res.status(500).json({ erreur: "Erreur lors de l'attribution des candidatures." });
+    }
+  });
+
+  // 📌 L'étudiant répond à une proposition
+routeurCandidatures.put("/reponse/:idCandidature", async (req, res) => {
+  const { idCandidature } = req.params;
+  const { reponse } = req.body; // "acceptée", "refusée"
+
+  if (!["acceptée", "refusée"].includes(reponse)) {
+    return res.status(400).json({ message: "Réponse invalide." });
+  }
+
+  try {
+    await baseDeDonnees.query(
+      "UPDATE candidature SET statut = ? WHERE idCandidature = ?",
+      [reponse, idCandidature]
+    );
+    res.status(200).json({ message: `Candidature ${reponse}` });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour de la réponse :", error);
+    res.status(500).json({ message: "Erreur serveur." });
+  }
+});
+routeurCandidatures.put("/decision-etudiant/:idCandidature", async (req, res) => {
+  const { idCandidature } = req.params;
+  const { decision } = req.body;
+
+  if (!["accepte", "refuse"].includes(decision)) {
+    return res.status(400).json({ message: "Décision invalide." });
+  }
+
+  try {
+    // 🔍 Récupérer la candidature ciblée
+    const [[candidature]] = await baseDeDonnees.query(
+      "SELECT idFormation, statut FROM candidatures WHERE idCandidature = ?",
+      [idCandidature]
+    );
+
+    if (!candidature) {
+      return res.status(404).json({ message: "Candidature introuvable." });
+    }
+
+    const { idFormation, statut } = candidature;
+
+    // 📝 Mettre à jour la décision de l'étudiant (accepte/refuse)
+    await baseDeDonnees.query(
+      "UPDATE candidatures SET decisionEtudiant = ? WHERE idCandidature = ?",
+      [decision, idCandidature]
+    );
+
+    // ❌ Si l'étudiant refuse l'admission et qu'il avait été accepté
+    if (decision === "refuse" && statut === "acceptée") {
+      // ✅ a. Libérer une place dans la formation
+      await baseDeDonnees.query(
+        "UPDATE formations SET capacite = capacite + 1 WHERE idFormation = ?",
+        [idFormation]
+      );
+
+      // ❗ b. Marquer cette candidature comme refusée
+      await baseDeDonnees.query(
+        "UPDATE candidatures SET statut = 'refusée' WHERE idCandidature = ?",
+        [idCandidature]
+      );
+
+      // 🎯 c. Trouver le prochain candidat en attente pour cette formation
+      const [[prochain]] = await baseDeDonnees.query(
+        `SELECT idCandidature FROM candidatures 
+         WHERE idFormation = ? AND statut = 'en attente'
+         ORDER BY rang ASC LIMIT 1`,
+        [idFormation]
+      );
+
+      // ✅ d. Si un candidat est trouvé, on lui attribue la place
+      if (prochain) {
+        const now = new Date();
+
+        // (Optionnel) Tu peux ici notifier ou prioriser le prochain candidat du rang suivant
+        await baseDeDonnees.query(
+          `UPDATE candidatures 
+           SET statut = 'acceptée', 
+               notificationEnvoyee = 1, 
+               dateNotification = ?
+           WHERE idCandidature = ?`,
+          [now, prochain.idCandidature]
+        );
+
+        // 🔻 e. Réduire la capacité car une place vient d'être réattribuée
+        await baseDeDonnees.query(
+          "UPDATE formations SET capacite = capacite - 1 WHERE idFormation = ?",
+          [idFormation]
+        );
+      }
+    }
+
+    res.json({ message: "Décision enregistrée avec succès." });
+  } catch (error) {
+    console.error("Erreur décision étudiant :", error);
+    res.status(500).json({ message: "Erreur serveur." });
+  }
+});
+
+  // ✅ Envoyer la notification d’admission à un étudiant
+routeurCandidatures.put("/envoyer-notification/:idCandidature", async (req, res) => {
+  const { idCandidature } = req.params;
+
+  try {
+    // Mettre à jour la table candidatures
+    const [result] = await baseDeDonnees.query(
+      "UPDATE candidatures SET notificationEnvoyee = 1, dateNotification = NOW() WHERE idCandidature = ?",
+      [idCandidature]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Candidature non trouvée" });
+    }
+
+    res.json({ message: "Notification envoyée à l'étudiant." });
+  } catch (err) {
+    console.error("Erreur lors de l'envoi de la notification :", err);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+});
+routeurCandidatures.get('/statistiques/voeux/:idUtilisateur', async (req, res) => {
+  const { idUtilisateur } = req.params;
+  try {
+    const [rows] = await db.query(`
+      SELECT f.typeFormation, COUNT(*) AS total_voeux
+      FROM candidatures c
+      JOIN formations f ON c.idFormation = f.idFormation
+      WHERE c.idUtilisateur = ?
+      GROUP BY f.typeFormation
+    `, [idUtilisateur]);
+
+    const result = { classique: 0, alternance: 0 };
+    rows.forEach((row) => {
+      if (row.typeFormation === 'Formation initiale') result.classique = row.total_voeux;
+      if (row.typeFormation === 'Alternance') result.alternance = row.total_voeux;
+    });
+
+    res.json(result);
+  } catch (error) {
+    console.error("Erreur API vœux:", error);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+});
+
   
 export default routeurCandidatures;

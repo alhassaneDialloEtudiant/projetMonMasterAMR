@@ -48,16 +48,6 @@ function Menu() {
                         Mon space candidat
                     </Link>
                 </li>
-                <li>
-                    <Link to="/informer" onClick={closeMenu}>
-                        Se décider
-                    </Link>
-                </li>
-                <li>
-                    <Link to="/teste" onClick={closeMenu}>
-                        TESTE
-                    </Link>
-                </li>
             </ul>
 
             {/* 🟢 Bouton Voir mes favoris */}

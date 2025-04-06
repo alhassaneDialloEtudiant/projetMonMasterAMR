@@ -25,10 +25,16 @@ function PageConnexion() {
     email: "",
     motDePasse: "",
   });
+  const [resetPasswordMode, setResetPasswordMode] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [nouveauMotDePasse, setNouveauMotDePasse] = useState("");
+  const [idUtilisateurReset, setIdUtilisateurReset] = useState(null);
 
   const apiUrlRoles = "http://localhost:5001/api/utilisateurs/roles";
   const apiUrlInscription = "http://localhost:5001/api/utilisateurs/inscrire";
   const apiUrlConnexion = "http://localhost:5001/api/utilisateurs/connexion";
+  const apiUrlRechercheEmail = "http://localhost:5001/api/utilisateurs/recherche-email";
+  const apiUrlNouveauMotDePasse = "http://localhost:5001/api/utilisateurs/nouveau-motdepasse";
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,26 +47,18 @@ function PageConnexion() {
       setRoles(response.data);
     } catch (error) {
       toast.error("Erreur lors de la récupération des rôles.");
-      console.error("Erreur lors de la récupération des rôles :", error);
     }
   };
 
   const handleRoleChange = (e) => {
     const role = e.target.value;
     setRoleSelectionne(role);
-    if (role === "Etudiant") {
-      setAfficherQuestions(true);
-    } else {
-      setAfficherQuestions(false);
-      setVueActuelle("creationCompte");
-    }
+    setAfficherQuestions(role === "Etudiant");
+    if (role !== "Etudiant") setVueActuelle("creationCompte");
   };
 
   const handleQuestionChange = (e) => {
-    setQuestionsReponses({
-      ...questionsReponses,
-      [e.target.name]: e.target.value,
-    });
+    setQuestionsReponses({ ...questionsReponses, [e.target.name]: e.target.value });
   };
 
   const handleSubmitQuestions = () => {
@@ -74,27 +72,17 @@ function PageConnexion() {
   };
 
   const handleFormDataChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleConnexionDataChange = (e) => {
-    setConnexionData({
-      ...connexionData,
-      [e.target.name]: e.target.value,
-    });
+    setConnexionData({ ...connexionData, [e.target.name]: e.target.value });
   };
 
   const handleSubmitForm = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(apiUrlInscription, {
-        ...formData,
-        role: roleSelectionne,
-      });
-
+      const response = await axios.post(apiUrlInscription, { ...formData, role: roleSelectionne });
       if (response.status === 201) {
         toast.success("Inscription réussie !");
         setVueActuelle("accueil");
@@ -103,7 +91,6 @@ function PageConnexion() {
       }
     } catch (error) {
       toast.error("Une erreur s'est produite lors de l'inscription.");
-      console.error("Erreur lors de l'inscription :", error);
     }
   };
 
@@ -111,50 +98,64 @@ function PageConnexion() {
     e.preventDefault();
     try {
       const response = await axios.post(apiUrlConnexion, { ...connexionData });
-
       if (response.status === 200) {
         toast.success("Connexion réussie !");
-        
-        // 📌 Stocker `idUtilisateur`, `token` et `role` dans localStorage
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("idUtilisateur", response.data.idUtilisateur);
         localStorage.setItem("role", response.data.role);
-
-        // 🔄 Rediriger en fonction du rôle
+  
         if (response.data.role === "AdminUniversitaire") {
-          localStorage.setItem("idAdminUniversite", response.data.idUtilisateur); // Stocker l'ID admin
+          localStorage.setItem("idAdminUniversite", response.data.idUtilisateur);
           navigate("/admin-universitaire");
+        } else if (response.data.role === "AdminGeneral") {
+          localStorage.setItem("idAdminGeneral", response.data.idUtilisateur);
+          navigate("/admin-general");
         } else {
           navigate("/connexion-etudiant");
         }
-      } else {
-        toast.error("Erreur lors de la connexion.");
       }
     } catch (error) {
-      toast.error("Une erreur s'est produite lors de la connexion.");
-      console.error("Erreur lors de la connexion :", error);
+      toast.error("Erreur lors de la connexion.");
+    }
+  };
+  
+
+  const handleRechercheEmail = async () => {
+    try {
+      const res = await axios.post(apiUrlRechercheEmail, { email: resetEmail });
+      if (res.data.idUtilisateur) {
+        setIdUtilisateurReset(res.data.idUtilisateur);
+        toast.success("Utilisateur trouvé, veuillez entrer un nouveau mot de passe.");
+      } else {
+        toast.error("Aucun utilisateur trouvé avec cet email.");
+      }
+    } catch (error) {
+      toast.error("Erreur lors de la vérification de l'email.");
+    }
+  };
+
+  const handleNouveauMotDePasse = async () => {
+    try {
+      await axios.put(`${apiUrlNouveauMotDePasse}/${idUtilisateurReset}`, {
+        nouveauMotDePasse,
+      });
+      toast.success("Mot de passe modifié avec succès !");
+      setVueActuelle("connexion");
+    } catch (error) {
+      toast.error("Erreur lors de la mise à jour du mot de passe.");
     }
   };
 
   return (
-    <div className="connexion-container">
-      <ToastContainer 
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+    <>
+      <ToastContainer position="top-center" autoClose={5000} />
       {vueActuelle === "accueil" && (
         <div className="choix-container">
           <h1>Bienvenue</h1>
           <p>Veuillez choisir une option :</p>
           <button onClick={() => setVueActuelle("connexion")}>Se connecter</button>
           <button onClick={() => setVueActuelle("inscription")}>S'inscrire</button>
+          <button onClick={() => setResetPasswordMode(true)}>Mot de passe oublié ?</button>
         </div>
       )}
 
@@ -163,23 +164,9 @@ function PageConnexion() {
           <h1>Connexion</h1>
           <form onSubmit={handleSubmitConnexion}>
             <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              value={connexionData.email}
-              onChange={handleConnexionDataChange}
-              placeholder="Entrez votre email"
-              required
-            />
+            <input type="email" name="email" value={connexionData.email} onChange={handleConnexionDataChange} required />
             <label>Mot de passe</label>
-            <input
-              type="password"
-              name="motDePasse"
-              value={connexionData.motDePasse}
-              onChange={handleConnexionDataChange}
-              placeholder="Entrez votre mot de passe"
-              required
-            />
+            <input type="password" name="motDePasse" value={connexionData.motDePasse} onChange={handleConnexionDataChange} required />
             <button type="submit">Se connecter</button>
           </form>
           <button onClick={() => setVueActuelle("accueil")}>Retour</button>
@@ -193,9 +180,7 @@ function PageConnexion() {
           <select value={roleSelectionne} onChange={handleRoleChange}>
             <option value="">Sélectionnez un rôle</option>
             {roles.map((role, index) => (
-              <option key={index} value={role.nomRole}>
-                {role.nomRole}
-              </option>
+              <option key={index} value={role.nomRole}>{role.nomRole}</option>
             ))}
           </select>
           {afficherQuestions && (
@@ -204,63 +189,25 @@ function PageConnexion() {
               <div>
                 <label>Êtes-vous concerné par la plateforme ?</label>
                 <div>
-                  <input
-                    type="radio"
-                    name="question1"
-                    value="Oui"
-                    onChange={handleQuestionChange}
-                  />
-                  Oui
-                  <input
-                    type="radio"
-                    name="question1"
-                    value="Non"
-                    onChange={handleQuestionChange}
-                  />
-                  Non
+                  <input type="radio" name="question1" value="Oui" onChange={handleQuestionChange} /> Oui
+                  <input type="radio" name="question1" value="Non" onChange={handleQuestionChange} /> Non
                 </div>
               </div>
               <div>
                 <label>Avez-vous lu et accepté les conditions ?</label>
                 <div>
-                  <input
-                    type="radio"
-                    name="question2"
-                    value="Oui"
-                    onChange={handleQuestionChange}
-                  />
-                  Oui
-                  <input
-                    type="radio"
-                    name="question2"
-                    value="Non"
-                    onChange={handleQuestionChange}
-                  />
-                  Non
+                  <input type="radio" name="question2" value="Oui" onChange={handleQuestionChange} /> Oui
+                  <input type="radio" name="question2" value="Non" onChange={handleQuestionChange} /> Non
                 </div>
               </div>
               <div>
                 <label>Êtes-vous titulaire d'un diplôme de licence ?</label>
                 <div>
-                  <input
-                    type="radio"
-                    name="question3"
-                    value="Oui"
-                    onChange={handleQuestionChange}
-                  />
-                  Oui
-                  <input
-                    type="radio"
-                    name="question3"
-                    value="Non"
-                    onChange={handleQuestionChange}
-                  />
-                  Non
+                  <input type="radio" name="question3" value="Oui" onChange={handleQuestionChange} /> Oui
+                  <input type="radio" name="question3" value="Non" onChange={handleQuestionChange} /> Non
                 </div>
               </div>
-              <button onClick={handleSubmitQuestions}>
-                Valider les réponses
-              </button>
+              <button onClick={handleSubmitQuestions}>Valider les réponses</button>
             </div>
           )}
           <button onClick={() => setVueActuelle("accueil")}>Retour</button>
@@ -272,47 +219,40 @@ function PageConnexion() {
           <h1>Création de compte</h1>
           <form onSubmit={handleSubmitForm}>
             <label>Nom</label>
-            <input
-              type="text"
-              name="nom"
-              value={formData.nom}
-              onChange={handleFormDataChange}
-              placeholder="Entrez votre nom"
-              required
-            />
+            <input type="text" name="nom" value={formData.nom} onChange={handleFormDataChange} required />
             <label>Prénom</label>
-            <input
-              type="text"
-              name="prenom"
-              value={formData.prenom}
-              onChange={handleFormDataChange}
-              placeholder="Entrez votre prénom"
-              required
-            />
+            <input type="text" name="prenom" value={formData.prenom} onChange={handleFormDataChange} required />
             <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleFormDataChange}
-              placeholder="Entrez votre email"
-              required
-            />
+            <input type="email" name="email" value={formData.email} onChange={handleFormDataChange} required />
             <label>Mot de passe</label>
-            <input
-              type="password"
-              name="motDePasse"
-              value={formData.motDePasse}
-              onChange={handleFormDataChange}
-              placeholder="Entrez votre mot de passe"
-              required
-            />
+            <input type="password" name="motDePasse" value={formData.motDePasse} onChange={handleFormDataChange} required />
             <button type="submit">Créer le compte</button>
           </form>
           <button onClick={() => setVueActuelle("accueil")}>Retour</button>
         </div>
       )}
-    </div>
+
+      {resetPasswordMode && (
+        <div className="reset-password-container">
+          <h1>Réinitialisation du mot de passe</h1>
+          {!idUtilisateurReset ? (
+            <>
+              <label>Email</label>
+              <input type="email" value={resetEmail} onChange={(e) => setResetEmail(e.target.value)} placeholder="Entrez votre email" />
+              <button onClick={handleRechercheEmail}>Vérifier</button>
+              <button onClick={() => setResetPasswordMode(false)}>Retour</button>
+            </>
+          ) : (
+            <>
+              <label>Nouveau mot de passe</label>
+              <input type="password" value={nouveauMotDePasse} onChange={(e) => setNouveauMotDePasse(e.target.value)} placeholder="Nouveau mot de passe" />
+              <button onClick={handleNouveauMotDePasse}>Mettre à jour</button>
+              <button onClick={() => setResetPasswordMode(false)}>Annuler</button>
+            </>
+          )}
+        </div>
+      )}
+    </>
   );
 }
 

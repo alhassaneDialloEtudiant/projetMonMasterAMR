@@ -191,5 +191,86 @@ formationsRoutes.get("/universite/:universite", async (req, res) => {
     }
 });
 
+/// ✅ Supprime "api/formations" du chemin ici :
+formationsRoutes.get("/capacite/:universite", async (req, res) => {
+    try {
+      const universite = decodeURIComponent(req.params.universite).toLowerCase();
+      const [formations] = await baseDeDonnees.query(
+        "SELECT capacite, idFormation FROM formations WHERE LOWER(universite) = ? LIMIT 1",
+        [universite]
+      );
+  
+      if (formations.length === 0) {
+        return res.status(404).json({ message: "Formation non trouvée" });
+      }
+  
+      res.json(formations[0]);
+    } catch (error) {
+      console.error("Erreur lors de la récupération de la capacité :", error);
+      res.status(500).json({ message: "Erreur serveur" });
+    }
+  });
+  
+  formationsRoutes.put("/capacite/:idFormation", async (req, res) => {
+    const { idFormation } = req.params;
+    const { operation } = req.body;
+  
+    const increment = operation === "increment" ? 1 : operation === "decrement" ? -1 : 0;
+    if (increment === 0) return res.status(400).json({ message: "Opération invalide" });
+  
+    try {
+      await baseDeDonnees.query(
+        "UPDATE formations SET capacite = capacite + ? WHERE idFormation = ?",
+        [increment, idFormation]
+      );
+      res.json({ message: "Capacité mise à jour" });
+    } catch (err) {
+      console.error("Erreur mise à jour capacité :", err);
+      res.status(500).json({ message: "Erreur serveur" });
+    }
+  });
+  
+  formationsRoutes.put("/capacite/:idFormation", async (req, res) => {
+    const { idFormation } = req.params;
+    const { operation } = req.body; // "increment" ou "decrement"
+  
+    const increment = operation === "increment" ? 1 : operation === "decrement" ? -1 : 0;
+    if (increment === 0) return res.status(400).json({ message: "Opération invalide" });
+  
+    try {
+      await db.query(
+        "UPDATE formations SET capacite = capacite + ? WHERE idFormation = ?",
+        [increment, idFormation]
+      );
+  
+      res.json({ message: "Capacité mise à jour" });
+    } catch (err) {
+      console.error("Erreur mise à jour capacité :", err);
+      res.status(500).json({ message: "Erreur serveur" });
+    }
+  });
+
+  // ✅ Récupérer la capacité d'une formation spécifique (par idFormation)
+formationsRoutes.get("/capacite-par-formation/:idFormation", async (req, res) => {
+    const { idFormation } = req.params;
+
+    try {
+        const [rows] = await baseDeDonnees.query(
+            "SELECT idFormation, capacite FROM formations WHERE idFormation = ?",
+            [idFormation]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: "Formation non trouvée." });
+        }
+
+        res.status(200).json(rows[0]);
+    } catch (error) {
+        console.error("❌ Erreur lors de la récupération de la capacité :", error);
+        res.status(500).json({ message: "Erreur serveur." });
+    }
+});
+
+  
 
 export default formationsRoutes;

@@ -12,6 +12,38 @@ const CandidaturesEnAttenteAdmin = ({ idAdminUniversite }) => {
   const [commentaires, setCommentaires] = useState({});
   const [demandesSupp, setDemandesSupp] = useState({});
   const [modalEtudiant, setModalEtudiant] = useState(null);
+  const [capacitesParFormation, setCapacitesParFormation] = useState({});
+
+  const refreshCapacite = async (idFormation) => {
+    try {
+      const resCap = await axios.get(
+        `http://localhost:5001/api/formations/capacite-par-formation/${idFormation}`
+      );
+      setCapacitesParFormation((prev) => ({
+        ...prev,
+        [idFormation]: resCap.data.capacite,
+      }));
+    } catch (error) {
+      console.error(`Erreur en rechargeant la capacité (${idFormation}) :`, error);
+    }
+  };
+
+  const envoyerNotificationAdmission = async (idCandidature) => {
+    try {
+      await axios.put(`http://localhost:5001/api/candidatures/envoyer-notification/${idCandidature}`);
+      alert("Notification envoyée à l'étudiant.");
+      setCandidatures((prev) =>
+        prev.map((c) =>
+          c.idCandidature === idCandidature
+            ? { ...c, notificationEnvoyee: true, dateNotification: new Date().toISOString() }
+            : c
+        )
+      );
+    } catch (err) {
+      console.error("Erreur lors de l'envoi de la notification :", err);
+      alert("Erreur lors de l'envoi de la notification.");
+    }
+  };
 
   useEffect(() => {
     const fetchUniversites = async () => {
@@ -38,11 +70,47 @@ const CandidaturesEnAttenteAdmin = ({ idAdminUniversite }) => {
       setLoading(true);
       try {
         const universiteFormatted = selectedUniversite.trim().toLowerCase();
-
         const response = await axios.get(
           `http://localhost:5001/api/candidatures/en-attente/${universiteFormatted}`
         );
-        setCandidatures(response.data);
+
+        const candidaturesGroupees = {};
+
+        response.data.forEach((cand) => {
+          const key = cand.idFormation;
+          if (!candidaturesGroupees[key]) candidaturesGroupees[key] = [];
+          candidaturesGroupees[key].push(cand);
+        });
+
+        let toutesCandidatures = [];
+
+        for (const [idFormation, liste] of Object.entries(candidaturesGroupees)) {
+          const triees = liste
+            .sort((a, b) => new Date(a.dateCandidature) - new Date(b.dateCandidature))
+            .map((c, index) => ({ ...c, rang: index + 1 }));
+
+          for (const cand of triees) {
+            await axios.put(`http://localhost:5001/api/candidatures/rang/${cand.idCandidature}`, {
+              rang: cand.rang,
+            });
+          }
+
+          try {
+            const resCap = await axios.get(
+              `http://localhost:5001/api/formations/capacite-par-formation/${idFormation}`
+            );
+            setCapacitesParFormation((prev) => ({
+              ...prev,
+              [idFormation]: resCap.data.capacite,
+            }));
+          } catch (err) {
+            console.error(`Erreur récupération capacité pour formation ${idFormation}`, err);
+          }
+
+          toutesCandidatures = toutesCandidatures.concat(triees);
+        }
+
+        setCandidatures(toutesCandidatures);
         setError(null);
       } catch (err) {
         console.error("Erreur lors du chargement des candidatures :", err);
@@ -57,12 +125,18 @@ const CandidaturesEnAttenteAdmin = ({ idAdminUniversite }) => {
   }, [selectedUniversite]);
 
   const handleUpdateStatus = async (idCandidature, statut) => {
-    const demandeEnCours = demandesSupp[idCandidature];
     const candidature = candidatures.find(c => c.idCandidature === idCandidature);
+    const idFormation = candidature?.idFormation;
     const justificatifPresent = candidature?.justificatifSupplementaire;
 
-    if (demandeEnCours && !justificatifPresent) {
+    if (candidature?.demandeSupplementaire && !justificatifPresent) {
       alert("Le document demandé n'a pas encore été fourni par l'étudiant.");
+      return;
+    }
+
+    const capaciteFormation = capacitesParFormation[idFormation] || 0;
+    if (statut === "acceptée" && capaciteFormation <= 0) {
+      alert("Aucune place disponible pour cette formation.");
       return;
     }
 
@@ -71,6 +145,13 @@ const CandidaturesEnAttenteAdmin = ({ idAdminUniversite }) => {
         `http://localhost:5001/api/candidatures/modifier/${idCandidature}`,
         { statut }
       );
+
+      await axios.put(`http://localhost:5001/api/formations/capacite/${idFormation}`, {
+        operation: statut === "acceptée" ? "decrement" : "increment"
+      });
+
+      await refreshCapacite(idFormation);
+
       setCandidatures((prev) =>
         prev.filter((cand) => cand.idCandidature !== idCandidature)
       );
@@ -144,10 +225,10 @@ const CandidaturesEnAttenteAdmin = ({ idAdminUniversite }) => {
       {candidatures.length > 0 && (
         <div className="candidatures-list">
           {candidatures.map((cand) => (
-            <div key={cand.idCandidature} className={`candidature-card ${cand.demandeSupp && !cand.justificatifSupplementaire ? "highlight-warning" : ""}`}>
+            <div key={cand.idCandidature} className={`candidature-card ${cand.demandeSupplementaire && !cand.justificatifSupplementaire ? "highlight-warning" : ""}`}>
               <div className="card-header">
                 <h3>{cand.nomEtudiant}</h3>
-                {cand.demandeSupp && !cand.justificatifSupplementaire && (
+                {cand.demandeSupplementaire && !cand.justificatifSupplementaire && (
                   <span className="badge-alert">⚠️ Suivi requis</span>
                 )}
               </div>
@@ -155,23 +236,29 @@ const CandidaturesEnAttenteAdmin = ({ idAdminUniversite }) => {
               <p><strong>Formation :</strong> {cand.nomFormation}</p>
               <p><strong>Université :</strong> {cand.universite}</p>
               <p><strong>Localisation :</strong> {cand.localisation}</p>
-              <p><strong>Statut :</strong> <span className="status en-attente">En attente</span></p>
+              <p><strong>Rang :</strong> {cand.rang}</p>
+              <p><strong>Places restantes :</strong> {capacitesParFormation[cand.idFormation] ?? "?"}</p>
+              <p><strong>Décision de l'étudiant :</strong> {cand.decisionEtudiant === "accepte" ? "✅ A accepté l'admission" : cand.decisionEtudiant === "refuse" ? "❌ A refusé l'admission" : "⏳ En attente de réponse"}</p>
+              <p><strong>Notification :</strong> {cand.notificationEnvoyee ? `📤 Envoyée le ${new Date(cand.dateNotification).toLocaleDateString()}` : "⏳ Pas encore envoyée"}</p>
+
+              <button onClick={() => envoyerNotificationAdmission(cand.idCandidature)} disabled={cand.notificationEnvoyee}>📤 Envoyer la notification</button>
+
               <p><strong>Documents :</strong></p>
               <ul>
-                {cand.cv && <li><a href={`http://localhost:5001/uploads/candidatures/${cand.cv}`} download target="_blank" rel="noopener noreferrer">📄 CV</a></li>}
-                {cand.releveNotes && <li><a href={`http://localhost:5001/uploads/candidatures/${cand.releveNotes}`} download target="_blank" rel="noopener noreferrer">📄 Relevé de notes</a></li>}
-                {cand.diplome && <li><a href={`http://localhost:5001/uploads/candidatures/${cand.diplome}`} download target="_blank" rel="noopener noreferrer">📄 Diplôme</a></li>}
-                {cand.lettreMotivation && <li><a href={`http://localhost:5001/uploads/candidatures/${cand.lettreMotivation}`} download target="_blank" rel="noopener noreferrer">📄 Lettre de motivation</a></li>}
-                {cand.justificatifSupplementaire && <li><a href={`http://localhost:5001/uploads/candidatures/${cand.justificatifSupplementaire}`} download target="_blank" rel="noopener noreferrer">📄 Autre justificatif</a></li>}
+                {cand.cv && <li><a href={`http://localhost:5001/uploads/candidatures/${cand.cv}`} target="_blank" rel="noopener noreferrer">📄 CV</a></li>}
+                {cand.releveNotes && <li><a href={`http://localhost:5001/uploads/candidatures/${cand.releveNotes}`} target="_blank" rel="noopener noreferrer">📄 Relevé de notes</a></li>}
+                {cand.diplome && <li><a href={`http://localhost:5001/uploads/candidatures/${cand.diplome}`} target="_blank" rel="noopener noreferrer">📄 Diplôme</a></li>}
+                {cand.lettreMotivation && <li><a href={`http://localhost:5001/uploads/candidatures/${cand.lettreMotivation}`} target="_blank" rel="noopener noreferrer">📄 Lettre de motivation</a></li>}
+                {cand.justificatifSupplementaire && <li><a href={`http://localhost:5001/uploads/candidatures/${cand.justificatifSupplementaire}`} target="_blank" rel="noopener noreferrer">📄 Autre justificatif</a></li>}
               </ul>
 
-              {cand.demandeSupp && (
+              {cand.demandeSupplementaire && (
                 <p className="info-supp">
-                  📩 Document demandé : <strong>{cand.demandeSupp}</strong><br />
+                  📩 Document demandé : <strong>{cand.demandeSupplementaire}</strong><br />
                   {cand.justificatifSupplementaire ? (
-                    <span className="ok">✅ Document complémentaire reçu</span>
+                    <span className="ok">✅ Document reçu</span>
                   ) : (
-                    <span className="pending">⚠️ En attente du document complémentaire</span>
+                    <span className="pending">⚠️ En attente du document</span>
                   )}
                 </p>
               )}
@@ -184,7 +271,7 @@ const CandidaturesEnAttenteAdmin = ({ idAdminUniversite }) => {
               <button onClick={() => handleSaveComment(cand.idCandidature)}>💾 Enregistrer le commentaire</button>
 
               <textarea
-                placeholder="Demande de document complémentaire (ex: justificatif manquant)"
+                placeholder="Demande de document complémentaire..."
                 value={demandesSupp[cand.idCandidature] || ""}
                 onChange={(e) => handleChangeDemande(cand.idCandidature, e.target.value)}
               />
@@ -195,16 +282,20 @@ const CandidaturesEnAttenteAdmin = ({ idAdminUniversite }) => {
               </button>
 
               <div className="actions">
-                <button 
-                  className="accept-btn" 
+                <button
+                  className="accept-btn"
                   onClick={() => handleUpdateStatus(cand.idCandidature, "acceptée")}
-                  disabled={cand.demandeSupp && !cand.justificatifSupplementaire}
-                >✅ Accepter</button>
-                <button 
-                  className="reject-btn" 
+                  disabled={cand.demandeSupplementaire && !cand.justificatifSupplementaire}
+                >
+                  ✅ Accepter
+                </button>
+                <button
+                  className="reject-btn"
                   onClick={() => handleUpdateStatus(cand.idCandidature, "refusée")}
-                  disabled={cand.demandeSupp && !cand.justificatifSupplementaire}
-                >❌ Refuser</button>
+                  disabled={cand.demandeSupplementaire && !cand.justificatifSupplementaire}
+                >
+                  ❌ Refuser
+                </button>
               </div>
             </div>
           ))}
@@ -213,7 +304,7 @@ const CandidaturesEnAttenteAdmin = ({ idAdminUniversite }) => {
 
       {modalEtudiant && (
         <div className="modal-overlay" onClick={handleCloseModal}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <button className="close-modal" onClick={handleCloseModal}>✖</button>
             <DossierCandidat utilisateurId={modalEtudiant} />
           </div>

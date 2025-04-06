@@ -1,0 +1,43 @@
+.historique-container {
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  margin-top: 20px;
+}
+
+.historique-title {
+  font-size: 24px;
+  color: #0a2b61;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.log-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+.log-table th,
+.log-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.log-table th {
+  background-color: #f6f8fa;
+  color: #333;
+}
+
+.log-table tr:hover {
+  background-color: #f0f8ff;
+}
+
+.no-log {
+  text-align: center;
+  color: #999;
+  margin-top: 30px;
+  font-style: italic;
+}

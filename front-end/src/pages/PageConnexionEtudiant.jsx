@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import "../styles/PageConnexionEtudiant.css";
 import DossierCandidat from "./DossierCandidat";
 import Formations from "./Formations";
-import MesCandidatures from "./MesCandidatures"; // ✅ Importation du composant
+import MesCandidatures from "./MesCandidatures";
+import Demissionner from "./Demissionner";
+import TableauDeBordEtudiant from "./TableauDeBordEtudiant"; // ✅ Ajout pour afficher uniquement ce composant
 
 function PageTableauDeBordEtudiant() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -11,18 +13,28 @@ function PageTableauDeBordEtudiant() {
   const [utilisateurConnecte, setUtilisateurConnecte] = useState(null);
   const navigate = useNavigate();
 
-  // ✅ Vérification de l'état de connexion
   useEffect(() => {
     const idUtilisateur = localStorage.getItem("idUtilisateur");
     setUtilisateurConnecte(idUtilisateur ? idUtilisateur : null);
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("idUtilisateur");
+    setUtilisateurConnecte(null);
+    navigate("/");
+  };
+
+  const handleDeleteAccount = () => {
+    console.log("Suppression du compte de l'utilisateur :", utilisateurConnecte);
+    handleLogout();
+    alert("Votre compte a été supprimé.");
+  };
+
   const tabs = [
     { id: "dashboard", label: "Mon tableau de bord" },
     { id: "dossier", label: "Mon dossier candidat" },
-    { id: "candidatures", label: "Mes candidatures" }, // ✅ Ajout de l'affichage des candidatures ici
-    { id: "alternance", label: "Mes candidatures en alternance" },
-    { id: "documents", label: "Mes documents" },
+    { id: "candidatures", label: "Mes candidatures" },
     { id: "formation", label: "Je sélectionne une formation" },
     { id: "demission", label: "Je démissionne" },
   ];
@@ -33,13 +45,6 @@ function PageTableauDeBordEtudiant() {
     { title: "Admission", status: "À venir", date: "Du 04 juin au 24 juin 2024", color: "blue" },
     { title: "Phase complémentaire et GDD", status: "À venir", date: "Du 25 juin au 15 septembre 2024", color: "blue" },
   ];
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("idUtilisateur");
-    setUtilisateurConnecte(null);
-    navigate("/");
-  };
 
   return (
     <div className="page-container">
@@ -69,29 +74,8 @@ function PageTableauDeBordEtudiant() {
       </div>
 
       <main className="main-content">
-        {activeTab === "dashboard" && (
-          <>
-            <h1>Mon tableau de bord</h1>
-            <p>Retrouvez ici les informations et outils importants concernant la procédure de Mon Master.</p>
-            <div className="info-cards">
-              <div className="info-card">
-                <h2>Mes candidatures hors alternance</h2>
-                <p>Nombre de vœux comptabilisés : 0 sur 15.</p>
-                <p>Vous avez actuellement 0 candidature(s) non confirmée(s).</p>
-                <p>Vous avez actuellement 0 candidature(s) complètes non confirmée(s).</p>
-              </div>
-              <div className="info-card">
-                <h2>Mes candidatures en alternance</h2>
-                <p>Nombre de vœux comptabilisés : 0 sur 15.</p>
-                <p>Vous avez actuellement 0 candidature(s) non confirmée(s).</p>
-                <p>Vous avez actuellement 0 candidature(s) complètes non confirmée(s).</p>
-              </div>
-            </div>
-          </>
-        )}
-
+        {activeTab === "dashboard" && <TableauDeBordEtudiant />}
         {activeTab === "dossier" && <DossierCandidat />}
-
         {activeTab === "formation" && (
           <>
             <div className="recherche-formation">
@@ -105,8 +89,12 @@ function PageTableauDeBordEtudiant() {
             <Formations searchQuery={searchQuery} isUserConnected={!!utilisateurConnecte} />
           </>
         )}
-
-        {activeTab === "candidatures" && utilisateurConnecte && <MesCandidatures idUtilisateur={utilisateurConnecte} />}
+        {activeTab === "candidatures" && utilisateurConnecte && (
+          <MesCandidatures idUtilisateur={utilisateurConnecte} />
+        )}
+        {activeTab === "demission" && (
+          <Demissionner onDeleteAccount={handleDeleteAccount} />
+        )}
       </main>
     </div>
   );
