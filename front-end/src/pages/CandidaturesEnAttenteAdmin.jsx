@@ -11,7 +11,7 @@ const CandidaturesEnAttenteAdmin = ({ idAdminUniversite }) => {
   const [error, setError] = useState(null);
   const [commentaires, setCommentaires] = useState({});
   const [demandesSupp, setDemandesSupp] = useState({});
-  const [modalEtudiant, setModalEtudiant] = useState(null);
+  const [selectedEtudiant, setSelectedEtudiant] = useState(null); // Remplace modal
   const [capacitesParFormation, setCapacitesParFormation] = useState({});
 
   const refreshCapacite = async (idFormation) => {
@@ -192,12 +192,8 @@ const CandidaturesEnAttenteAdmin = ({ idAdminUniversite }) => {
     setDemandesSupp((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleOpenModal = (idUtilisateur) => {
-    setModalEtudiant(idUtilisateur);
-  };
-
-  const handleCloseModal = () => {
-    setModalEtudiant(null);
+  const handleVoirDossier = (idUtilisateur) => {
+    setSelectedEtudiant(idUtilisateur);
   };
 
   return (
@@ -277,7 +273,7 @@ const CandidaturesEnAttenteAdmin = ({ idAdminUniversite }) => {
               />
               <button onClick={() => handleDemandeSupp(cand.idCandidature)}>📩 Envoyer la demande</button>
 
-              <button className="btn-voir" onClick={() => handleOpenModal(cand.idUtilisateur)}>
+              <button className="btn-voir" onClick={() => handleVoirDossier(cand.idUtilisateur)}>
                 📂 Voir le dossier complet
               </button>
 
@@ -302,17 +298,15 @@ const CandidaturesEnAttenteAdmin = ({ idAdminUniversite }) => {
         </div>
       )}
 
-      {modalEtudiant && (
-        <div className="modal-overlay" onClick={handleCloseModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="close-modal" onClick={handleCloseModal}>✖</button>
-            <DossierCandidat utilisateurId={modalEtudiant} />
-          </div>
-        </div>
-      )}
-
       {candidatures.length === 0 && selectedUniversite && !loading && (
         <p className="no-results">Aucune candidature en attente.</p>
+      )}
+
+      {selectedEtudiant && (
+        <div className="dossier-complet-container">
+          <h3>📂 Dossier Complet de l'Étudiant</h3>
+          <DossierCandidat utilisateurId={selectedEtudiant} />
+        </div>
       )}
     </div>
   );

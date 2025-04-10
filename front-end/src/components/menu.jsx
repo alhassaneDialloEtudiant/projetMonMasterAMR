@@ -45,7 +45,7 @@ function Menu() {
                 
                 <li>
                     <Link to="/pageConnexion" onClick={closeMenu}>
-                        Mon space candidat
+                        Mon espace candidat
                     </Link>
                 </li>
             </ul>
