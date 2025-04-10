@@ -82,7 +82,10 @@ function PageConnexion() {
   const handleSubmitForm = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(apiUrlInscription, { ...formData, role: roleSelectionne });
+      const response = await axios.post(apiUrlInscription, {
+        ...formData,
+        role: roleSelectionne,
+      });
       if (response.status === 201) {
         toast.success("Inscription réussie !");
         setVueActuelle("accueil");
@@ -103,7 +106,7 @@ function PageConnexion() {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("idUtilisateur", response.data.idUtilisateur);
         localStorage.setItem("role", response.data.role);
-  
+
         if (response.data.role === "AdminUniversitaire") {
           localStorage.setItem("idAdminUniversite", response.data.idUtilisateur);
           navigate("/admin-universitaire");
@@ -118,7 +121,6 @@ function PageConnexion() {
       toast.error("Erreur lors de la connexion.");
     }
   };
-  
 
   const handleRechercheEmail = async () => {
     try {
@@ -179,10 +181,15 @@ function PageConnexion() {
           <label>Choisissez votre rôle</label>
           <select value={roleSelectionne} onChange={handleRoleChange}>
             <option value="">Sélectionnez un rôle</option>
-            {roles.map((role, index) => (
-              <option key={index} value={role.nomRole}>{role.nomRole}</option>
-            ))}
+            {roles
+              .filter(role => role.nomRole !== "AdminUniversitaire" && role.nomRole !== "AdminGeneral")
+              .map((role, index) => (
+                <option key={index} value={role.nomRole}>
+                  {role.nomRole}
+                </option>
+              ))}
           </select>
+
           {afficherQuestions && (
             <div className="questions-container">
               <h2>Répondez aux questions suivantes</h2>

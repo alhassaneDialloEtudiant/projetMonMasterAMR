@@ -23,7 +23,7 @@ const MesCandidatures = ({ idUtilisateur }) => {
         );
         setCandidatures(response.data);
       } catch (err) {
-        setError("Erreur lors du chargement des candidatures");
+        setError("aucune candidatures disponible pour cet utilisateur.");
       } finally {
         setLoading(false);
       }

@@ -5,15 +5,18 @@ import { Tabs, Tab } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import StatistiquesGlobales from "./StatistiquesGlobales";
 import TableauUtilisateurs from "./TableauUtilisateurs";
+import AjoutUtilisateur from "./AjoutUtilisateur";
 import "../styles/EspaceAdminGeneral.css";
 
 function EspaceAdminGeneral() {
   const [ongletActif, setOngletActif] = useState("stats");
   const [stats, setStats] = useState({});
+  const [utilisateurs, setUtilisateurs] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchStatistiques();
+    fetchUtilisateurs();
   }, []);
 
   const fetchStatistiques = async () => {
@@ -29,6 +32,15 @@ function EspaceAdminGeneral() {
       });
     } catch (error) {
       toast.error("Erreur lors du chargement des statistiques.");
+    }
+  };
+
+  const fetchUtilisateurs = async () => {
+    try {
+      const res = await axios.get("http://localhost:5001/api/utilisateurs");
+      setUtilisateurs(res.data);
+    } catch (error) {
+      toast.error("Erreur lors du chargement des utilisateurs.");
     }
   };
 
@@ -56,7 +68,12 @@ function EspaceAdminGeneral() {
       </Tabs>
 
       <div className="tab-content">
-        {ongletActif === "utilisateurs" && <TableauUtilisateurs />}
+        {ongletActif === "utilisateurs" && (
+          <>
+            <AjoutUtilisateur onUtilisateurCree={fetchUtilisateurs} />
+            <TableauUtilisateurs utilisateurs={utilisateurs} />
+          </>
+        )}
         {ongletActif === "stats" && <StatistiquesGlobales stats={stats} showCharts />}
       </div>
     </div>
